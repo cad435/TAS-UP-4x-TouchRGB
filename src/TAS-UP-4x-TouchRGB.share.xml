@@ -135,11 +135,11 @@
 
               <!-- Parameter für den Text des linken Tasters -->
               <Parameter Id="%AID%_P-%TT%00008" Name="DisplayTextLeft" ParameterType="%AID%_PT-Text8Byte" Text="Text links (Max. 8 Zeichen): " Value="Links">
-                <Memory CodeSegment="%AID%_RS-04-00008" Offset="5" BitOffset="0" />
+                <Memory CodeSegment="%AID%_RS-04-00008" Offset="5" BitOffset="0" /> <!-- 8Byte Nutzdaten + 1Byte Nullterminierung: 5+8+1=14 -->
               </Parameter>
               <!-- Parameter für den Text des rechten Tasters -->
               <Parameter Id="%AID%_P-%TT%00009" Name="DisplayTextRight" ParameterType="%AID%_PT-Text8Byte" Text="Text rechts (Max. 8 Zeichen): " Value="Rechts">
-                <Memory CodeSegment="%AID%_RS-04-00009" Offset="14" BitOffset="0" />
+                <Memory CodeSegment="%AID%_RS-04-00009" Offset="14" BitOffset="0" /> <!-- 8Byte Nutzdaten + 1Byte ullterminierung: 14+8+1=23 -->
               </Parameter>
               <!-- CAP1188 Analogen Tiefpassfilter aktivieren -->
               <Parameter Id="%AID%_P-%TT%00010" Name="CAP_EnableAnalogFilter" ParameterType="%AID%_PT-TTDCheckBox" Text="Analogen Lowpass-Filter Aktivieren: " Value="0">
@@ -247,7 +247,7 @@
             </ComObjectRefs>
           </Static>
           <Dynamic>
-          <Channel Id="%AID%_CH-%PREFIX%" Number="%PREFIX%" Name="TDD-General" Text="Taster-Config" Icon="chevron-right-circle-outline">
+          <Channel Id="%AID%_CH-%PREFIX%" Number="%PREFIX%" Name="TDD-General" Text="Taster-Config" Icon="touch-text-outline">
               <!-- Parameter-Block Basiseinstellungen Taster -->
               <ParameterBlock Id="%AID%_PB-nnn" Name="TAS-General" Text="Info / Basiseinstellungen" Icon="information-outline">
 
@@ -355,7 +355,7 @@
         </ApplicationProgram>
       </ApplicationPrograms>
       <Baggages>
-        <Baggage TargetPath="icons" Name="Icons.zip" Id="%FILE-ICONS%">
+        <Baggage TargetPath="" Name="Icons.zip" Id="%FILE-ICONS%">
           <FileInfo TimeInfo="%DATETIME%" />
         </Baggage>
         <Baggage TargetPath="" Name="Schalter_Marking_LCD.png" Id="%FILE-TTDMarking_LCD%">
