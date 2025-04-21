@@ -8,7 +8,7 @@
 .vscode/ipch
 **/*.knxprod
 release/*
-/src/SEN-UP1-8xTH.baggages
+/src/TAS-UP-4x-TouchRGB.baggages
 /include/versions.h
 /.vscode/settings.json
 SEN-UP1-8xTH-cache.lib
