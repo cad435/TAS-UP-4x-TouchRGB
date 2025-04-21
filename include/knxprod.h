@@ -148,43 +148,38 @@
 
 
 #define TTD_LEDColor                            46      // 16 Bits, Bit 15-0
-#define TTD_DisplayText_KO_Left                 47      // 8 Bits, Bit 7-0
-#define TTD_DisplayText_KO_Right                48      // 8 Bits, Bit 7-0
-#define TTD_DisplayPictLeft                     49      // 8 Bits, Bit 7-0
-#define TTD_DisplayPictRight                    49      // 8 Bits, Bit 7-0
-#define TTD_DisplayOverrideTextLInner           50      // 1 Bit, Bit 7
-#define     TTD_DisplayOverrideTextLInnerMask 0x80
-#define     TTD_DisplayOverrideTextLInnerShift 7
-#define TTD_DisplayOverrideTextRInner           51      // 1 Bit, Bit 7
-#define     TTD_DisplayOverrideTextRInnerMask 0x80
-#define     TTD_DisplayOverrideTextRInnerShift 7
-#define TTD_DisplayTextLeft                     52      // char*, 9 Byte
-#define TTD_DisplayTextRight                    61      // char*, 9 Byte
-#define TTD_CAP_EnableAnalogFilter              70      // 1 Bit, Bit 7
+#define TTD_DisplayOverrideIconLeft             47      // 1 Bit, Bit 7
+#define     TTD_DisplayOverrideIconLeftMask 0x80
+#define     TTD_DisplayOverrideIconLeftShift 7
+#define TTD_DisplayOverrideIconRight            48      // 1 Bit, Bit 7
+#define     TTD_DisplayOverrideIconRightMask 0x80
+#define     TTD_DisplayOverrideIconRightShift 7
+#define TTD_DisplayIconLeft                     49      // 8 Bits, Bit 7-0
+#define TTD_DisplayIconRight                    50      // 8 Bits, Bit 7-0
+#define TTD_DisplayTextLeft                     51      // char*, 8 Byte
+#define TTD_DisplayTextRight                    60      // char*, 8 Byte
+#define TTD_CAP_EnableAnalogFilter              69      // 1 Bit, Bit 7
 #define     TTD_CAP_EnableAnalogFilterMask 0x80
 #define     TTD_CAP_EnableAnalogFilterShift 7
-#define TTD_CAP_Sensitivity                     71      // 8 Bits, Bit 7-0
-#define TTD_HasDisplay                          72      // 1 Bit, Bit 7
+#define TTD_CAP_Sensitivity                     70      // 8 Bits, Bit 7-0
+#define TTD_HasDisplay                          71      // 1 Bit, Bit 7
 #define     TTD_HasDisplayMask 0x80
 #define     TTD_HasDisplayShift 7
+#define TTD_LEDMaxBrightness                    72      // 8 Bits, Bit 7-0
 
 // Led Farbe: 
 #define ParamTTD_LEDColor                            (knx.paramWord(TTD_LEDColor))
-// Text Links: 
-#define ParamTTD_DisplayText_KO_Left                 (knx.paramByte(TTD_DisplayText_KO_Left))
-// Text Rechts: 
-#define ParamTTD_DisplayText_KO_Right                (knx.paramByte(TTD_DisplayText_KO_Right))
-// Pictogramm Links: 
-#define ParamTTD_DisplayPictLeft                     (knx.paramByte(TTD_DisplayPictLeft))
-// Pictogramm Rechts: 
-#define ParamTTD_DisplayPictRight                    (knx.paramByte(TTD_DisplayPictRight))
-// Text links innen dynamisch Überschreiben: 
-#define ParamTTD_DisplayOverrideTextLInner           ((bool)(knx.paramByte(TTD_DisplayOverrideTextLInner) & TTD_DisplayOverrideTextLInnerMask))
-// Text rechts innen dynamisch Überschreiben: 
-#define ParamTTD_DisplayOverrideTextRInner           ((bool)(knx.paramByte(TTD_DisplayOverrideTextRInner) & TTD_DisplayOverrideTextRInnerMask))
-// Max. 8 Zeichen: 
+// Icon links mit Text Überschreibbar: 
+#define ParamTTD_DisplayOverrideIconLeft             ((bool)(knx.paramByte(TTD_DisplayOverrideIconLeft) & TTD_DisplayOverrideIconLeftMask))
+// Icon rechts mit Text Überschreibbar: 
+#define ParamTTD_DisplayOverrideIconRight            ((bool)(knx.paramByte(TTD_DisplayOverrideIconRight) & TTD_DisplayOverrideIconRightMask))
+// Icon Links: 
+#define ParamTTD_DisplayIconLeft                     (knx.paramByte(TTD_DisplayIconLeft))
+// Icon Rechts: 
+#define ParamTTD_DisplayIconRight                    (knx.paramByte(TTD_DisplayIconRight))
+// Text links (Max. 8 Zeichen): 
 #define ParamTTD_DisplayTextLeft                     (knx.paramData(TTD_DisplayTextLeft))
-// Max. 8 Zeichen: 
+// Text rechts (Max. 8 Zeichen): 
 #define ParamTTD_DisplayTextRight                    (knx.paramData(TTD_DisplayTextRight))
 // Analogen Lowpass-Filter Aktivieren: 
 #define ParamTTD_CAP_EnableAnalogFilter              ((bool)(knx.paramByte(TTD_CAP_EnableAnalogFilter) & TTD_CAP_EnableAnalogFilterMask))
@@ -192,14 +187,34 @@
 #define ParamTTD_CAP_Sensitivity                     (knx.paramByte(TTD_CAP_Sensitivity))
 // Textdarstellung: 
 #define ParamTTD_HasDisplay                          ((bool)(knx.paramByte(TTD_HasDisplay) & TTD_HasDisplayMask))
+// Maximale Helligkeit der LED's: 
+#define ParamTTD_LEDMaxBrightness                    (knx.paramByte(TTD_LEDMaxBrightness))
 
 #define TTD_KoKO_DisplayTextLeftInner 631
 #define TTD_KoKO_DisplayTextRightInner 632
+#define TTD_KoKO_LEDColor 633
+#define TTD_KoKO_DisplayIconLeft 634
+#define TTD_KoKO_DisplayIconRight 635
+#define TTD_KoKO_DisplayTextLeft 636
+#define TTD_KoKO_DisplayTextRight 637
+#define TTD_KoKO_LEDMaxBrightness 638
 
 // Text Links Innen (max. 8 Zeichen)
 #define KoTTD_KO_DisplayTextLeftInner             (knx.getGroupObject(TTD_KoKO_DisplayTextLeftInner))
 // Text Rechts Innen (max. 8 Zeichen)
 #define KoTTD_KO_DisplayTextRightInner            (knx.getGroupObject(TTD_KoKO_DisplayTextRightInner))
+// Farbe LED's
+#define KoTTD_KO_LEDColor                         (knx.getGroupObject(TTD_KoKO_LEDColor))
+// Icon Links
+#define KoTTD_KO_DisplayIconLeft                  (knx.getGroupObject(TTD_KoKO_DisplayIconLeft))
+// Icon Rechts
+#define KoTTD_KO_DisplayIconRight                 (knx.getGroupObject(TTD_KoKO_DisplayIconRight))
+// Text Links Icon-Override (max. 4 Zeichen)
+#define KoTTD_KO_DisplayTextLeft                  (knx.getGroupObject(TTD_KoKO_DisplayTextLeft))
+// Text Rechts Icon-Override (max. 4 Zeichen)
+#define KoTTD_KO_DisplayTextRight                 (knx.getGroupObject(TTD_KoKO_DisplayTextRight))
+// Maximale Helligkeit der LED's
+#define KoTTD_KO_LEDMaxBrightness                 (knx.getGroupObject(TTD_KoKO_LEDMaxBrightness))
 
 #define THP_ChannelCount 8
 
