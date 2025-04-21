@@ -25,7 +25,7 @@
 
   <op:define prefix="TTD" ModuleType="43" share="TAS-UP-4x-TouchRGB.share.xml" KoSingleOffset="630"/>
 
- <op:define prefix="THP" ModuleType="20" share="../lib/OFM-THPSensorModule/src/THPSensor.share.xml" template="../lib/OFM-THPSensorModule/src/THPSensor.templ.xml" NumChannels="8" KoOffset="20">
+ <op:define prefix="THP" ModuleType="20" share="../lib/OFM-THPSensorModule/src/THPSensor.share.xml" template="../lib/OFM-THPSensorModule/src/THPSensor.templ.xml" NumChannels="1" KoOffset="20">
   <op:verify File="../lib/OFM-THPSensorModule/library.json" ModuleVersion="0.3"/>
  </op:define>
  <op:define prefix="BTN" ModuleType="30" share="../lib/OFM-VirtualButton/src/VirtualButton.share.xml" template="../lib/OFM-VirtualButton/src/VirtualButton.templ.xml" NumChannels="16" KoOffset="380">
