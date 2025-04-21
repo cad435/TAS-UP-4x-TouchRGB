@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<?xml-model href="../../Organization/knxprod-support/knx_project_20/knx-editor.xsd" type="application/xml" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<KNX xmlns="http://knx.org/xml/project/20" xmlns:op="http://github.com/OpenKNX/OpenKNXproducer">
+  <ManufacturerData>
+    <Manufacturer RefId="M-00FA">
+      <ApplicationPrograms>
+        <ApplicationProgram Id="%AID%" ProgramType="ApplicationProgram" MaskVersion="MV-07B0" Name="" LoadProcedureStyle="MergedProcedure" PeiType="0" DefaultLanguage="de" DynamicTableManagement="false" Linkable="true" MinEtsVersion="5.7" ApplicationNumber="0" ApplicationVersion="0" ReplacesVersions="0">
+          <Static>
+            <ParameterTypes>
+              <!-- Übersichtsbild -->
+              <ParameterType Id="%AID%_PT-TTDUebersicht" Name="TTDUebersicht">
+                <TypePicture RefId="%FILE-TTDUebersicht%" HorizontalAlignment="Left"/>
+              </ParameterType>
+              <ParameterType Id="%AID%_PT-BTNInputs" Name="BTNInputs">
+                <TypeRestriction Base="Value" SizeInBit="16">
+                  <Enumeration Text="Externes KO" Value="0" Id="%ENID%" />
+                  <!-- <Enumeration Text="Sensoreingang A1 (SCL)" Value="50" Id="%ENID%" /> -->
+                  <Enumeration Text="Taste links unten" Value="51" Id="%ENID%" /> <!-- War vorher Sensoreingang A1 (SDA) -->
+                  <Enumeration Text="Taste links oben" Value="82" Id="%ENID%" /> <!-- War vorher Sensoreingang B1 (SCL) -->
+                  <Enumeration Text="Taste rechts oben" Value="83" Id="%ENID%" /> <!-- War vorher Sensoreingang B2 (SDA) -->
+                  <Enumeration Text="Taste rechts unten" Value="114" Id="%ENID%" /> <!-- War vorher Sensoreingang C1 (SCL) -->
+                  <!-- <Enumeration Text="Sensoreingang C2 (SDA)" Value="115" Id="%ENID%" /> -->
+                  <!-- <Enumeration Text="Sensoreingang D1 (SCL)" Value="146" Id="%ENID%" /> -->
+                  <!-- <Enumeration Text="Sensoreingang D2 (SDA)" Value="147" Id="%ENID%" /> -->
+                  <Enumeration Text="I2C Sensoreingang (SCL)" Value="178" Id="%ENID%" /> <!-- War vorher Sensoreingang E1 (SCL) -->
+                  <Enumeration Text="I2C Sensoreingang (SDA)" Value="179" Id="%ENID%" /> <!-- War vorher Sensoreingang E2 (SDA) -->
+                  <!-- <Enumeration Text="Sensoreingang F1 (SCL)" Value="210" Id="%ENID%" /> -->
+                  <!-- <Enumeration Text="Sensoreingang F2 (SDA)" Value="211" Id="%ENID%" /> --> 
+                  <!-- <Enumeration Text="Sensoreingang G1 (SCL)" Value="242" Id="%ENID%" /> -->
+                  <!-- <Enumeration Text="Sensoreingang G2 (SDA)" Value="243" Id="%ENID%" /> -->
+                  <!-- <Enumeration Text="Sensoreingang H1 (SCL)" Value="274" Id="%ENID%" /> -->
+                  <!-- <Enumeration Text="Sensoreingang H2 (SDA)" Value="275" Id="%ENID%" /> -->
+                </TypeRestriction>
+              </ParameterType>
+              <ParameterType Id="%AID%_PT-LEDColors" Name="LEDColors">
+                <TypeRestriction Base="Value" SizeInBit="16">
+                  <Enumeration Text="Weiß" Value="999" Id="%ENID%" />
+                  <Enumeration Text="Rot" Value="0" Id="%ENID%" />
+                  <Enumeration Text="Grün" Value="85" Id="%ENID%" />
+                  <Enumeration Text="Blau" Value="171" Id="%ENID%" />
+                  <Enumeration Text="Gelb" Value="42" Id="%ENID%" />
+                  <Enumeration Text="Lila" Value="213" Id="%ENID%" />
+                  <Enumeration Text="Türkis" Value="128" Id="%ENID%" />
+                  <Enumeration Text="Orange" Value="20" Id="%ENID%" />
+                  <Enumeration Text="Externes KO" Value="1000" Id="%ENID%" />
+                </TypeRestriction>
+              </ParameterType>
+              <ParameterType Id="%AID%_PT-DisplayContentText" Name="DisplayContentText">
+                <TypeRestriction Base="Value" SizeInBit="8">
+                  <Enumeration Text="Externes KO" Value="0" Id="%ENID%" />
+                  <Enumeration Text="Statischer Text" Value="1" Id="%ENID%" />
+                </TypeRestriction>
+              </ParameterType>
+              <ParameterType Id="%AID%_PT-DisplayContentPict" Name="DisplayContentPict">
+                <TypeRestriction Base="Value" SizeInBit="8">
+                  <Enumeration Text="kein Pictogramm (0x01)" Value="1" Id="%ENID%" />
+                  <Enumeration Text="Pictogram Lampe An (0x0A)" Value="10" Id="%ENID%" />
+                  <Enumeration Text="Pictogram Lampe Aus (0x0B)" Value="11" Id="%ENID%" />
+                  <Enumeration Text="Pictogram Jalousie (0x14)" Value="20" Id="%ENID%" />
+                  <Enumeration Text="Externes KO" Value="0" Id="%ENID%" />
+                </TypeRestriction>
+              </ParameterType>
+              <ParameterType Id="%AID%_PT-HasDisplay" Name="HasDisplay">
+                <TypeRestriction Base="Value" SizeInBit="1">
+                  <Enumeration Text="Statische Hintergrundbeleuchtung" Value="0" Id="%ENID%" />
+                  <Enumeration Text="LCD's" Value="1" Id="%ENID%" />
+                </TypeRestriction>
+              </ParameterType>
+              <ParameterType Id="%AID%_PT-TTDCheckBox" Name="TTDCheckBox">
+                <TypeNumber SizeInBit="1" Type="unsignedInt" minInclusive="0" maxInclusive="1" UIHint="CheckBox" />
+              </ParameterType>
+              <ParameterType Id="%AID%_PT-Text8Byte" Name="Text8Byte">
+                <TypeText SizeInBit="72" /> <!-- 8Byte Nutztext + 1Byte Nullterminierung -->
+              </ParameterType>
+              <ParameterType Id="%AID%_PT-CAP1188Sensitivity" Name="CAP1188Sensitivity">
+                <TypeRestriction Base="Value" SizeInBit="8">
+                  <Enumeration Text="Gain x128" Value="0" Id="%ENID%" />
+                  <Enumeration Text="Gain x64" Value="1" Id="%ENID%" />
+                  <Enumeration Text="Gain x32" Value="2" Id="%ENID%" />
+                  <Enumeration Text="Gain x16" Value="3" Id="%ENID%" />
+                  <Enumeration Text="Gain x8" Value="4" Id="%ENID%" />
+                  <Enumeration Text="Gain x4" Value="5" Id="%ENID%" />
+                  <Enumeration Text="Gain x2" Value="6" Id="%ENID%" />
+                  <Enumeration Text="Gain x1" Value="7" Id="%ENID%" />
+                </TypeRestriction>
+              </ParameterType>
+            </ParameterTypes>
+
+
+            <!-- Hier kommen die Parameter aufgelistet hin. "Offset" (in byte) muss immer inkrementiert werden. 
+                  Dabei inkrementiert es sich immer um den wert, welcher in "SizeInBit/8" des Verwendeten Parameter-Types drin steht
+                  Beispiel: 16Bit = 2Byte, 1Byte = 8Bit, 4Byte = 32Bit
+                  ist ein parameter weniger bit als 8, dann inkrementieren wir der einfachheit halber um 1Byte (also 8Bit)
+                   -->
+            <Parameters>
+              <Parameter Id="%AID%_P-%TT%00001" Name="LEDColor" ParameterType="%AID%_PT-LEDColors" Text="Led Farbe: " Value="999">
+                <Memory CodeSegment="%AID%_RS-04-00001" Offset="0" BitOffset="0" />
+              </Parameter>
+              <Parameter Id="%AID%_P-%TT%00002" Name="DisplayText_KO_Left" ParameterType="%AID%_PT-DisplayContentText" Text="Text Links: " Value="1">
+                <Memory CodeSegment="%AID%_RS-04-00002" Offset="1" BitOffset="0" />
+              </Parameter>
+              <Parameter Id="%AID%_P-%TT%00003" Name="DisplayText_KO_Right" ParameterType="%AID%_PT-DisplayContentText" Text="Text Rechts: " Value="1">
+                <Memory CodeSegment="%AID%_RS-04-00003" Offset="2" BitOffset="0" />
+              </Parameter>
+              <Parameter Id="%AID%_P-%TT%00004" Name="DisplayPictLeft" ParameterType="%AID%_PT-DisplayContentPict" Text="Pictogramm Links: " Value="1">
+                <Memory CodeSegment="%AID%_RS-04-00004" Offset="3" BitOffset="0" />
+              </Parameter>
+              <Parameter Id="%AID%_P-%TT%00005" Name="DisplayPictRight" ParameterType="%AID%_PT-DisplayContentPict" Text="Pictogramm Rechts: " Value="1">
+                <Memory CodeSegment="%AID%_RS-04-00005" Offset="3" BitOffset="0" />
+              </Parameter>
+              <Parameter Id="%AID%_P-%TT%00006" Name="DisplayOverrideTextLInner" ParameterType="%AID%_PT-TTDCheckBox" Text="Text links innen dynamisch Überschreiben: " Value="0">
+                <Memory CodeSegment="%AID%_RS-04-00006" Offset="4" BitOffset="0" />
+              </Parameter>                
+              <Parameter Id="%AID%_P-%TT%00007" Name="DisplayOverrideTextRInner" ParameterType="%AID%_PT-TTDCheckBox" Text="Text rechts innen dynamisch Überschreiben: " Value="0">
+                <Memory CodeSegment="%AID%_RS-04-00007" Offset="5" BitOffset="0" />
+              </Parameter>
+              <Parameter Id="%AID%_P-%TT%00008" Name="DisplayTextLeft" ParameterType="%AID%_PT-Text8Byte" Text="Max. 8 Zeichen: " Value="Links">
+                <Memory CodeSegment="%AID%_RS-04-00008" Offset="6" BitOffset="0" />
+              </Parameter>
+              <Parameter Id="%AID%_P-%TT%00009" Name="DisplayTextRight" ParameterType="%AID%_PT-Text8Byte" Text="Max. 8 Zeichen: " Value="Rechts">
+                <Memory CodeSegment="%AID%_RS-04-00009" Offset="15" BitOffset="0" />
+              </Parameter>
+              <Parameter Id="%AID%_P-%TT%00010" Name="CAP_EnableAnalogFilter" ParameterType="%AID%_PT-TTDCheckBox" Text="Analogen Lowpass-Filter Aktivieren: " Value="0">
+                <Memory CodeSegment="%AID%_RS-04-00010" Offset="24" BitOffset="0" />
+              </Parameter> 
+              <Parameter Id="%AID%_P-%TT%00011" Name="CAP_Sensitivity" ParameterType="%AID%_PT-CAP1188Sensitivity" Text="Sensitivity: " Value="5">
+                <Memory CodeSegment="%AID%_RS-04-00011" Offset="25" BitOffset="0" />
+              </Parameter>
+              <Parameter Id="%AID%_P-%TT%00012" Name="HasDisplay" ParameterType="%AID%_PT-HasDisplay" Text="Textdarstellung: " Value="0">
+                <Memory CodeSegment="%AID%_RS-04-00012" Offset="26" BitOffset="0" />
+              </Parameter>
+              <!-- Übersichtsbild -->
+              <Parameter Id="%AID%_P-%TT%00013" Name="TTDUebersicht" ParameterType="%AID%_PT-TTDUebersicht" Text="" Access="Read" Value="" />
+            </Parameters>
+            <!-- Hier werden alle Parameter nochmal referenziert (warum auch immer). hierbei mus der String bei "Id" VOR dem '_R' gleich
+                  sein wie der String bei "RefId"
+                  Id: Id="%AID%_P-%TT%00001_R-%TT%000xxzz", where: z is a incrementing number (0-99), xx must be the same as the last two numbers in the RefId
+                   -->
+            <ParameterRefs>
+
+              <ParameterRef Id="%AID%_P-%TT%00001_R-%TT%0000100" RefId="%AID%_P-%TT%00001"/> <!-- Farbe LED's -->
+              <ParameterRef Id="%AID%_P-%TT%00002_R-%TT%0000200" RefId="%AID%_P-%TT%00002"/> <!-- Funktion Display Text Links -->
+              <ParameterRef Id="%AID%_P-%TT%00003_R-%TT%0000300" RefId="%AID%_P-%TT%00003"/> <!-- Funktion Display Text Rechts -->
+              <ParameterRef Id="%AID%_P-%TT%00004_R-%TT%0000400" RefId="%AID%_P-%TT%00004"/> <!-- Funktion Pictogramm Links -->
+              <ParameterRef Id="%AID%_P-%TT%00005_R-%TT%0000500" RefId="%AID%_P-%TT%00005"/> <!-- Funktion Pictogramm Rechts -->
+              <ParameterRef Id="%AID%_P-%TT%00006_R-%TT%0000600" RefId="%AID%_P-%TT%00006"/> <!-- Bus Override Text Pictogramm Links -->
+              <ParameterRef Id="%AID%_P-%TT%00007_R-%TT%0000700" RefId="%AID%_P-%TT%00007"/> <!-- Bus Override Text Pictogramm Rechts -->
+
+              <ParameterRef Id="%AID%_P-%TT%00008_R-%TT%0000800" RefId="%AID%_P-%TT%00008"/> <!-- Text Links Aussen -->
+              <ParameterRef Id="%AID%_P-%TT%00009_R-%TT%0000900" RefId="%AID%_P-%TT%00009"/> <!-- Text Rechts Aussen -->
+
+              <ParameterRef Id="%AID%_P-%TT%00010_R-%TT%0001000" RefId="%AID%_P-%TT%00010"/> <!-- CAP Analog Filter -->
+              <ParameterRef Id="%AID%_P-%TT%00011_R-%TT%0001100" RefId="%AID%_P-%TT%00011"/> <!-- CAP Sensitivity -->
+
+              <ParameterRef Id="%AID%_P-%TT%00012_R-%TT%0001200" RefId="%AID%_P-%TT%00012"/> <!-- Textdarstellung -->
+
+              <ParameterRef Id="%AID%_P-%TT%00013_R-%TT%0001300" RefId="%AID%_P-%TT%00013"/> <!-- Übersichtsbild -->
+
+            </ParameterRefs>
+            <!-- FHier wird die Art der KO's definiert -->
+            <!-- ReadFlag/WriteFlag bestimmt Eingang und/oder Ausgang des KO's -->
+            <!-- CommunicationFlag: KO ist im Bus sichtbar (true) oder nicht (false) sollte immer auf true gestellt werden -->
+            <!-- TransmitFlag: KO kann beliebige Daten an den Bus senden (Diagnoseobjekte) -->
+            <!-- UpdateFlag: Objekt reagiert auf ein GroupValueResponse Diagramm -> Dieses Telegramm kann Interne werte verändern -->
+            <!-- ObjectSize: Grösse des KO's, Werte können sein: '1 Byte', 'x Bytes', '1 Bit' -->
+            <!-- DatapointType: Datentyp des KO's, siehe ETS DPT-Standard: 'DPST-X-Y', X ist die zahl vor dem punkt, y ist die zahl nach dem punkt, ohne führende nullen -->
+
+            <ComObjectTable>
+              <!-- KO Text Links Innen -->
+              <ComObject Id="%AID%_O-%TT%00001" Name="KO_DisplayTextLeftInner"      Text="Text Links Innen (max. 8 Zeichen)"       Number="1"  FunctionText="Eingang" ObjectSize="14 Bytes" ReadFlag="Enabled" WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Disabled" UpdateFlag="Enabled" ReadOnInitFlag="Enabled" DatapointType="DPST-16-1" />
+              <!-- KO Text Rechts Innen -->
+              <ComObject Id="%AID%_O-%TT%00002" Name="KO_DisplayTextRightInner"     Text="Text Rechts Innen (max. 8 Zeichen)"      Number="2"  FunctionText="Eingang" ObjectSize="14 Bytes" ReadFlag="Enabled" WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Disabled" UpdateFlag="Enabled" ReadOnInitFlag="Enabled" DatapointType="DPST-16-1" />
+            </ComObjectTable>
+
+            <!-- Hier werden alle KO's nochmal referenziert (warum auch immer). hierbei mus der String bei "Id" VOR dem '_R' gleich
+            sein wie der String bei "RefId"
+            Id: Id="%AID%_O-%TT%00001_R-%TT%000xxzz", where: z is a incrementing number (0-99), xx must be the same as the last two numbers in the RefId
+              -->
+
+            <ComObjectRefs>
+              <!-- KO Text Links Aussen -->
+              <ComObjectRef Id="%AID%_O-%TT%00001_R-%TT%0000100" RefId="%AID%_O-%TT%00001" />
+              <!-- KO Text Rechts Aussen -->
+              <ComObjectRef Id="%AID%_O-%TT%00002_R-%TT%0000200" RefId="%AID%_O-%TT%00002" />
+            </ComObjectRefs>
+          </Static>
+          <Dynamic>
+          <Channel Id="%AID%_CH-%PREFIX%" Number="%PREFIX%" Name="TAS-Config" Text="Taster-Config" Icon="chevron-right-circle-outline">
+              <ParameterBlock Id="%AID%_PB-nnn" Name="TAS-General" Text="Info / Allgemein" Icon="information-outline">
+
+                <ParameterSeparator Id="%AID%_PS-nnn" Text="Allgemeine Einstellungen" UIHint="Headline" />
+                <ParameterSeparator Id="%AID%_PS-nnn" Text="Hier auswählen ob in den vertikalen Trennern LCD's verbaut sind oder normale RGB Hintergrundbeleuchtung"/>
+                <ParameterRefRef RefId="%AID%_P-%TT%00012_R-%TT%0001200" IndentLevel="0"/>
+
+                <ParameterRefRef RefId="%AID%_P-%TT%00013_R-%TT%0001300" IndentLevel="0"/>
+                
+                <ParameterSeparator Id="%AID%_PS-nnn" Text="" UIHint="HorizontalRuler" />
+
+                <ParameterSeparator Id="%AID%_PS-nnn" Text="Taster info" UIHint="Headline" />
+                
+                <ParameterSeparator Id="%AID%_PS-nnn" Text="" UIHint="HorizontalRuler" />
+
+                <ParameterSeparator Id="%AID%_PS-nnn" Text="Tasten können über die 'Virtuelle Taster' Applikation Programmiert werden"/>
+                <ParameterSeparator Id="%AID%_PS-nnn" Text="Falls ein Sensor angeschlossen ist, dann kann dieser unter der 'Sensor-Kanäle' Applikation konfiguriert werden."/>
+                <ParameterSeparator Id="%AID%_PS-nnn" Text="!!! NUR den Sensor 'E' Verwenden !!!"/>
+
+                <ParameterSeparator Id="%AID%_PS-nnn" Text="" UIHint="HorizontalRuler" />
+                <ParameterSeparator Id="%AID%_PS-nnn" Text="Pictogramme können wahlweise über den Bus angesprochen werden. Es können nur Pictogramme angewählt werden welche einprogrammiert sind. Beim Dropdown stehen hinten die HEX-Werte für jedes Pictogramm"/>
+
+              </ParameterBlock>
+              
+              <ParameterBlock Id="%AID%_PB-nnn" Name="TAS-Sensor" Text="Touch Sensing" Icon="blur">
+
+                <ParameterSeparator Id="%AID%_PS-nnn" Text="Touch Sensing" UIHint="Headline" />
+                <ParameterSeparator Id="%AID%_PS-nnn" Text="Individuelle Einstellungen des verwendeten Touch-IC's - CAP1188"/>
+                <ParameterSeparator Id="%AID%_PS-nnn" Text="" UIHint="HorizontalRuler" />
+                <ParameterSeparator Id="%AID%_PS-nnn" Text="Bei Metallischen Tasteroberflächen sollte der Analogfilter nicht aktiviert werden! "/>
+                <ParameterRefRef RefId="%AID%_P-%TT%00010_R-%TT%0001000" IndentLevel="0"/>
+                <ParameterRefRef RefId="%AID%_P-%TT%00011_R-%TT%0001100" IndentLevel="0"/>
+              </ParameterBlock>
+
+              <ParameterBlock Id="%AID%_PB-nnn" Name="TAS-Leds" Text="LED Einstellungen" Icon="lightbulb-outline">
+                <ParameterSeparator Id="%AID%_PS-nnn" Text="LED Einstellungen" UIHint="Headline" />  
+                <ParameterSeparator Id="%AID%_PS-nnn" Text="" UIHint="HorizontalRuler" />
+
+                <ParameterRefRef RefId="%AID%_P-%TT%00001_R-%TT%0000100" IndentLevel="0"/>
+              </ParameterBlock>
+
+              <choose ParamRefId="%AID%_P-%TT%00012_R-%TT%0001200"> 
+                <when test="0"> <!-- Do Nothing --> </when>
+                <when test="1">  <!-- Enable LCD Settings --> 
+                  <ParameterBlock Id="%AID%_PB-nnn" Name="TAS-Display" Text="Display Einstellungen" Icon="button-pointer">
+
+                    <ParameterSeparator Id="%AID%_PS-nnn" Text="Display Einstellungen" UIHint="Headline" />
+                    <ParameterSeparator Id="%AID%_PS-nnn" Text="" UIHint="HorizontalRuler" />
+
+                    <!-- Erstelle die Ganzen Auswahlmöglichkeiten -->
+
+                    <ParameterRefRef RefId="%AID%_P-%TT%00002_R-%TT%0000200" IndentLevel="0"/>  <!-- KO für Text Links? -->
+                    <!-- When Display Text Links is set to "Externes KO", create the KO -->
+                    <choose ParamRefId="%AID%_P-%TT%00002_R-%TT%0000200"> 
+                      <when test="0"> <!-- Create KO-Object -->
+                        <ComObjectRefRef RefId="%AID%_O-%TT%00001_R-%TT%0000100" /> </when>
+                      <when test="1">  <!-- Create Textbox --> 
+                        <ParameterRefRef RefId="%AID%_P-%TT%00008_R-%TT%0000800" IndentLevel="0"/>  </when>
+                    </choose>
+                    <ParameterRefRef RefId="%AID%_P-%TT%00004_R-%TT%0000400" IndentLevel="0"/>  <!-- Pictogramm Links -->
+                    <ParameterRefRef RefId="%AID%_P-%TT%00006_R-%TT%0000600" IndentLevel="0"/>  <!-- Display Override Pictogramm Links -->
+
+                    <ParameterRefRef RefId="%AID%_P-%TT%00003_R-%TT%0000300" IndentLevel="0"/>  <!-- KO für Text Rechts? -->
+                    <!-- When Display Text Rechts is set to "Externes KO", create the KO -->
+                    <choose ParamRefId="%AID%_P-%TT%00003_R-%TT%0000300">
+                      <when test="0"> <!-- Create KO-Object -->
+                        <ComObjectRefRef RefId="%AID%_O-%TT%00002_R-%TT%0000200" /> </when>
+                      <when test="1"> <!-- Create Textbox --> 
+                        <ParameterRefRef RefId="%AID%_P-%TT%00009_R-%TT%0000900" IndentLevel="0"/> </when>
+                    </choose>
+                    <ParameterRefRef RefId="%AID%_P-%TT%00005_R-%TT%0000500" IndentLevel="0"/>  <!-- Pictogramm Rechts -->
+                    <ParameterRefRef RefId="%AID%_P-%TT%00007_R-%TT%0000700" IndentLevel="0"/>  <!-- Display Override Pictogramm Rechts -->
+
+                    
+                  </ParameterBlock>
+                </when>
+              </choose>
+            </Channel>
+          </Dynamic>
+        </ApplicationProgram>
+      </ApplicationPrograms>
+      <Baggages>
+        <Baggage TargetPath="icons" Name="Icons.zip" Id="%FILE-ICONS%">
+          <FileInfo TimeInfo="%DATETIME%" />
+        </Baggage>
+        <Baggage TargetPath="" Name="Schalter_Ubersicht_LCD.png" Id="%FILE-TTDUebersicht%">
+          <FileInfo TimeInfo="%DATETIME%" />
+        </Baggage>
+      </Baggages>
+    </Manufacturer>
+  </ManufacturerData>
+</KNX>
