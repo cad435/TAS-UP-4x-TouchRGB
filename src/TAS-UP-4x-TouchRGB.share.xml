@@ -39,14 +39,15 @@
               </ParameterType>
               <ParameterType Id="%AID%_PT-LEDColors" Name="LEDColors">
                 <TypeRestriction Base="Value" SizeInBit="16">
-                  <Enumeration Text="Weiß" Value="999" Id="%ENID%" />
-                  <Enumeration Text="Rot" Value="0" Id="%ENID%" />
-                  <Enumeration Text="Grün" Value="85" Id="%ENID%" />
-                  <Enumeration Text="Blau" Value="171" Id="%ENID%" />
-                  <Enumeration Text="Gelb" Value="42" Id="%ENID%" />
-                  <Enumeration Text="Lila" Value="213" Id="%ENID%" />
-                  <Enumeration Text="Türkis" Value="128" Id="%ENID%" />
-                  <Enumeration Text="Orange" Value="20" Id="%ENID%" />
+                <!-- Encoded in RGB565, https://rgbcolorpicker.com/565 -->
+                  <Enumeration Text="Weiß" Value="65535" Id="%ENID%" />
+                  <Enumeration Text="Rot" Value="63488" Id="%ENID%" />
+                  <Enumeration Text="Grün" Value="2016" Id="%ENID%" />
+                  <Enumeration Text="Blau" Value="31" Id="%ENID%" />
+                  <Enumeration Text="Gelb" Value="65504" Id="%ENID%" />
+                  <Enumeration Text="Lila" Value="63519" Id="%ENID%" />
+                  <Enumeration Text="Türkis" Value="2047" Id="%ENID%" />
+                  <Enumeration Text="Orange" Value="64480" Id="%ENID%" />
                 </TypeRestriction>
               </ParameterType>
               <ParameterType Id="%AID%_PT-DisplayContentIcon" Name="DisplayContentIcon">
@@ -103,6 +104,12 @@
                   <Enumeration Text="100%" Value="100" Id="%ENID%" />
                 </TypeRestriction>
               </ParameterType>
+              <ParameterType Id="%AID%_PT-TTDTextProximityThreshold" Name="TTDTextProximityThreshold">
+                <TypeText SizeInBit="32" /> <!-- 4Byte Nutztext + 1Byte Nullterminierung -> muss in der memory map 5 Bytes frei bleiben -->
+              </ParameterType>
+              <ParameterType Id="%AID%_PT-TTDTextTouchThreshold" Name="TTDTextTouchThreshold">
+                <TypeText SizeInBit="24" /> <!-- 3Byte Nutztext + 1Byte Nullterminierung -> muss in der memory map 4 Bytes frei bleiben -->
+              </ParameterType>
             </ParameterTypes>
 
 
@@ -113,7 +120,7 @@
                    -->
             <Parameters>
               <!-- Parameter für die LED-Farbe -->
-              <Parameter Id="%AID%_P-%TT%00001" Name="LEDColor" ParameterType="%AID%_PT-LEDColors" Text="Led Farbe: " Value="999">
+              <Parameter Id="%AID%_P-%TT%00001" Name="LEDColor" ParameterType="%AID%_PT-LEDColors" Text="Led Farbe: " Value="65535">
                 <Memory CodeSegment="%AID%_RS-04-00001" Offset="0" BitOffset="0" />
               </Parameter>
               <!-- Checkbox: Icon links zusätzlich mit Text überschreibbar? -->
@@ -157,9 +164,21 @@
               <Parameter Id="%AID%_P-%TT%00013" Name="TTDMarkingLCD" ParameterType="%AID%_PT-TTDMarkingLCD" Text="" Access="Read" Value="" />
               <!-- Übersichtsbild LED -->
               <Parameter Id="%AID%_P-%TT%00014" Name="TTDMarkingLED" ParameterType="%AID%_PT-TTDMarkingLED" Text="" Access="Read" Value="" />
-              <!-- Parameter für die LED-Helligkeit -->
-              <Parameter Id="%AID%_P-%TT%00016" Name="LEDMaxBrightness" ParameterType="%AID%_PT-LEDMaxBrightness" Text="Maximale Helligkeit der LED's: " Value="100">
+              <!-- Parameter für die LED-Helligkeit wenn die LED's Hochgedimmt sind -->
+              <Parameter Id="%AID%_P-%TT%00016" Name="LEDMaxBrightness_ON" ParameterType="%AID%_PT-LEDMaxBrightness" Text="Helligkeit der LED's hell: " Value="100">
                 <Memory CodeSegment="%AID%_RS-04-00016" Offset="26" BitOffset="0" />
+              </Parameter>
+              <!-- Parameter für die LED-Helligkeit wenn die LED's Runtergedimmt sind -->
+              <Parameter Id="%AID%_P-%TT%00017" Name="LEDMaxBrightness_OFF" ParameterType="%AID%_PT-LEDMaxBrightness" Text="Helligkeit der LED's dunkel: " Value="100">
+                <Memory CodeSegment="%AID%_RS-04-00017" Offset="27" BitOffset="0" />
+              </Parameter>
+              <!-- Parameter für Proximity Threshold, wird als Text eingestellt und in der FW zu einer Zahl gewandelt-->
+              <Parameter Id="%AID%_P-%TT%00018" Name="TTDTextProximityThreshold" ParameterType="%AID%_PT-TTDTextProximityThreshold" Text="Proximity Threshold: " Value="64">
+                <Memory CodeSegment="%AID%_RS-04-00018" Offset="28" BitOffset="0" /> <!-- 4Byte Nutzdaten + 1Byte Nullterminierung: 28+4+1=33 -->
+              </Parameter>
+              <!-- Parameter für Touch Threshold, wird als Text eingestellt und in der FW zu einer Zahl gewandelt-->
+              <Parameter Id="%AID%_P-%TT%00019" Name="TTDTextTouchThreshold" ParameterType="%AID%_PT-TTDTextTouchThreshold" Text="Touch Threshold: " Value="64">
+                <Memory CodeSegment="%AID%_RS-04-00019" Offset="33" BitOffset="0" /> <!-- 3Byte Nutzdaten + 1Byte Nullterminierung: 33+3+1=37 -->
               </Parameter>
 
             </Parameters>
@@ -190,7 +209,11 @@
               <ParameterRef Id="%AID%_P-%TT%00013_R-%TT%0001300" RefId="%AID%_P-%TT%00013"/> <!-- Übersichtsbild LCD -->
               <ParameterRef Id="%AID%_P-%TT%00014_R-%TT%0001400" RefId="%AID%_P-%TT%00014"/> <!-- Übersichtsbild LED -->
 
-              <ParameterRef Id="%AID%_P-%TT%00016_R-%TT%0001600" RefId="%AID%_P-%TT%00016"/> <!-- Max LED-Helligkeit -->
+              <ParameterRef Id="%AID%_P-%TT%00016_R-%TT%0001600" RefId="%AID%_P-%TT%00016"/> <!-- Max LED-Helligkeit ON -->
+              <ParameterRef Id="%AID%_P-%TT%00017_R-%TT%0001700" RefId="%AID%_P-%TT%00017"/> <!-- Max LED-Helligkeit OFF -->
+
+              <ParameterRef Id="%AID%_P-%TT%00018_R-%TT%0001800" RefId="%AID%_P-%TT%00018"/> <!-- Proximity Threshold -->
+              <ParameterRef Id="%AID%_P-%TT%00019_R-%TT%0001900" RefId="%AID%_P-%TT%00019"/> <!-- Touch Threshold -->
 
 
             </ParameterRefs>
@@ -288,6 +311,13 @@
                 <ParameterSeparator Id="%AID%_PS-nnn" Text="Bei Metallischen Tasteroberflächen sollte der Analogfilter nicht aktiviert werden! "/>
                 <ParameterRefRef RefId="%AID%_P-%TT%00010_R-%TT%0001000" IndentLevel="0"/>
                 <ParameterRefRef RefId="%AID%_P-%TT%00011_R-%TT%0001100" IndentLevel="0"/>
+                <ParameterSeparator Id="%AID%_PS-nnn" Text="" UIHint="HorizontalRuler" />
+                <ParameterSeparator Id="%AID%_PS-nnn" Text="Höhere Werte bedeuten, dass der Taster eine Annäherung erst später erkennt. Wertebereich von 0 bis 1016. Werden invalide Werte eingegeben (z.b. Buchstaben), ist das Verhalten undefiniert."/>
+                <ParameterRefRef RefId="%AID%_P-%TT%00018_R-%TT%0001800" IndentLevel="0"/> <!-- Proximity Threshold -->
+
+                <ParameterSeparator Id="%AID%_PS-nnn" Text="" UIHint="HorizontalRuler" />
+                <ParameterSeparator Id="%AID%_PS-nnn" Text="Höhere Werte bedeuten, dass der Taster weniger sensitiv wird. Wertebereich von 0 bis 127. Werden invalide Werte eingegeben (z.b. Buchstaben), ist das Verhalten undefiniert."/>
+                <ParameterRefRef RefId="%AID%_P-%TT%00019_R-%TT%0001900" IndentLevel="0"/> <!-- Touch Threshold -->
               </ParameterBlock>
 
               <!-- Parameter-Block Einstellungen LED's -->
@@ -297,7 +327,8 @@
 
                 <!-- LED Parametrierung -->
                 <ParameterRefRef RefId="%AID%_P-%TT%00001_R-%TT%0000100" IndentLevel="0"/>  <!-- Farbe LED's -->
-                <ParameterRefRef RefId="%AID%_P-%TT%00016_R-%TT%0001600" IndentLevel="0"/>  <!-- Max LED-Helligkeit -->
+                <ParameterRefRef RefId="%AID%_P-%TT%00016_R-%TT%0001600" IndentLevel="0"/>  <!-- Max LED-Helligkeit ON -->
+                <ParameterRefRef RefId="%AID%_P-%TT%00017_R-%TT%0001700" IndentLevel="0"/>  <!-- Max LED-Helligkeit OFF -->
 
                 <ComObjectRefRef RefId="%AID%_O-%TT%00003_R-%TT%0000300" /> <!-- KO Farbe LED's -->
                 <ComObjectRefRef RefId="%AID%_O-%TT%00004_R-%TT%0000400" /> <!-- KO LED-Helligkeit -->

@@ -50,7 +50,7 @@
                 "--Debug",
                 "-h",
                 "include/knxprod.h",
-                "src/SEN-UP1-8xTH.xml"
+                "src/TAS-UP-4x-TouchRGB.xml"
             ],
             "problemMatcher": [],
             "group": "test",
@@ -66,7 +66,7 @@
                 "--Debug",
                 "-h",
                 "include/knxprod.h",
-                "src/SEN-UP1-8xTH-Release.xml"
+                "src/TAS-UP-4x-TouchRGB-Release.xml"
             ],
             "problemMatcher": [],
             "group": "test",
