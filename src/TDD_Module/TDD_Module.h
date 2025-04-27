@@ -64,6 +64,12 @@ class TDD_Module : public OpenKNX::Module
     uint32_t LEDFPSTime_ms = 1000 / TTD_LED_FPS; //Time in ms for the LED FPS
     uint32_t lastTimeLEDRun = 0; //Last time the LED was run
 
+
+    //take base color, base brightness and set the individual LED's depending if LCD's are here or not
+    //will initialize a LED-Transition
+    void setLEDTargetColor(CRGB _BaseColor);
+
+
     void FixedFPSLedLoop(); 
 
     //Helper functions
@@ -72,9 +78,8 @@ class TDD_Module : public OpenKNX::Module
 
     uint8_t PercentToUint8(uint8_t percent){ return ((uint16_t)percent * 255) / 100; }
 
-    //take base color, base brightness and set the individual LED's depending if LCD's are here or not
-    //will initialize a LED-Transition
-    void setLEDTargetColor();
+    CRGB DPT_Colour_RGB_to_CRGB(uint32_t ko);
+
 
 
 

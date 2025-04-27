@@ -199,31 +199,34 @@
 // Touch Threshold: 
 #define ParamTTD_TTDTextTouchThreshold               (knx.paramData(TTD_TTDTextTouchThreshold))
 
-#define TTD_KoKO_DisplayTextLeftInner 631
-#define TTD_KoKO_DisplayTextRightInner 632
-#define TTD_KoKO_LEDColor 633
-#define TTD_KoKO_DisplayIconLeft 638
-#define TTD_KoKO_DisplayIconRight 635
-#define TTD_KoKO_DisplayTextLeft 636
-#define TTD_KoKO_DisplayTextRight 637
-#define TTD_KoKO_LEDMaxBrightness 634
+#define TTD_KoDisplayTextLeftInner 631
+#define TTD_KoDisplayTextRightInner 632
+#define TTD_KoLEDColor 633
+#define TTD_KoDisplayIconLeft 638
+#define TTD_KoDisplayIconRight 635
+#define TTD_KoDisplayTextLeft 636
+#define TTD_KoDisplayTextRight 637
+#define TTD_KoLEDBrightness_ON 634
+#define TTD_KoLEDBrightness_OFF 639
 
 // Text Links Innen (max. 8 Zeichen)
-#define KoTTD_KO_DisplayTextLeftInner             (knx.getGroupObject(TTD_KoKO_DisplayTextLeftInner))
+#define KoTTD_DisplayTextLeftInner                (knx.getGroupObject(TTD_KoDisplayTextLeftInner))
 // Text Rechts Innen (max. 8 Zeichen)
-#define KoTTD_KO_DisplayTextRightInner            (knx.getGroupObject(TTD_KoKO_DisplayTextRightInner))
+#define KoTTD_DisplayTextRightInner               (knx.getGroupObject(TTD_KoDisplayTextRightInner))
 // Farbe LED's
-#define KoTTD_KO_LEDColor                         (knx.getGroupObject(TTD_KoKO_LEDColor))
+#define KoTTD_LEDColor                            (knx.getGroupObject(TTD_KoLEDColor))
 // Icon Links
-#define KoTTD_KO_DisplayIconLeft                  (knx.getGroupObject(TTD_KoKO_DisplayIconLeft))
+#define KoTTD_DisplayIconLeft                     (knx.getGroupObject(TTD_KoDisplayIconLeft))
 // Icon Rechts
-#define KoTTD_KO_DisplayIconRight                 (knx.getGroupObject(TTD_KoKO_DisplayIconRight))
+#define KoTTD_DisplayIconRight                    (knx.getGroupObject(TTD_KoDisplayIconRight))
 // Text Links Icon-Override (max. 4 Zeichen)
-#define KoTTD_KO_DisplayTextLeft                  (knx.getGroupObject(TTD_KoKO_DisplayTextLeft))
+#define KoTTD_DisplayTextLeft                     (knx.getGroupObject(TTD_KoDisplayTextLeft))
 // Text Rechts Icon-Override (max. 4 Zeichen)
-#define KoTTD_KO_DisplayTextRight                 (knx.getGroupObject(TTD_KoKO_DisplayTextRight))
-// Maximale Helligkeit der LED's
-#define KoTTD_KO_LEDMaxBrightness                 (knx.getGroupObject(TTD_KoKO_LEDMaxBrightness))
+#define KoTTD_DisplayTextRight                    (knx.getGroupObject(TTD_KoDisplayTextRight))
+// Helligkeit der LED's dunkel
+#define KoTTD_LEDBrightness_ON                    (knx.getGroupObject(TTD_KoLEDBrightness_ON))
+// Helligkeit der LED's hell
+#define KoTTD_LEDBrightness_OFF                   (knx.getGroupObject(TTD_KoLEDBrightness_OFF))
 
 #define THP_ChannelCount 1
 

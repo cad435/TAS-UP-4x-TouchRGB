@@ -84,8 +84,6 @@ void TDD_Module::setup()
 
     FastLED.clearData();
 
-    //get Color from Parameter
-    BaseColor = rgb565ToCRGB(ParamTTD_LEDColor); //Get the color from the parameter
     BaseBrightness_ON = PercentToUint8(ParamTTD_LEDMaxBrightness_ON); //Get the brightness from the parameter
     BaseBrightness_OFF = PercentToUint8(ParamTTD_LEDMaxBrightness_OFF); //Get the brightness from the parameter
 
@@ -94,7 +92,7 @@ void TDD_Module::setup()
     else
         memcpy(Brigtnessdivider, RGB_LED_DIVIDER_NOLCD, RGB_LED_COUNT); //If the LCD is not present, use the divider for the non-LCD
 
-    setLEDTargetColor(); //start the LED-Transition
+    setLEDTargetColor(rgb565ToCRGB(ParamTTD_LEDColor)); ////Get the color from the parameter andstart the LED-Transition
 
 #pragma endregion LED-Initialisation
 
@@ -166,12 +164,37 @@ void TDD_Module::FixedFPSLedLoop()
 
 void TDD_Module::processInputKo(GroupObject& iKo)
 {
+    switch(iKo.asap())
+    {
+    case TTD_KoLEDColor:
+        setLEDTargetColor(DPT_Colour_RGB_to_CRGB(KoTTD_LEDColor.value(DPT_Colour_RGB)));
+        break;
+    case TTD_KoLEDBrightness_ON:
+        BaseBrightness_ON = KoTTD_LEDBrightness_ON.value(DPT_Scaling); //Set the brightness of the LED's to the value from the parameter
+        break;
+    case TTD_KoLEDBrightness_OFF:
+        BaseBrightness_OFF = KoTTD_LEDBrightness_OFF.value(DPT_Scaling); //Set the brightness of the LED's to the value from the parameter
+        break;
+
     
+    default:
+        break;
+    }
 }
 
 void TDD_Module::processAfterStartupDelay()
 {
 
+}
+
+void TDD_Module::setLEDTargetColor(CRGB _BaseColor)
+{
+    BaseColor = _BaseColor;
+    for (int i = 0; i < RGB_LED_COUNT; i++)
+    {
+        leds_Target[i] = CRGB(BaseColor.r / Brigtnessdivider[i], BaseColor.g / Brigtnessdivider[i], BaseColor.b / Brigtnessdivider[i]); //Set the target color for the LED's
+    }
+    ledState = TODO; //Set the LED state to TODO
 }
 
 CRGB TDD_Module::rgb565ToCRGB(uint16_t color)
@@ -190,14 +213,17 @@ uint16_t TDD_Module::CRGBtorgb565(CRGB col)
     return ((col.r & 0xF8) << 8) | ((col.g & 0xFC) << 3) | (col.b >> 3);
 }
 
-
-void TDD_Module::setLEDTargetColor()
+CRGB TDD_Module::DPT_Colour_RGB_to_CRGB(uint32_t ko)
 {
-    for (int i = 0; i < RGB_LED_COUNT; i++)
-    {
-        leds_Target[i] = CRGB(BaseColor.r / Brigtnessdivider[i], BaseColor.g / Brigtnessdivider[i], BaseColor.b / Brigtnessdivider[i]); //Set the target color for the LED's
-    }
-    ledState = TODO; //Set the LED state to TODO
+    CRGB col = CRGB(0, 0, 0); //Set the color to black
+
+    uint8_t* p = (uint8_t*)(void*)&ko; // yeah, this is beyond ugly, but it works neatly
+    col.r = p[0]; //Get the red value from the ko
+    col.g = p[1]; //Get the green value from the ko
+    col.b = p[2]; //Get the blue value from the ko
+    return col; //Return the color
+
 }
+
 
 TDD_Module openknxTDD_Module;
