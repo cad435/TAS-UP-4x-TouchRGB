@@ -73,14 +73,14 @@
               </ParameterType>
               <ParameterType Id="%AID%_PT-CAP1188Sensitivity" Name="CAP1188Sensitivity">
                 <TypeRestriction Base="Value" SizeInBit="8">
-                  <Enumeration Text="Gain x128" Value="0" Id="%ENID%" />
-                  <Enumeration Text="Gain x64" Value="1" Id="%ENID%" />
-                  <Enumeration Text="Gain x32" Value="2" Id="%ENID%" />
-                  <Enumeration Text="Gain x16" Value="3" Id="%ENID%" />
-                  <Enumeration Text="Gain x8" Value="4" Id="%ENID%" />
-                  <Enumeration Text="Gain x4" Value="5" Id="%ENID%" />
-                  <Enumeration Text="Gain x2" Value="6" Id="%ENID%" />
-                  <Enumeration Text="Gain x1" Value="7" Id="%ENID%" />
+                  <Enumeration Text="Gain x128" Value="128" Id="%ENID%" />
+                  <Enumeration Text="Gain x64" Value="64" Id="%ENID%" />
+                  <Enumeration Text="Gain x32" Value="32" Id="%ENID%" />
+                  <Enumeration Text="Gain x16" Value="16" Id="%ENID%" />
+                  <Enumeration Text="Gain x8" Value="8" Id="%ENID%" />
+                  <Enumeration Text="Gain x4" Value="4" Id="%ENID%" />
+                  <Enumeration Text="Gain x2" Value="2" Id="%ENID%" />
+                  <Enumeration Text="Gain x1" Value="1" Id="%ENID%" />
                 </TypeRestriction>
               </ParameterType>
               <ParameterType Id="%AID%_PT-TTDFixedOrKO" Name="TTDFixedOrKO">
@@ -121,44 +121,44 @@
             <Parameters>
               <!-- Parameter für die LED-Farbe -->
               <Parameter Id="%AID%_P-%TT%00001" Name="LEDColor" ParameterType="%AID%_PT-LEDColors" Text="Led Farbe: " Value="65535">
-                <Memory CodeSegment="%AID%_RS-04-00001" Offset="0" BitOffset="0" />
+                <Memory CodeSegment="%MID%" Offset="0" BitOffset="0" />
               </Parameter>
               <!-- Checkbox: Icon links zusätzlich mit Text überschreibbar? -->
               <Parameter Id="%AID%_P-%TT%00002" Name="DisplayOverrideIconLeft" ParameterType="%AID%_PT-TTDCheckBox" Text="Icon links mit Text Überschreibbar: " Value="0">
-                <Memory CodeSegment="%AID%_RS-04-00002" Offset="1" BitOffset="0" />
+                <Memory CodeSegment="%MID%" Offset="1" BitOffset="0" />
               </Parameter>
               <!-- Checkbox: Icon rechts zusätzlich mit Text überschreibbar? -->
               <Parameter Id="%AID%_P-%TT%00003" Name="DisplayOverrideIconRight" ParameterType="%AID%_PT-TTDCheckBox" Text="Icon rechts mit Text Überschreibbar: " Value="0">
-                <Memory CodeSegment="%AID%_RS-04-00003" Offset="2" BitOffset="0" />
+                <Memory CodeSegment="%MID%" Offset="2" BitOffset="0" />
               </Parameter>
               <!-- Parameter für das icon des Linken Tasters -->
               <Parameter Id="%AID%_P-%TT%00004" Name="DisplayIconLeft" ParameterType="%AID%_PT-DisplayContentIcon" Text="Icon Links: " Value="1">
-                <Memory CodeSegment="%AID%_RS-04-00004" Offset="3" BitOffset="0" />
+                <Memory CodeSegment="%MID%" Offset="3" BitOffset="0" />
               </Parameter>
               <!-- Parameter für das icon des Rechten Tasters -->
               <Parameter Id="%AID%_P-%TT%00005" Name="DisplayIconRight" ParameterType="%AID%_PT-DisplayContentIcon" Text="Icon Rechts: " Value="1">
-                <Memory CodeSegment="%AID%_RS-04-00005" Offset="4" BitOffset="0" />
+                <Memory CodeSegment="%MID%" Offset="4" BitOffset="0" />
               </Parameter>
 
               <!-- Parameter für den Text des linken Tasters -->
               <Parameter Id="%AID%_P-%TT%00008" Name="DisplayTextLeft" ParameterType="%AID%_PT-Text8Byte" Text="Text links (Max. 8 Zeichen): " Value="Links">
-                <Memory CodeSegment="%AID%_RS-04-00008" Offset="5" BitOffset="0" /> <!-- 8Byte Nutzdaten + 1Byte Nullterminierung: 5+8+1=14 -->
+                <Memory CodeSegment="%MID%" Offset="5" BitOffset="0" /> <!-- 8Byte Nutzdaten + 1Byte Nullterminierung: 5+8+1=14 -->
               </Parameter>
               <!-- Parameter für den Text des rechten Tasters -->
               <Parameter Id="%AID%_P-%TT%00009" Name="DisplayTextRight" ParameterType="%AID%_PT-Text8Byte" Text="Text rechts (Max. 8 Zeichen): " Value="Rechts">
-                <Memory CodeSegment="%AID%_RS-04-00009" Offset="14" BitOffset="0" /> <!-- 8Byte Nutzdaten + 1Byte ullterminierung: 14+8+1=23 -->
+                <Memory CodeSegment="%MID%" Offset="14" BitOffset="0" /> <!-- 8Byte Nutzdaten + 1Byte ullterminierung: 14+8+1=23 -->
               </Parameter>
               <!-- CAP1188 Analogen Tiefpassfilter aktivieren -->
               <Parameter Id="%AID%_P-%TT%00010" Name="CAP_EnableAnalogFilter" ParameterType="%AID%_PT-TTDCheckBox" Text="Analogen Lowpass-Filter Aktivieren: " Value="0">
-                <Memory CodeSegment="%AID%_RS-04-00010" Offset="23" BitOffset="0" />
+                <Memory CodeSegment="%MID%" Offset="23" BitOffset="0" />
               </Parameter> 
               <!-- CAP1188 Gain Setting -->
-              <Parameter Id="%AID%_P-%TT%00011" Name="CAP_Sensitivity" ParameterType="%AID%_PT-CAP1188Sensitivity" Text="Sensitivity: " Value="5">
-                <Memory CodeSegment="%AID%_RS-04-00011" Offset="24" BitOffset="0" />
+              <Parameter Id="%AID%_P-%TT%00011" Name="CAP_Sensitivity" ParameterType="%AID%_PT-CAP1188Sensitivity" Text="Sensitivity: " Value="4">
+                <Memory CodeSegment="%MID%" Offset="24" BitOffset="0" />
               </Parameter>
               <!-- Hat der Schalter Displays oder nur statische Hintergrundbeleuchtung? -->
               <Parameter Id="%AID%_P-%TT%00012" Name="HasDisplay" ParameterType="%AID%_PT-HasDisplay" Text="Textdarstellung: " Value="0">
-                <Memory CodeSegment="%AID%_RS-04-00012" Offset="25" BitOffset="0" />
+                <Memory CodeSegment="%MID%" Offset="25" BitOffset="0" />
               </Parameter>
               <!-- Übersichtsbild LCD -->
               <Parameter Id="%AID%_P-%TT%00013" Name="TTDMarkingLCD" ParameterType="%AID%_PT-TTDMarkingLCD" Text="" Access="Read" Value="" />
@@ -166,19 +166,19 @@
               <Parameter Id="%AID%_P-%TT%00014" Name="TTDMarkingLED" ParameterType="%AID%_PT-TTDMarkingLED" Text="" Access="Read" Value="" />
               <!-- Parameter für die LED-Helligkeit wenn die LED's Hochgedimmt sind -->
               <Parameter Id="%AID%_P-%TT%00016" Name="LEDMaxBrightness_ON" ParameterType="%AID%_PT-LEDMaxBrightness" Text="Helligkeit der LED's hell: " Value="100">
-                <Memory CodeSegment="%AID%_RS-04-00016" Offset="26" BitOffset="0" />
+                <Memory CodeSegment="%MID%" Offset="26" BitOffset="0" />
               </Parameter>
               <!-- Parameter für die LED-Helligkeit wenn die LED's Runtergedimmt sind -->
               <Parameter Id="%AID%_P-%TT%00017" Name="LEDMaxBrightness_OFF" ParameterType="%AID%_PT-LEDMaxBrightness" Text="Helligkeit der LED's dunkel: " Value="100">
-                <Memory CodeSegment="%AID%_RS-04-00017" Offset="27" BitOffset="0" />
+                <Memory CodeSegment="%MID%" Offset="27" BitOffset="0" />
               </Parameter>
               <!-- Parameter für Proximity Threshold, wird als Text eingestellt und in der FW zu einer Zahl gewandelt-->
               <Parameter Id="%AID%_P-%TT%00018" Name="TTDTextProximityThreshold" ParameterType="%AID%_PT-TTDTextProximityThreshold" Text="Proximity Threshold: " Value="64">
-                <Memory CodeSegment="%AID%_RS-04-00018" Offset="28" BitOffset="0" /> <!-- 4Byte Nutzdaten + 1Byte Nullterminierung: 28+4+1=33 -->
+                <Memory CodeSegment="%MID%" Offset="28" BitOffset="0" /> <!-- 4Byte Nutzdaten + 1Byte Nullterminierung: 28+4+1=33 -->
               </Parameter>
               <!-- Parameter für Touch Threshold, wird als Text eingestellt und in der FW zu einer Zahl gewandelt-->
               <Parameter Id="%AID%_P-%TT%00019" Name="TTDTextTouchThreshold" ParameterType="%AID%_PT-TTDTextTouchThreshold" Text="Touch Threshold: " Value="64">
-                <Memory CodeSegment="%AID%_RS-04-00019" Offset="33" BitOffset="0" /> <!-- 3Byte Nutzdaten + 1Byte Nullterminierung: 33+3+1=37 -->
+                <Memory CodeSegment="%MID%" Offset="33" BitOffset="0" /> <!-- 3Byte Nutzdaten + 1Byte Nullterminierung: 33+3+1=37 -->
               </Parameter>
 
             </Parameters>

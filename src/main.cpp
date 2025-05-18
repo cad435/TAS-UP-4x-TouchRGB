@@ -22,7 +22,7 @@ void setup()
     openknx.addModule(1, openknxLogic);
     openknx.addModule(9, openknxFileTransferModule);
     openknx.addModule(43, openknxTDD_Module);
-    openknx.setup();
+    openknx.setup(); // Call setup() for the modules
     openknx.setup1(); // Call setup1() for the modules
     setup_done = true;
 }
@@ -39,5 +39,6 @@ void loop1()
     while(true)
     {
         thpsensormodule.loop1();
+        openknxTDD_Module.loop1(); // Call loop1() for the TDD_Module
     }
 }

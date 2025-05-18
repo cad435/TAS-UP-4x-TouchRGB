@@ -58,9 +58,6 @@ class TDD_Module : public OpenKNX::Module
     uint8_t Brigtnessdivider[RGB_LED_COUNT]; //Brightness divider for the LEDs, depending on where they are located
 
 
-    //repeating_timer fixedLEDTimer;
-    //bool FixedFPSCallback(repeating_timer* timer); //Callback for the fixed FPS LED loop
-
     //Fixed FPS LED loop, used for the LED's
     uint32_t LEDFPSTime_ms = 1000 / TTD_LED_FPS; //Time in ms for the LED FPS
     uint32_t lastTimeLEDRun = 0; //Last time the LED was run

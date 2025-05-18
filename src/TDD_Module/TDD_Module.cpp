@@ -19,6 +19,9 @@ void TDD_Module::setup()
     /**  Check if LCD Present **/
     hasLCD = ParamTTD_HasDisplay; //If the LCD is present, set the flag to true   
 
+    logDebugP("Has LCD: %i", hasLCD); //Print the string to the debug output
+
+
 #pragma region CAP1188-Initialisation
 
     /**  Initialisation of CAP1188 **/
@@ -46,7 +49,7 @@ void TDD_Module::setup()
     
     bool disableAnalogFilter = ParamTTD_CAP_EnableAnalogFilter; //Get the analog filter from the parameter
     cap->disableAnalogNoiseFilter(!disableAnalogFilter); //Enable the analog filter
-    logDebugP("disableAnalogNoiseFilter: %i", disableAnalogFilter); //Print the analog filter to the debug output
+    logDebugP("disableAnalogNoiseFilter: !%i", disableAnalogFilter); //Print the analog filter to the debug output
 
 
     //read the proximity threshold from the parameter and set it to the CAP1188
@@ -54,8 +57,8 @@ void TDD_Module::setup()
     if (proximityThreshold > 1016) //If the proximity threshold is greater than 127, set it to 127
         proximityThreshold = 1016;
     cap->setProximityThreshold(proximityThreshold); //Set the proximity threshold
-    
-    logDebugP("s_ProximityThreshold: %i", proximityThreshold); //Print the string to the debug output
+    logDebugP("proximityThreshold: %i", proximityThreshold); //Print the string to the debug output
+
 
     uint8_t touchThreshold = StringParam2Num(ParamTTD_TTDTextTouchThreshold); //Convert the string to int
     if (touchThreshold > 127) //If the touch threshold is greater than 127, set it to 127
@@ -72,21 +75,25 @@ void TDD_Module::setup()
 #pragma region LED-Initialisation
 
     /**  Initialisation of LED's **/
+    logDebugP("LED-Initialisation"); //Print the string to the debug output
 
     FastLED.addLeds<RGB_LED_TYPE, RGB_DIO_PIN, RGB>(leds_Current, RGB_LED_COUNT);
 
     FastLED.clearData();
 
     BaseBrightness_ON = PercentToUint8(ParamTTD_LEDMaxBrightness_ON); //Get the brightness from the parameter
+    logDebugP("BaseBrightness_ON: %i", BaseBrightness_ON); //Print the brightness to the debug output
     BaseBrightness_OFF = PercentToUint8(ParamTTD_LEDMaxBrightness_OFF); //Get the brightness from the parameter
-
+    logDebugP("BaseBrightness_OFF: %i", BaseBrightness_OFF); //Print the brightness to the debug output
+    
     if (hasLCD)
         memcpy(Brigtnessdivider, RGB_LED_DIVIDER_HASLCD, RGB_LED_COUNT); //If the LCD is present, use the divider for the LCD
     else
         memcpy(Brigtnessdivider, RGB_LED_DIVIDER_NOLCD, RGB_LED_COUNT); //If the LCD is not present, use the divider for the non-LCD
 
-    //
-    setLEDTargetColor(rgb565ToCRGB(ParamTTD_LEDColor)); ////Get the color from the parameter andstart the LED-Transition
+    CRGB col = rgb565ToCRGB(ParamTTD_LEDColor); //Convert the color from the parameter to CRGB
+    logDebugP("LEDColor: %i|%i|%i", col.r, col.g, col.b); //Print the color to the debug output
+    setLEDTargetColor(col); ////Get the color from the parameter andstart the LED-Transition
 
 #pragma endregion LED-Initialisation
 
@@ -123,17 +130,12 @@ void TDD_Module::loop()
 
 void TDD_Module::loop1()
 {
-    /*if (millis() - lastTimeLEDRun >= LEDFPSTime_ms) //If the time is up, run the LED's
+    if (millis() - lastTimeLEDRun >= LEDFPSTime_ms) //If the time is up, run the LED's
     {
         FixedFPSLedLoop(); //Run the LED's
         lastTimeLEDRun = millis(); //Set the last time the LED was run to the current time
-    }*/
+    }
 }
-
-/*bool TDD_Module::FixedFPSCallback(repeating_timer* timer) //Callback for the fixed FPS LED loop
-{
-    return true; //Return true to keep the timer running
-}*/
 
 //runs with a fixed FPS, defined in TTD_LED_FPS
 void TDD_Module::FixedFPSLedLoop()
@@ -146,6 +148,7 @@ void TDD_Module::FixedFPSLedLoop()
             memcpy(leds_Original, leds_Current, RGB_LED_COUNT); //Copy the current LED's to the original LED's
             fadingAmount = 0; //Set the fading amount to 0
             ledState = RUNNING; //Set the LED state to running
+            logDebugP("LED-Transition started"); //Print the string to the debug output
             break;
         case RUNNING: //If the LED's are running, run them
             if (fadingAmount > 255)
@@ -187,7 +190,8 @@ void TDD_Module::processInputKo(GroupObject& iKo)
 
 void TDD_Module::processAfterStartupDelay()
 {
-
+    logDebugP("processAfterStartupDelay");
+    ledState = TODO; //Set the LED state to TODO
 }
 
 void TDD_Module::setLEDTargetColor(CRGB _BaseColor)
