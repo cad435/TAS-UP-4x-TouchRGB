@@ -13,6 +13,7 @@ THPSensorModule  thpsensormodule = THPSensorModule(THPSensorGpioPins);
 bool setup_done = false;
 void setup()
 {
+    delay(5000);
     const uint8_t firmwareRevision = 1;
     openknx.init(firmwareRevision);
 
@@ -22,6 +23,7 @@ void setup()
     openknx.addModule(9, openknxFileTransferModule);
     openknx.addModule(43, openknxTDD_Module);
     openknx.setup();
+    openknx.setup1(); // Call setup1() for the modules
     setup_done = true;
 }
 

@@ -14,7 +14,7 @@ const std::string TDD_Module::version()
 
 void TDD_Module::setup()
 {
-    logTraceP("setup");
+    logDebugP("Setup");
 
     /**  Check if LCD Present **/
     hasLCD = ParamTTD_HasDisplay; //If the LCD is present, set the flag to true   
@@ -31,46 +31,39 @@ void TDD_Module::setup()
     pinMode(TOUCH_PIN_BOTTOM_RIGHT, INPUT_PULLUP);
 
     if (cap->begin(CAP1188_I2CADDR, new TwoWire(&CAP1188_I2C_WIRECLASS, CAP1188_I2C_SDA, CAP1188_I2C_SCL)))
-        logTraceP("CAP1188 begin success");
+    logDebugP("CAP1188 begin success");
     else
     {
-        logTraceP("CAP1188 begin failed");
+        logDebugP("CAP1188 begin failed");
         return;
     }
 
-    cap->SetGlobalSensitivity(ParamTTD_CAP_Sensitivity); //Set the sensitivity of the CAP1188
+    uint8_t GlobalSen = ParamTTD_CAP_Sensitivity; //Get the sensitivity from the parameter
+    cap->SetGlobalSensitivity(GlobalSen); //Set the sensitivity of the CAP1188
+    logDebugP("SetGlobalSensitivity: %i", GlobalSen); //Print the sensitivity to the debug output
 
-    cap->disableAnalogNoiseFilter(!ParamTTD_CAP_EnableAnalogFilter); //Enable the analog filter
+
+    
+    bool disableAnalogFilter = ParamTTD_CAP_EnableAnalogFilter; //Get the analog filter from the parameter
+    cap->disableAnalogNoiseFilter(!disableAnalogFilter); //Enable the analog filter
+    logDebugP("disableAnalogNoiseFilter: %i", disableAnalogFilter); //Print the analog filter to the debug output
 
 
-    char* c = (char*)ParamTTD_TTDTextProximityThreshold;
-    String s_ProximityThreshold = "";
-    for (uint8_t i = 0; i < 5; i++)
-    {
-        if (c[i] == '\0') //If the character is null, break the loop
-            break;
-        s_ProximityThreshold += c[i]; //Copy the string to the string variable
-    }
-    uint16_t proximityThreshold = s_ProximityThreshold.toInt(); //Convert the string to int
+    //read the proximity threshold from the parameter and set it to the CAP1188
+    uint16_t proximityThreshold = StringParam2Num(ParamTTD_TTDTextProximityThreshold);
     if (proximityThreshold > 1016) //If the proximity threshold is greater than 127, set it to 127
         proximityThreshold = 1016;
     cap->setProximityThreshold(proximityThreshold); //Set the proximity threshold
     
+    logDebugP("s_ProximityThreshold: %i", proximityThreshold); //Print the string to the debug output
 
-    String s_TouchThreshold = ""; //Set the string variable to empty
-    c = (char*)ParamTTD_TTDTextTouchThreshold; //Get the string from the parameter
-    for (uint8_t i = 0; i < 5; i++)
-    {
-        if (c[i] == '\0') //If the character is null, break the loop
-            break;
-        s_TouchThreshold += c[i]; //Copy the string to the string variable
-    }
-
-    uint8_t touchThreshold = s_TouchThreshold.toInt(); //Convert the string to int
+    uint8_t touchThreshold = StringParam2Num(ParamTTD_TTDTextTouchThreshold); //Convert the string to int
     if (touchThreshold > 127) //If the touch threshold is greater than 127, set it to 127
         touchThreshold = 127;
     for (int i = 0; i < 8; i++)
         cap->setTouchThreshold(i, touchThreshold); //Set the touch threshold for each pin
+
+    logDebugP("TouchThreshold: %i", touchThreshold); //Print the string to the debug output
 
 
 
@@ -92,11 +85,21 @@ void TDD_Module::setup()
     else
         memcpy(Brigtnessdivider, RGB_LED_DIVIDER_NOLCD, RGB_LED_COUNT); //If the LCD is not present, use the divider for the non-LCD
 
+    //
     setLEDTargetColor(rgb565ToCRGB(ParamTTD_LEDColor)); ////Get the color from the parameter andstart the LED-Transition
 
 #pragma endregion LED-Initialisation
 
     setupComplete = true; // Set the setup complete flag to true
+
+}
+
+void TDD_Module::readFlash(const uint8_t *iBuffer, const uint16_t iSize)
+{
+    if (iSize == 0) // first call - without data
+        return;
+
+    logDebugP("readFlash with Size: %i", iSize); //Print the string to the debug output
 
 }
 
@@ -114,17 +117,17 @@ void TDD_Module::setup1()
 
 void TDD_Module::loop()
 {
-    //cap evaluate will only execure once 100ms, so we can fire here as fast as we can.
-    cap->evaluate(); //Evaluate the CAP1188
+    //cap evaluate will only execute once 100ms, so we can fire here as fast as we can.
+    //cap->evaluate(); //Evaluate the CAP1188
 }
 
 void TDD_Module::loop1()
 {
-    if (millis() - lastTimeLEDRun >= LEDFPSTime_ms) //If the time is up, run the LED's
+    /*if (millis() - lastTimeLEDRun >= LEDFPSTime_ms) //If the time is up, run the LED's
     {
         FixedFPSLedLoop(); //Run the LED's
         lastTimeLEDRun = millis(); //Set the last time the LED was run to the current time
-    }
+    }*/
 }
 
 /*bool TDD_Module::FixedFPSCallback(repeating_timer* timer) //Callback for the fixed FPS LED loop
@@ -223,6 +226,24 @@ CRGB TDD_Module::DPT_Colour_RGB_to_CRGB(uint32_t ko)
     col.b = p[2]; //Get the blue value from the ko
     return col; //Return the color
 
+}
+
+
+int32_t TDD_Module::StringParam2Num(uint8_t* ParamData)
+{
+    //read the proximity threshold from the parameter and set it to the CAP1188
+    String str = "";
+    for (uint8_t i = 0; i < 32; i++) //safety-Guard, max 32 chars
+    {
+        if ((char)ParamData[i] == '\0') //If the character is null, break the loop
+            break;
+            str += (char)ParamData[i]; //Copy the string to the string variable
+
+        if (i==31)
+            return -1; //If the string is too long, return -1
+    }   
+
+    return str.toInt(); //Convert the string to int
 }
 
 

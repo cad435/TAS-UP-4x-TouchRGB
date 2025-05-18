@@ -226,7 +226,7 @@ void CAP1188::writeBit(uint8_t reg, uint8_t bit, bool value)
 {
   uint8_t current_value = readRegister(reg);
 
-  Serial.println("Current Value: " + String(current_value, BIN));
+  //Serial.println("Current Value: " + String(current_value, BIN));
 
   if (value)
     current_value |= (1 << bit);
@@ -237,7 +237,7 @@ void CAP1188::writeBit(uint8_t reg, uint8_t bit, bool value)
 
   current_value = readRegister(reg);
 
-  Serial.println("New Value: " + String(current_value, BIN));  
+  //Serial.println("New Value: " + String(current_value, BIN));  
 }
 
 void CAP1188::disableAnalogNoiseFilter(bool disable)
