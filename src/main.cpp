@@ -10,12 +10,16 @@
 const uint8_t THPSensorGpioPins[THP_ChannelCount*2] = {SENSOR_SCL_PIN, SENSOR_SDA_PIN};
 THPSensorModule  thpsensormodule = THPSensorModule(THPSensorGpioPins);
 
+
+
 bool setup_done = false;
 void setup()
 {
     delay(5000);
     const uint8_t firmwareRevision = 1;
     openknx.init(firmwareRevision);
+
+    setup1(); // Call setup1() for the modules
 
     openknx.addModule(3, openknxVirtualButtonModule);
     openknx.addModule(2, thpsensormodule);
@@ -25,7 +29,13 @@ void setup()
     openknx.setup(); // Call setup() for the modules
     openknx.setup1(); // Call setup1() for the modules
     setup_done = true;
+
 }
+
+/*void setup1()
+{
+
+}*/
 
 void loop()
 {

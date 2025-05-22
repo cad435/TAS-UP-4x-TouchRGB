@@ -59,6 +59,7 @@ CAP1188::CAP1188(int8_t resetpin) {
  */
 boolean CAP1188::begin(uint8_t i2caddr, TwoWire *theWire) {
   
+  Evaluate_TimeDelay_ms = 1000 / EvaluateFrequency;
 
   _addr = i2caddr;
 
@@ -93,32 +94,35 @@ boolean CAP1188::begin(uint8_t i2caddr, TwoWire *theWire) {
   writeRegister(CAP1188_SENSOR_INPUT_LED_LINK, 0xFF);
   // speed up a bit
   writeRegister(CAP1188_STANDBY_CONFIG, 0x30);
+
   return true;
 }
 
 void CAP1188::evaluate()
 {
-  //guard clause if we need to evaluate or if we can just return
-  if (millis() - lastEvaluated < 100)
-    return;
-  
-  lastEvaluated = millis();
-
-  for (uint8_t i = 0; i < 8; i++)
-  {
-    RawDeltaCount[i] = getRawDeltaCount(i);
-  }
   uint8_t reg = touched();
   //get the bits for the channel out of the register and write it to the array
+  bool lastTouch = false;
   for (uint8_t i = 0; i < 8; i++)
   {
+    //extract a single boolean bit from the register
     uint8_t mask = (1 << i);
-    uint8_t value = (reg & mask) >> i;
-    if (value > 1)
-      ChannelTouched[i] = true;
+    bool value = (reg & mask) >> i;
+
+    //fetch the last state of one channel
+    lastTouch = ChannelTouched[i];
+    //if the last state is different from the current state, set the changed flag to true
+    if(lastTouch != value)
+      ChannelChangedSinceLastEvaluate[i] = true;
     else
-      ChannelTouched[i] = false;
+      ChannelChangedSinceLastEvaluate[i] = false;
+    
+    // save the current state to the array
+    ChannelTouched[i] = value;
+
   }
+  
+  /*
 
   //sum up all Raw Delta Counts
   int8_t sum = 0;
@@ -131,6 +135,7 @@ void CAP1188::evaluate()
     ProximitySensed = true;
   else
     ProximitySensed = false;
+    */
 }
 
 
@@ -154,8 +159,8 @@ uint8_t CAP1188::touched() {
  *           0 (default) - The LED8 output is inverted.
  *           1 - The LED8 output is non-inverted.
  */
-void CAP1188::LEDpolarity(uint8_t inverted) {
-  writeRegister(CAP1188_LED_POLARITY, inverted);
+void CAP1188::LEDpolarity(uint8_t Channel, bool isInverted) {
+  writeBit(CAP1188_LED_POLARITY, Channel, isInverted);
 }
 
 /*!
@@ -257,6 +262,11 @@ void CAP1188::setTouchThreshold(uint8_t channel, uint8_t threshold)
 
 }
 
+/*!
+ *   @brief  Sets the proximity threshold
+ *   @param  threshold
+ *           value that will be written at selected register
+ */
 
 void CAP1188::setProximityThreshold(uint8_t threshold)
 {
@@ -269,4 +279,9 @@ bool CAP1188::isTouched(uint8_t channel)
     return false;
   }
   return ChannelTouched[channel];
+}
+
+void CAP1188::LEDOutputPushPull(uint8_t Channel, bool isPushPull)
+{
+  writeBit(CAP1188_LED_OUTPUT_TYPE, Channel, isPushPull);
 }

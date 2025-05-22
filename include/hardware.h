@@ -54,8 +54,12 @@
                                 //If LCD's are present, than the last bits are just not used.
     #define RGB_LED_TYPE SK6812
     //length of that array must always be the same as RGB_LED_COUNT, otherwise it will crash
-    #define _RGB_LED_DIVIDER_NOLCD {1, 1, 1, 1, 4, 2, 1, 1, 1, 2, 1, 1, 1, 4}; //LED Brightness will be dimmed bown, depending on where they are located. Mor divider = less brightness.
-    #define _RGB_LED_DIVIDER_HASLCD {4, 2, 1, 1, 1, 2, 4, 1, 1, 1, 1, 1, 1, 1}; //If LCD's are present, the divider is different as not all LEDs are used.
+    //is used so that we can dimm the LED's gradually down at the end of the LED-Band.
+    //#define _RGB_LED_DIVIDER_NOLCD {1, 1, 1, 1, 4, 2, 1, 1, 1, 2, 1, 1, 1, 4}; //LED Brightness will be dimmed bown, depending on where they are located. More divider = less brightness.
+    //#define _RGB_LED_DIVIDER_HASLCD {4, 2, 1, 1, 1, 2, 4, 1, 1, 1, 1, 1, 1, 1}; //If LCD's are present, the divider is different as not all LEDs are used.
+
+    #define _RGB_LED_DIVIDER_NOLCD {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}; //LED Brightness will be dimmed bown, depending on where they are located. More divider = less brightness.
+    #define _RGB_LED_DIVIDER_HASLCD {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
 
     //Displays
     #define DISPLAY_PWR_EN_PIN (12)   

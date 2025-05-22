@@ -17,20 +17,25 @@
                 <TypePicture RefId="%FILE-TTDMarking_LCD%" HorizontalAlignment="Left"/>
               </ParameterType>
               <ParameterType Id="%AID%_PT-BTNInputs" Name="BTNInputs">
+                <!-- Achtung, sehr gemein!! Die Nummer bei "Value" ist die HART-CODIERTE Adresse des Kommunikationsobjektes auf das der Button schreibt! -->
+                <!-- Das heißt: für Jede Taste muss ein KO angelegt werden. Das wird dann kompiliert und in die ETS geladen. Die ETS spuckt dann die Nummer/Adresse des KO's aus -->
+                <!-- Die KO-Nummer wird dann hier rein geschrieben, sodass das VirtualButton Modul die KO-Nummer lädt und auf das KO hört -->
+                <!-- Das KO muss dafür NICHT verknüpft sein! -->
+                <!-- werden dann als "ParamBTN_bInA" & ParamBTN_bInB in der knxprod.h ausgelesen-->
                 <TypeRestriction Base="Value" SizeInBit="16">
                   <Enumeration Text="Externes KO" Value="0" Id="%ENID%" />
                   <!-- <Enumeration Text="Sensoreingang A1 (SCL)" Value="50" Id="%ENID%" /> -->
-                  <Enumeration Text="Taste links unten" Value="51" Id="%ENID%" /> <!-- War vorher Sensoreingang A1 (SDA) -->
-                  <Enumeration Text="Taste links oben" Value="82" Id="%ENID%" /> <!-- War vorher Sensoreingang B1 (SCL) -->
-                  <Enumeration Text="Taste rechts oben" Value="83" Id="%ENID%" /> <!-- War vorher Sensoreingang B2 (SDA) -->
-                  <Enumeration Text="Taste rechts unten" Value="114" Id="%ENID%" /> <!-- War vorher Sensoreingang C1 (SCL) -->
-                  <!-- <Enumeration Text="Sensoreingang C2 (SDA)" Value="115" Id="%ENID%" /> -->
-                  <!-- <Enumeration Text="Sensoreingang D1 (SCL)" Value="146" Id="%ENID%" /> -->
-                  <!-- <Enumeration Text="Sensoreingang D2 (SDA)" Value="147" Id="%ENID%" /> -->
-                  <Enumeration Text="I2C Sensoreingang (SCL)" Value="178" Id="%ENID%" /> <!-- War vorher Sensoreingang E1 (SCL) -->
-                  <Enumeration Text="I2C Sensoreingang (SDA)" Value="179" Id="%ENID%" /> <!-- War vorher Sensoreingang E2 (SDA) -->
+                  <Enumeration Text="Pad D (GPIO 28)" Value="643" Id="%ENID%" /> <!-- War vorher Sensoreingang A1 (SDA) -->
+                  <Enumeration Text="PAD C (GPIO 27)" Value="642" Id="%ENID%" /> <!-- War vorher Sensoreingang B1 (SCL) -->
+                  <Enumeration Text="PAD B (GPIO 26)" Value="641" Id="%ENID%" /> <!-- War vorher Sensoreingang B2 (SDA) -->
+                  <Enumeration Text="PAD A (GPIO 25)" Value="640" Id="%ENID%" /> <!-- War vorher Sensoreingang C1 (SCL) -->
+                  <!-- <Enumeration Text="Sensoreingang C2 (SDA)" Value="115" Id="%ENID%" />  -->
+                  <!-- <Enumeration Text="Sensoreingang D1 (SCL)" Value="146" Id="%ENID%" />  -->
+                  <!-- <Enumeration Text="Sensoreingang D2 (SDA)" Value="147" Id="%ENID%" />  -->
+                  <Enumeration Text="I2C Sensoreingang (SCL)" Value="50" Id="%ENID%" /> <!-- War vorher Sensoreingang E1 (SCL) -->
+                  <Enumeration Text="I2C Sensoreingang (SDA)" Value="51" Id="%ENID%" /> <!-- War vorher Sensoreingang E2 (SDA) -->
                   <!-- <Enumeration Text="Sensoreingang F1 (SCL)" Value="210" Id="%ENID%" /> -->
-                  <!-- <Enumeration Text="Sensoreingang F2 (SDA)" Value="211" Id="%ENID%" /> --> 
+                  <!-- <Enumeration Text="Sensoreingang F2 (SDA)" Value="211" Id="%ENID%" /> -->
                   <!-- <Enumeration Text="Sensoreingang G1 (SCL)" Value="242" Id="%ENID%" /> -->
                   <!-- <Enumeration Text="Sensoreingang G2 (SDA)" Value="243" Id="%ENID%" /> -->
                   <!-- <Enumeration Text="Sensoreingang H1 (SCL)" Value="274" Id="%ENID%" /> -->
@@ -104,11 +109,11 @@
                   <Enumeration Text="100%" Value="100" Id="%ENID%" />
                 </TypeRestriction>
               </ParameterType>
-              <ParameterType Id="%AID%_PT-TTDTextProximityThreshold" Name="TTDTextProximityThreshold">
-                <TypeText SizeInBit="32" /> <!-- 4Byte Nutztext + 1Byte Nullterminierung -> muss in der memory map 5 Bytes frei bleiben -->
+              <ParameterType Id="%AID%_PT-TTDProximityThreshold" Name="TTDProximityThreshold">
+                <TypeNumber SizeInBit="10" Type="unsignedInt" minInclusive="0" maxInclusive="1016"/> <!-- 10Bit: Range 0 to 1024 -> muss in der memory map 2 Byte frei bleiben -->
               </ParameterType>
-              <ParameterType Id="%AID%_PT-TTDTextTouchThreshold" Name="TTDTextTouchThreshold">
-                <TypeText SizeInBit="24" /> <!-- 3Byte Nutztext + 1Byte Nullterminierung -> muss in der memory map 4 Bytes frei bleiben -->
+              <ParameterType Id="%AID%_PT-TTDTouchThreshold" Name="TTDTouchThreshold">
+                <TypeNumber SizeInBit="7" Type="unsignedInt" minInclusive="0" maxInclusive="127"/> <!-- 7Bit: Range 0 to 128 -> muss in der memory map 1 Byte frei bleiben -->
               </ParameterType>
             </ParameterTypes>
 
@@ -169,16 +174,16 @@
                 <Memory CodeSegment="%MID%" Offset="26" BitOffset="0" />
               </Parameter>
               <!-- Parameter für die LED-Helligkeit wenn die LED's Runtergedimmt sind -->
-              <Parameter Id="%AID%_P-%TT%00017" Name="LEDMaxBrightness_OFF" ParameterType="%AID%_PT-LEDMaxBrightness" Text="Helligkeit der LED's dunkel: " Value="100">
+              <Parameter Id="%AID%_P-%TT%00017" Name="LEDMaxBrightness_OFF" ParameterType="%AID%_PT-LEDMaxBrightness" Text="Helligkeit der LED's dunkel: " Value="10">
                 <Memory CodeSegment="%MID%" Offset="27" BitOffset="0" />
               </Parameter>
               <!-- Parameter für Proximity Threshold, wird als Text eingestellt und in der FW zu einer Zahl gewandelt-->
-              <Parameter Id="%AID%_P-%TT%00018" Name="TTDTextProximityThreshold" ParameterType="%AID%_PT-TTDTextProximityThreshold" Text="Proximity Threshold: " Value="64">
-                <Memory CodeSegment="%MID%" Offset="28" BitOffset="0" /> <!-- 4Byte Nutzdaten + 1Byte Nullterminierung: 28+4+1=33 -->
+              <Parameter Id="%AID%_P-%TT%00018" Name="TTDProximityThreshold" ParameterType="%AID%_PT-TTDProximityThreshold" Text="Proximity Threshold: " Value="64">
+                <Memory CodeSegment="%MID%" Offset="28" BitOffset="0" /> <!-- 2Byte Nutzdaten: 28+2=30 -->
               </Parameter>
               <!-- Parameter für Touch Threshold, wird als Text eingestellt und in der FW zu einer Zahl gewandelt-->
-              <Parameter Id="%AID%_P-%TT%00019" Name="TTDTextTouchThreshold" ParameterType="%AID%_PT-TTDTextTouchThreshold" Text="Touch Threshold: " Value="64">
-                <Memory CodeSegment="%MID%" Offset="33" BitOffset="0" /> <!-- 3Byte Nutzdaten + 1Byte Nullterminierung: 33+3+1=37 -->
+              <Parameter Id="%AID%_P-%TT%00019" Name="TTDTouchThreshold" ParameterType="%AID%_PT-TTDTouchThreshold" Text="Touch Threshold: " Value="64">
+                <Memory CodeSegment="%MID%" Offset="30" BitOffset="0" /> <!-- 3Byte Nutzdaten + 1Byte Nullterminierung: 33+3+1=37 -->
               </Parameter>
 
             </Parameters>
@@ -244,6 +249,11 @@
               <ComObject Id="%AID%_O-%TT%00004" Name="LEDBrightness_ON"          Text="Helligkeit der LED's dunkel"              Number="4"  FunctionText="Eingang" ObjectSize="1 Byte"   ReadFlag="Enabled" WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Disabled" UpdateFlag="Enabled" ReadOnInitFlag="Disabled" DatapointType="DPST-5-1" />
               <!-- KO LED-Helligkeit OFF -->
               <ComObject Id="%AID%_O-%TT%00009" Name="LEDBrightness_OFF"         Text="Helligkeit der LED's hell"                Number="9"  FunctionText="Eingang" ObjectSize="1 Byte"   ReadFlag="Enabled" WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Disabled" UpdateFlag="Enabled" ReadOnInitFlag="Disabled" DatapointType="DPST-5-1" />
+              <!-- Zustände der Taster -->
+              <ComObject Id="%AID%_O-%TT%00010" Name="StatePAD_A" Text="Zustand Touchpad A" Number="10" FunctionText="Ausgang" ObjectSize="1 Bit" ReadFlag="Enabled" WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled" UpdateFlag="Disabled" ReadOnInitFlag="Disabled" DatapointType="DPST-1-1" />
+              <ComObject Id="%AID%_O-%TT%00011" Name="StatePAD_B" Text="Zustand Touchpad B" Number="11" FunctionText="Ausgang" ObjectSize="1 Bit" ReadFlag="Enabled" WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled" UpdateFlag="Disabled" ReadOnInitFlag="Disabled" DatapointType="DPST-1-1" />
+              <ComObject Id="%AID%_O-%TT%00012" Name="StatePAD_C" Text="Zustand Touchpad C" Number="12" FunctionText="Ausgang" ObjectSize="1 Bit" ReadFlag="Enabled" WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled" UpdateFlag="Disabled" ReadOnInitFlag="Disabled" DatapointType="DPST-1-1" />
+              <ComObject Id="%AID%_O-%TT%00013" Name="StatePAD_D" Text="Zustand Touchpad D" Number="13" FunctionText="Ausgang" ObjectSize="1 Bit" ReadFlag="Enabled" WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled" UpdateFlag="Disabled" ReadOnInitFlag="Disabled" DatapointType="DPST-1-1" />
             </ComObjectTable>
 
             <!-- Hier werden alle KO's nochmal referenziert (warum auch immer). hierbei mus der String bei "Id" VOR dem '_R' gleich
@@ -270,6 +280,11 @@
               <ComObjectRef Id="%AID%_O-%TT%00007_R-%TT%0000700" RefId="%AID%_O-%TT%00007" />
               <!-- KO LED-Helligkeit OFF -->
               <ComObjectRef Id="%AID%_O-%TT%00009_R-%TT%0000900" RefId="%AID%_O-%TT%00009" />
+              <!-- Zustände der Taster -->
+              <ComObjectRef Id="%AID%_O-%TT%00010_R-%TT%0001000" RefId="%AID%_O-%TT%00010" />
+              <ComObjectRef Id="%AID%_O-%TT%00011_R-%TT%0001100" RefId="%AID%_O-%TT%00011" />
+              <ComObjectRef Id="%AID%_O-%TT%00012_R-%TT%0001200" RefId="%AID%_O-%TT%00012" />
+              <ComObjectRef Id="%AID%_O-%TT%00013_R-%TT%0001300" RefId="%AID%_O-%TT%00013" />
 
             </ComObjectRefs>
           </Static>
@@ -304,6 +319,13 @@
                 <ParameterSeparator Id="%AID%_PS-nnn" Text="Falls ein Sensor angeschlossen ist, dann kann dieser unter der 'Sensor-Kanäle' Applikation konfiguriert werden."/>
                 <ParameterSeparator Id="%AID%_PS-nnn" Text="!!! NUR den Sensor 'E' Verwenden !!!"/>
 
+
+                <ComObjectRefRef RefId="%AID%_O-%TT%00010_R-%TT%0001000" /> <!-- Zustand Touchpad A -->
+                <ComObjectRefRef RefId="%AID%_O-%TT%00011_R-%TT%0001100" /> <!-- Zustand Touchpad B -->
+                <ComObjectRefRef RefId="%AID%_O-%TT%00012_R-%TT%0001200" /> <!-- Zustand Touchpad C -->
+                <ComObjectRefRef RefId="%AID%_O-%TT%00013_R-%TT%0001300" /> <!-- Zustand Touchpad D -->
+                
+
               </ParameterBlock>
               
               <!-- Parameter-Block Einstellungen CAP1188 -->
@@ -316,11 +338,11 @@
                 <ParameterRefRef RefId="%AID%_P-%TT%00010_R-%TT%0001000" IndentLevel="0"/>
                 <ParameterRefRef RefId="%AID%_P-%TT%00011_R-%TT%0001100" IndentLevel="0"/>
                 <ParameterSeparator Id="%AID%_PS-nnn" Text="" UIHint="HorizontalRuler" />
-                <ParameterSeparator Id="%AID%_PS-nnn" Text="Höhere Werte bedeuten, dass der Taster eine Annäherung erst später erkennt. Wertebereich von 0 bis 1016. Werden invalide Werte eingegeben (z.b. Buchstaben), ist das Verhalten undefiniert."/>
+                <ParameterSeparator Id="%AID%_PS-nnn" Text="Höhere Werte bedeuten, dass der Taster eine Annäherung erst später erkennt. Wertebereich von 0 bis 1016."/>
                 <ParameterRefRef RefId="%AID%_P-%TT%00018_R-%TT%0001800" IndentLevel="0"/> <!-- Proximity Threshold -->
 
                 <ParameterSeparator Id="%AID%_PS-nnn" Text="" UIHint="HorizontalRuler" />
-                <ParameterSeparator Id="%AID%_PS-nnn" Text="Höhere Werte bedeuten, dass der Taster weniger sensitiv wird. Wertebereich von 0 bis 127. Werden invalide Werte eingegeben (z.b. Buchstaben), ist das Verhalten undefiniert."/>
+                <ParameterSeparator Id="%AID%_PS-nnn" Text="Höhere Werte bedeuten, dass der Taster weniger sensitiv wird. Wertebereich von 0 bis 127."/>
                 <ParameterRefRef RefId="%AID%_P-%TT%00019_R-%TT%0001900" IndentLevel="0"/> <!-- Touch Threshold -->
               </ParameterBlock>
 
