@@ -6,7 +6,8 @@
 #include "OpenKNX/TimerInterrupt.h"
 #include "../CAP1188/CAP1188.h"
 #include <FastLed.h>
-#include "../SerialLED/SerialLed.h"
+#include "../SerialLED/LedGroupController.h"
+#include "../SerialLED/LedHelper.h"
 
 class TDD_Module : public OpenKNX::Module
 {
@@ -40,8 +41,9 @@ class TDD_Module : public OpenKNX::Module
 
     CAP1188* cap;
 
-    SerialLed* serialLed; // Pointer to the SerialLed class
     LEDHelper* ledHelper; // Pointer to the LEDHelper class
+
+    LedGroupController* ledGroupController;; // Pointer to the LedGroupController class
 
     uint8_t PercentToUint8(uint8_t percent){ return ((uint16_t)percent * 255) / 100; }
 

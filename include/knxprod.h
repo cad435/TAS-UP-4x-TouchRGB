@@ -165,8 +165,8 @@
 #define TTD_HasDisplay                          71      // 1 Bit, Bit 7
 #define     TTD_HasDisplayMask 0x80
 #define     TTD_HasDisplayShift 7
-#define TTD_LEDMaxBrightness_ON                 72      // 8 Bits, Bit 7-0
-#define TTD_LEDMaxBrightness_OFF                73      // 8 Bits, Bit 7-0
+#define TTD_LEDBrightness_Active                72      // 8 Bits, Bit 7-0
+#define TTD_LEDBrightness_IDLE                  73      // 8 Bits, Bit 7-0
 #define TTD_TTDProximityThreshold               74      // 10 Bits, Bit 15-6
 #define     TTD_TTDProximityThresholdMask 0xFFC0
 #define     TTD_TTDProximityThresholdShift 6
@@ -195,9 +195,9 @@
 // Textdarstellung: 
 #define ParamTTD_HasDisplay                          ((bool)(knx.paramByte(TTD_HasDisplay) & TTD_HasDisplayMask))
 // Helligkeit der LED's hell: 
-#define ParamTTD_LEDMaxBrightness_ON                 (knx.paramByte(TTD_LEDMaxBrightness_ON))
+#define ParamTTD_LEDBrightness_Active                (knx.paramByte(TTD_LEDBrightness_Active))
 // Helligkeit der LED's dunkel: 
-#define ParamTTD_LEDMaxBrightness_OFF                (knx.paramByte(TTD_LEDMaxBrightness_OFF))
+#define ParamTTD_LEDBrightness_IDLE                  (knx.paramByte(TTD_LEDBrightness_IDLE))
 // Proximity Threshold: 
 #define ParamTTD_TTDProximityThreshold               ((knx.paramWord(TTD_TTDProximityThreshold) & TTD_TTDProximityThresholdMask) >> TTD_TTDProximityThresholdShift)
 // Touch Threshold: 

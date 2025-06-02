@@ -170,11 +170,11 @@
               <!-- Übersichtsbild LED -->
               <Parameter Id="%AID%_P-%TT%00014" Name="TTDMarkingLED" ParameterType="%AID%_PT-TTDMarkingLED" Text="" Access="Read" Value="" />
               <!-- Parameter für die LED-Helligkeit wenn die LED's Hochgedimmt sind -->
-              <Parameter Id="%AID%_P-%TT%00016" Name="LEDMaxBrightness_ON" ParameterType="%AID%_PT-LEDMaxBrightness" Text="Helligkeit der LED's hell: " Value="100">
+              <Parameter Id="%AID%_P-%TT%00016" Name="LEDBrightness_Active" ParameterType="%AID%_PT-LEDMaxBrightness" Text="Helligkeit der LED's hell: " Value="100">
                 <Memory CodeSegment="%MID%" Offset="26" BitOffset="0" />
               </Parameter>
               <!-- Parameter für die LED-Helligkeit wenn die LED's Runtergedimmt sind -->
-              <Parameter Id="%AID%_P-%TT%00017" Name="LEDMaxBrightness_OFF" ParameterType="%AID%_PT-LEDMaxBrightness" Text="Helligkeit der LED's dunkel: " Value="10">
+              <Parameter Id="%AID%_P-%TT%00017" Name="LEDBrightness_IDLE" ParameterType="%AID%_PT-LEDMaxBrightness" Text="Helligkeit der LED's dunkel: " Value="10">
                 <Memory CodeSegment="%MID%" Offset="27" BitOffset="0" />
               </Parameter>
               <!-- Parameter für Proximity Threshold, wird als Text eingestellt und in der FW zu einer Zahl gewandelt-->

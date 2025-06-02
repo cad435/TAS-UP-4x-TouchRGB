@@ -67,21 +67,32 @@ void TDD_Module::setup()
     /**  Initialisation of LED's **/
     logDebugP("LED-Initialisation"); //Print the string to the debug output
 
-    serialLed = new SerialLed(); //Create a new instance of the SerialLed class
-    serialLed->begin(hasLCD); //Begin the SerialLed class
+    ledGroupController = new LedGroupController(TTD_LED_COUNT, TTD_LED_GROUP_COUNT); //Create a new instance of the LedGroupController class
     ledHelper = new LEDHelper(); //Create a new instance of the LEDHelper class
+    logDebugP("LedGroupController created with %i LED-Groups", TTD_LED_GROUP_COUNT); //Print the string to the debug output
 
+    std::vector<std::vector<uint8_t>> LedGroupVector = TTD_LED_GROUPS; //Create a vector to hold the LED indices
 
-
-    serialLed->BaseBrightness_ON = PercentToUint8(ParamTTD_LEDMaxBrightness_ON); //Get the brightness from the parameter
-    logDebugP("BaseBrightness_ON: %i", serialLed->BaseBrightness_ON); //Print the brightness to the debug output
-    serialLed->BaseBrightness_OFF = PercentToUint8(ParamTTD_LEDMaxBrightness_OFF); //Get the brightness from the parameter
-    logDebugP("BaseBrightness_OFF: %i", serialLed->BaseBrightness_OFF); //Print the brightness to the debug output
+    for (uint8_t i = 0; i < TTD_LED_GROUP_COUNT; i++)
+    {
+        ledGroupController->initGroup(i, LedGroupVector[i].size(), LedGroupVector[i].data()); //Initialize the group with the LED indices
+        logDebugP("LedGroup %i initialized with %i LEDs", i, LedGroupVector[i].size()); //Print the string to the debug output
+    }
     
 
     CRGB col = ledHelper->rgb565ToCRGB(ParamTTD_LEDColor); //Convert the color from the parameter to CRGB
+    uint8_t brightness_ON = PercentToUint8(ParamTTD_LEDBrightness_Active); //Get the brightness from the parameter
+    uint8_t brightness_OFF = PercentToUint8(ParamTTD_LEDBrightness_IDLE); //Get the brightness from the parameter
     logDebugP("LEDColor: %i|%i|%i", col.r, col.g, col.b); //Print the color to the debug output
-    serialLed->setLEDTargetColor(col); ////Get the color from the parameter andstart the LED-Transition
+    logDebugP("LEDBrightness_Active: %i", brightness_ON); //Print the brightness to the debug output
+    logDebugP("LEDBrightness_IDLE: %i", brightness_OFF); //Print the brightness to the debug output
+    for (uint8_t i = 0; i < TTD_LED_GROUP_COUNT; i++)
+    {
+        ledGroupController->setActiveBrightness(i, brightness_ON); //Get the brightness from the parameter
+        ledGroupController->setIDLEBrightness(i, brightness_OFF); //Get the brightness from the parameter
+        ledGroupController->setGroupColor(i, col); //set the colors and start the LED-Transition
+
+    }
 
 #pragma endregion LED-Initialisation
 
@@ -93,7 +104,7 @@ void TDD_Module::setup()
 void TDD_Module::processAfterStartupDelay()
 {
     logDebugP("processAfterStartupDelay");
-    serialLed->DimmDown(); //turn on the LED's to the "dark" state
+    //serialLed->DimmDown(); //turn on the LED's to the "dark" state
     delay(1000); //Wait for 1 second
 }
 
@@ -145,7 +156,11 @@ void TDD_Module::loop()
 void TDD_Module::loop1()
 {
     //call as fast as possible, will be only executed every 20ms
-    serialLed->evaluate();
+    if(openknx.freeLoopTime())
+    {
+        ledGroupController->evaluate();
+    }
+
 }
 
 void TDD_Module::processInputKo(GroupObject& iKo)
@@ -153,13 +168,17 @@ void TDD_Module::processInputKo(GroupObject& iKo)
     switch(iKo.asap())
     {
     case TTD_KoLEDColor:
-        serialLed->setLEDTargetColor(ledHelper->DPT_Colour_RGB_to_CRGB(KoTTD_LEDColor.value(DPT_Colour_RGB)));
+        //serialLed->setLEDTargetColor(ledHelper->DPT_Colour_RGB_to_CRGB(KoTTD_LEDColor.value(DPT_Colour_RGB)));
+        for (uint8_t i = 0; i < TTD_LED_GROUP_COUNT; i++)
+        {
+            ledGroupController->setGroupColor(1, ledHelper->DPT_Colour_RGB_to_CRGB(KoTTD_LEDColor.value(DPT_Colour_RGB))); //Set the color of the first group to the value from the parameter
+        }
         break;
     case TTD_KoLEDBrightness_ON:
-        serialLed->BaseBrightness_ON = KoTTD_LEDBrightness_ON.value(DPT_Scaling); //Set the brightness of the LED's to the value from the parameter
+        //serialLed->BaseBrightness_ON = KoTTD_LEDBrightness_ON.value(DPT_Scaling); //Set the brightness of the LED's to the value from the parameter
         break;
     case TTD_KoLEDBrightness_OFF:
-        serialLed->BaseBrightness_OFF = KoTTD_LEDBrightness_OFF.value(DPT_Scaling); //Set the brightness of the LED's to the value from the parameter
+        //serialLed->BaseBrightness_OFF = KoTTD_LEDBrightness_OFF.value(DPT_Scaling); //Set the brightness of the LED's to the value from the parameter
         break;
 
     

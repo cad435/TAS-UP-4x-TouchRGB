@@ -49,14 +49,22 @@
     #define TTD_LED_TRANSITION_DELTA (255 / (TTD_LED_TRANSITION_TIME / TTD_LED_FPS)) //Time in ms for the LED's to transition from one color to another.
 
     //WS2812 RGB LED
-    #define RGB_DIO_PIN (18)
-    #define RGB_LED_COUNT (14)  //Number of LEDs in the strip. For simplicity this stays always the same even if LCD's are here. 
+    #define TTD_RGB_DIO_PIN (18)
+    #define TTD_LED_COUNT (14)  //Number of LEDs in the strip. For simplicity this stays always the same even if LCD's are here. 
                                 //If LCD's are present, than the last bits are just not used.
-    #define RGB_LED_TYPE SK6812
+    #define TTD_LED_TYPE SK6812
+    #define TTD_RGB_ORDER GRB //RGB Order for the LED's, can be changed to GRB or BRG if needed.
+
+    #define TTD_LED_GROUP_COUNT (3) //Number of LED-Groups, used for the LED-Controller. This is used to group the LED's together, so that we can control them in groups.
+
+    //LED-Group Indizes, used to group the LED's together, so that we can control them in groups. We need to define as many groups as we have defined in the Group-Count define
+    #define TTD_LED_GROUPS {{0, 1, 2, 3}, {/*4,*/ 5, 6, 7, 8, 9/*, 13*/}, {10, 11, 12}}
+
     //length of that array must always be the same as RGB_LED_COUNT, otherwise it will crash
     //is used so that we can dimm the LED's gradually down at the end of the LED-Band.
     //#define _RGB_LED_DIVIDER_NOLCD {1, 1, 1, 1, 4, 2, 1, 1, 1, 2, 1, 1, 1, 4}; //LED Brightness will be dimmed bown, depending on where they are located. More divider = less brightness.
     //#define _RGB_LED_DIVIDER_HASLCD {4, 2, 1, 1, 1, 2, 4, 1, 1, 1, 1, 1, 1, 1}; //If LCD's are present, the divider is different as not all LEDs are used.
+
 
     #define _RGB_LED_DIVIDER_NOLCD {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}; //LED Brightness will be dimmed bown, depending on where they are located. More divider = less brightness.
     #define _RGB_LED_DIVIDER_HASLCD {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
