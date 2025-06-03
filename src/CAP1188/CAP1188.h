@@ -43,7 +43,9 @@ public:
     Pad_E = 4,
     Pad_F = 5,
     Pad_G = 6,
-    Pad_H = 7
+    Pad_H = 7,
+    PROXIMITY = 100,
+    MULTIPLE_TOUCH = 101	
   };
 
   // Hardware I2C
@@ -59,16 +61,24 @@ public:
 
   void disableAnalogNoiseFilter(bool disable);
 
+  void enableMultipleTouchTapPattern(uint8_t PadsEvaluated[]);
+
   //call peridically to read the touch status
   void evaluate();
+
+  //returns true if a channel is touched
+  bool isTouched(uint8_t channel);
+  //returns if a channel has changed since the last evaluate
+  bool hasChanged(uint8_t channel) {return ChannelChangedSinceLastEvaluate[channel];}
+
 
   void setTouchThreshold(uint8_t channel, uint8_t threshold);
   void setProximityThreshold(uint8_t threshold);
 
-  bool isTouched(uint8_t channel);
-  bool hasChanged(uint8_t channel) {return ChannelChangedSinceLastEvaluate[channel];}
   bool ProximitySensed = false;
 
+  bool TapHappened = false; //"Patschfunktion"
+  
 
   uint16_t EvaluateFrequency = 1; //in Hz. Change this if the need for faster evaluation is there
 
@@ -84,6 +94,7 @@ private:
   bool ChannelChangedSinceLastEvaluate[8] = {false, false, false, false, false, false, false, false};
 
   uint8_t readRegister(uint8_t reg);
+  bool readBit(uint8_t reg, uint8_t bit);
   void writeRegister(uint8_t reg, uint8_t value);
   void writeBit(uint8_t reg, uint8_t bit, bool value);
   int8_t _resetpin;
@@ -91,7 +102,7 @@ private:
 
   uint16_t Evaluate_TimeDelay_ms;
 
-  uint8_t touched();
+  uint8_t ReadTouched();
 
   uint8_t _addr;
 

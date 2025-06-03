@@ -58,6 +58,8 @@ void TDD_Module::setup()
 
     logDebugP("TouchThreshold: %i", touchThreshold); //Print the string to the debug output
 
+    uint8_t MTP[] = TOUCH_TAP_CHANNELS; //Define the multiple touch tap pattern
+    cap->enableMultipleTouchTapPattern(MTP); //Define the multiple touch tap pattern
 
 
 #pragma endregion CAP1188-Initialisation
@@ -104,7 +106,6 @@ void TDD_Module::setup()
 void TDD_Module::processAfterStartupDelay()
 {
     logDebugP("processAfterStartupDelay");
-    //serialLed->DimmDown(); //turn on the LED's to the "dark" state
     delay(1000); //Wait for 1 second
 }
 
@@ -149,7 +150,25 @@ void TDD_Module::loop()
     {
         KoTTD_StatePAD_D.value(cap->isTouched(CAP1188::Pad_D), Dpt(1,1)); //Send the touch value to the KO
         logDebugP("PAD_D Value %i to KO %i", cap->isTouched(CAP1188::Pad_D), KoTTD_StatePAD_D.asap()); //Print the touch value to the debug output
-    }                  
+    }     
+    
+
+    if(openknx.freeLoopTime() && cap->ProximitySensed) //If proximity is sensed, change the KO
+    {
+        //KoTTD_StateProximity.value(cap->ProximitySensed, Dpt(1,1)); //Send the proximity value to the KO
+        //logDebugP("Proximity Value %i to KO %i", cap->ProximitySensed, KoTTD_StateProximity.asap()); //Print the proximity value to the debug output
+        logDebugP("Proximity Sensed, but not implemented yet!"); //Print a debug message that proximity is sensed, but not implemented yet
+    }
+
+    if(openknx.freeLoopTime() && cap->TapHappened) //If a tap happened, change the KO
+    {
+        //KoTTD_StateTap.value(cap->TapHappened, Dpt(1,1)); //Send the tap value to the KO
+        //logDebugP("Tap Value %i to KO %i", cap->TapHappened, KoTTD_StateTap.asap()); //Print the tap value to the debug output
+        logDebugP("Tap happened, but not implemented yet!"); //Print a debug message that tap happened, but not implemented yet
+    }
+
+
+
 
 }
 

@@ -100,7 +100,7 @@ boolean CAP1188::begin(uint8_t i2caddr, TwoWire *theWire) {
 
 void CAP1188::evaluate()
 {
-  uint8_t reg = touched();
+  uint8_t reg = ReadTouched();
   //get the bits for the channel out of the register and write it to the array
   bool lastTouch = false;
   for (uint8_t i = 0; i < 8; i++)
@@ -122,8 +122,6 @@ void CAP1188::evaluate()
 
   }
   
-  /*
-
   //sum up all Raw Delta Counts
   int8_t sum = 0;
   for (uint8_t i = 0; i < 8; i++)
@@ -135,7 +133,15 @@ void CAP1188::evaluate()
     ProximitySensed = true;
   else
     ProximitySensed = false;
-    */
+
+
+  if (readBit(CAP1188_GENERAL_STATUS, CAP1188_GENERAL_STATUS_MTP))
+    TapHappened = true; //if the MTP bit is set, a tap has happened
+  else
+    TapHappened = false; //if the MTP bit is not set, no tap has happened
+
+
+
 }
 
 
@@ -145,7 +151,7 @@ void CAP1188::evaluate()
  *   @return Returns read from CAP1188_SENINPUTSTATUS where 1 is touched, 0 not
  * touched.
  */
-uint8_t CAP1188::touched() {
+uint8_t CAP1188::ReadTouched() {
   uint8_t t = readRegister(CAP1188_SENSOR_INPUT_STATUS);
   if (t) {
     writeRegister(CAP1188_MAIN_CONTROL, readRegister(CAP1188_MAIN_CONTROL) & ~CAP1188_MAIN_INTERRUPT); // clear interrupt
@@ -245,6 +251,13 @@ void CAP1188::writeBit(uint8_t reg, uint8_t bit, bool value)
   //Serial.println("New Value: " + String(current_value, BIN));  
 }
 
+bool CAP1188::readBit(uint8_t reg, uint8_t bit)
+{
+  uint8_t current_value = readRegister(reg);
+  //Serial.println("Current Value: " + String(current_value, BIN));
+  return (current_value & (1 << bit)) != 0;
+}
+
 void CAP1188::disableAnalogNoiseFilter(bool disable)
 {
   writeBit(CAP1188_CONFIGURATION, CAP1188_CONFIG_DIS_ANA_NOISE, disable);
@@ -284,4 +297,19 @@ bool CAP1188::isTouched(uint8_t channel)
 void CAP1188::LEDOutputPushPull(uint8_t Channel, bool isPushPull)
 {
   writeBit(CAP1188_LED_OUTPUT_TYPE, Channel, isPushPull);
+}
+
+void CAP1188::enableMultipleTouchTapPattern(uint8_t PadsEvaluated[])
+{
+  writeBit(CAP1188_MULTIPLE_TOUCH_CONFIG, CAP1188_MTP_EN, true); //enable multiple touch block
+  writeBit(CAP1188_MULTIPLE_TOUCH_CONFIG, CAP1188_MTP_COMP_PTRN, true); //enable the comparison pattern, only pads in CAP1188_MULTIPLE_TOUCH_PATTERN_CONFIG are evaluated
+  writeBit(CAP1188_MULTIPLE_TOUCH_CONFIG, CAP1188_MTP_TH0, true); //all pads must be really pressed 100% the threshold of a normal pad to count as 1 for the pattern recognition
+  writeBit(CAP1188_MULTIPLE_TOUCH_CONFIG, CAP1188_MTP_TH1, true); 
+
+  for (uint8_t i = 0; i < sizeof(PadsEvaluated); i++)
+  {
+    writeBit(CAP1188_MULTIPLE_TOUCH_PATTERN_CONFIG, PadsEvaluated[i], true); //use teh given pads for the pattern recognition
+  }
+  
+
 }

@@ -44,9 +44,13 @@
     #define TOUCH_PIN_BOTTOM_RIGHT (25) //Bottom Right
 
 
+    #define TOUCH_TAP_CHANNELS {CAP1188::Pad_A, CAP1188::Pad_B, CAP1188::Pad_C, CAP1188::Pad_D} //Channels that are used for the Tap-Functionality. The channels are defined in the CAP1188 class.
+
+
     #define TTD_LED_FPS (50) //Frames per second for the LED's.
     #define TTD_LED_TRANSITION_TIME (1000) //Time in ms for the LED's to transition from one color to another.
     #define TTD_LED_TRANSITION_DELTA (255 / (TTD_LED_TRANSITION_TIME / TTD_LED_FPS)) //Time in ms for the LED's to transition from one color to another.
+
 
     //WS2812 RGB LED
     #define TTD_RGB_DIO_PIN (18)
@@ -60,14 +64,7 @@
     //LED-Group Indizes, used to group the LED's together, so that we can control them in groups. We need to define as many groups as we have defined in the Group-Count define
     #define TTD_LED_GROUPS {{0, 1, 2, 3}, {/*4,*/ 5, 6, 7, 8, 9/*, 13*/}, {10, 11, 12}}
 
-    //length of that array must always be the same as RGB_LED_COUNT, otherwise it will crash
-    //is used so that we can dimm the LED's gradually down at the end of the LED-Band.
-    //#define _RGB_LED_DIVIDER_NOLCD {1, 1, 1, 1, 4, 2, 1, 1, 1, 2, 1, 1, 1, 4}; //LED Brightness will be dimmed bown, depending on where they are located. More divider = less brightness.
-    //#define _RGB_LED_DIVIDER_HASLCD {4, 2, 1, 1, 1, 2, 4, 1, 1, 1, 1, 1, 1, 1}; //If LCD's are present, the divider is different as not all LEDs are used.
 
-
-    #define _RGB_LED_DIVIDER_NOLCD {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}; //LED Brightness will be dimmed bown, depending on where they are located. More divider = less brightness.
-    #define _RGB_LED_DIVIDER_HASLCD {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
 
     //Displays
     #define DISPLAY_PWR_EN_PIN (12)   
