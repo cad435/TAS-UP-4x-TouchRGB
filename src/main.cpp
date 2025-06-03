@@ -13,29 +13,30 @@ THPSensorModule  thpsensormodule = THPSensorModule(THPSensorGpioPins);
 
 
 bool setup_done = false;
+bool init_done = false;
 void setup()
 {
     delay(5000);
     const uint8_t firmwareRevision = 1;
     openknx.init(firmwareRevision);
 
-    setup1(); // Call setup1() for the modules
-
     openknx.addModule(3, openknxVirtualButtonModule);
     openknx.addModule(2, thpsensormodule);
     openknx.addModule(1, openknxLogic);
     openknx.addModule(9, openknxFileTransferModule);
     openknx.addModule(43, openknxTDD_Module);
+    init_done = true;
     openknx.setup(); // Call setup() for the modules
-    openknx.setup1(); // Call setup1() for the modules
     setup_done = true;
 
 }
 
-/*void setup1()
+void setup1()
 {
-
-}*/
+    while(!init_done)
+        delay(100);
+    openknx.setup1(); // Call setup1() for the modules
+}
 
 void loop()
 {
@@ -48,6 +49,7 @@ void loop1()
         delay(100);
     while(true)
     {
+        //openknx.loop1(); // Call loop1() for the modules <-- if we're doing this, somehow the CAP1188 is not behaving exactly the same as when running in singlecore-mode
         thpsensormodule.loop1();
         openknxTDD_Module.loop1(); // Call loop1() for the TDD_Module
     }

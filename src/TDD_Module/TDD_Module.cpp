@@ -14,7 +14,7 @@ const std::string TDD_Module::version()
 
 void TDD_Module::setup()
 {
-    logDebugP("Setup, CPU: %i", get_core_num()); 
+    logDebugP("setup(), CPU: %i", get_core_num()); 
     
 
     /**  Check if LCD Present **/
@@ -91,7 +91,7 @@ void TDD_Module::setup()
         ledGroupController->setActiveBrightness(i, brightness_ON); //Get the brightness from the parameter
         ledGroupController->setIDLEBrightness(i, brightness_OFF); //Get the brightness from the parameter
         ledGroupController->setGroupColor(i, col); //set the colors and start the LED-Transition
-
+        ledGroupController->setGroupActive(i, false); //Set the group to IDLE after startup
     }
 
 #pragma endregion LED-Initialisation
@@ -110,7 +110,7 @@ void TDD_Module::processAfterStartupDelay()
 
 void TDD_Module::setup1()
 {
-    logDebugP("Setup1, CPU: %i", get_core_num()); 
+    logDebugP("setup1(), CPU: %i", get_core_num()); 
     while(!setupComplete); // wait till core0 has completed the setup
 
     //this will than proceed to loop1();
@@ -160,7 +160,6 @@ void TDD_Module::loop1()
     {
         ledGroupController->evaluate();
     }
-
 }
 
 void TDD_Module::processInputKo(GroupObject& iKo)
@@ -168,20 +167,34 @@ void TDD_Module::processInputKo(GroupObject& iKo)
     switch(iKo.asap())
     {
     case TTD_KoLEDColor:
+    {
         //serialLed->setLEDTargetColor(ledHelper->DPT_Colour_RGB_to_CRGB(KoTTD_LEDColor.value(DPT_Colour_RGB)));
         for (uint8_t i = 0; i < TTD_LED_GROUP_COUNT; i++)
         {
             ledGroupController->setGroupColor(1, ledHelper->DPT_Colour_RGB_to_CRGB(KoTTD_LEDColor.value(DPT_Colour_RGB))); //Set the color of the first group to the value from the parameter
         }
         break;
-    case TTD_KoLEDBrightness_ON:
-        //serialLed->BaseBrightness_ON = KoTTD_LEDBrightness_ON.value(DPT_Scaling); //Set the brightness of the LED's to the value from the parameter
+    }
+    case TTD_KoLEDBrightness_Active:
+    {
+        uint8_t briActive = KoTTD_LEDBrightness_Active.value(DPT_Scaling); //Get the brightness from the parameter
+        for (uint8_t i = 0; i < TTD_LED_GROUP_COUNT; i++)
+        {
+            ledGroupController->setActiveBrightness(i, briActive); //Set the brightness of the LED's to the value from the parameter
+            ledGroupController->setGroupActive(i, true);
+        }
         break;
-    case TTD_KoLEDBrightness_OFF:
-        //serialLed->BaseBrightness_OFF = KoTTD_LEDBrightness_OFF.value(DPT_Scaling); //Set the brightness of the LED's to the value from the parameter
-        break;
-
-    
+    }
+    case TTD_KoLEDBrightness_IDLE:
+    {
+        uint8_t briIdle = KoTTD_LEDBrightness_IDLE.value(DPT_Scaling); //Get the brightness from the parameter
+        for (uint8_t i = 0; i < TTD_LED_GROUP_COUNT; i++)
+        {
+            ledGroupController->setIDLEBrightness(i, briIdle); //Set the brightness of the LED's to the value from the parameter
+            ledGroupController->setGroupActive(i, false); //Set the group to IDLE after startup
+        }
+        break;    
+    }
     default:
         break;
     }

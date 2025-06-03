@@ -210,8 +210,8 @@
 #define TTD_KoDisplayIconRight 635
 #define TTD_KoDisplayTextLeft 636
 #define TTD_KoDisplayTextRight 637
-#define TTD_KoLEDBrightness_ON 634
-#define TTD_KoLEDBrightness_OFF 639
+#define TTD_KoLEDBrightness_IDLE 634
+#define TTD_KoLEDBrightness_Active 639
 #define TTD_KoStatePAD_A 640
 #define TTD_KoStatePAD_B 641
 #define TTD_KoStatePAD_C 642
@@ -232,9 +232,9 @@
 // Text Rechts Icon-Override (max. 4 Zeichen)
 #define KoTTD_DisplayTextRight                    (knx.getGroupObject(TTD_KoDisplayTextRight))
 // Helligkeit der LED's dunkel
-#define KoTTD_LEDBrightness_ON                    (knx.getGroupObject(TTD_KoLEDBrightness_ON))
+#define KoTTD_LEDBrightness_IDLE                  (knx.getGroupObject(TTD_KoLEDBrightness_IDLE))
 // Helligkeit der LED's hell
-#define KoTTD_LEDBrightness_OFF                   (knx.getGroupObject(TTD_KoLEDBrightness_OFF))
+#define KoTTD_LEDBrightness_Active                (knx.getGroupObject(TTD_KoLEDBrightness_Active))
 // Zustand Touchpad A
 #define KoTTD_StatePAD_A                          (knx.getGroupObject(TTD_KoStatePAD_A))
 // Zustand Touchpad B

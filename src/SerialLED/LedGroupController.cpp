@@ -79,7 +79,6 @@ void LedGroupController::setActiveBrightness(uint8_t groupIndex, uint8_t brightn
     if (groupIndex < groupCount && groups[groupIndex] != nullptr)
     {
         groups[groupIndex]->BrightnessActive = brightness; // Set the base brightness for ON state for the specified group
-        ledState = TODO; // Set the LED state to TODO, indicating that a change is scheduled
     }
 }
 
@@ -88,6 +87,14 @@ void LedGroupController::setIDLEBrightness(uint8_t groupIndex, uint8_t brightnes
     if (groupIndex < groupCount && groups[groupIndex] != nullptr)
     {
         groups[groupIndex]->BrightnessIDLE = brightness; // Set the base brightness for OFF state for the specified group
+    }
+}
+
+void LedGroupController::setGroupActive(uint8_t groupIndex, bool isActive)
+{
+    if (groupIndex < groupCount && groups[groupIndex] != nullptr)
+    {
+        groups[groupIndex]->setGroupActive(isActive); // Set the active state of the specified group
         ledState = TODO; // Set the LED state to TODO, indicating that a change is scheduled
     }
 }

@@ -38,6 +38,8 @@ public:
 
     void setGroupColor(uint8_t groupIndex, CRGB color);
 
+    void setGroupActive(uint8_t groupIndex, bool isActive); // Set the active state of a group
+
     void setActiveBrightness(uint8_t groupIndex, uint8_t brightness);
     void setIDLEBrightness(uint8_t groupIndex, uint8_t brightness);
 

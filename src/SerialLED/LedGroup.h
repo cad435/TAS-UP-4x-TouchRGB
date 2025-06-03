@@ -23,5 +23,7 @@ public:
     uint8_t BrightnessActive = 255; // Brightness when the button is in use or Proximity sensed
     uint8_t BrightnessIDLE = 0; // Base when the button is IDLE
 
+    void setGroupActive(bool isActive); //True when the group is active ("Active Brightness" used), false when the group is idle ("Idle Brightness" used)
+
 };
 
