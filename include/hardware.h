@@ -44,7 +44,8 @@
     #define TOUCH_PIN_BOTTOM_RIGHT (25) //Bottom Right
 
 
-    #define TOUCH_TAP_CHANNELS {CAP1188::Pad_A, CAP1188::Pad_B, CAP1188::Pad_C, CAP1188::Pad_D} //Channels that are used for the Tap-Functionality. The channels are defined in the CAP1188 class.
+    #define CAP1188_MTP_CHANNELS {CAP1188::Pad_A, CAP1188::Pad_B, CAP1188::Pad_C, CAP1188::Pad_D} //Channels that are used for the Tap-Functionality. The channels are defined in the CAP1188 class.
+    #define CAP1188_MTP_CHANNELS_COUNT (4) //Number of channels that are used for the Tap-Functionality. The channels are defined in the CAP1188 class.
 
 
     #define TTD_LED_FPS (50) //Frames per second for the LED's.
@@ -62,7 +63,7 @@
     #define TTD_LED_GROUP_COUNT (3) //Number of LED-Groups, used for the LED-Controller. This is used to group the LED's together, so that we can control them in groups.
 
     //LED-Group Indizes, used to group the LED's together, so that we can control them in groups. We need to define as many groups as we have defined in the Group-Count define
-    #define TTD_LED_GROUPS {{0, 1, 2, 3}, {/*4,*/ 5, 6, 7, 8, 9/*, 13*/}, {10, 11, 12}}
+    #define TTD_LED_GROUPS {{0, 1, 2, 3}, {4, 5, 6, 7, 8, 9, 13}, {10, 11, 12}}
 
 
 

@@ -126,7 +126,7 @@ void CAP1188::evaluate()
   int8_t sum = 0;
   for (uint8_t i = 0; i < 8; i++)
   {
-    sum += abs(RawDeltaCount[i]);
+    //sum += abs(getRawDeltaCount(i)); //this somehow breaks the tap-detection....
   }
 
   if (sum > proximityTrehshold)
@@ -299,14 +299,14 @@ void CAP1188::LEDOutputPushPull(uint8_t Channel, bool isPushPull)
   writeBit(CAP1188_LED_OUTPUT_TYPE, Channel, isPushPull);
 }
 
-void CAP1188::enableMultipleTouchTapPattern(uint8_t PadsEvaluated[])
+void CAP1188::enableMultipleTouchTapPattern(uint8_t PadsEvaluated[], uint8_t PadsEvaluatedCount)
 {
   writeBit(CAP1188_MULTIPLE_TOUCH_CONFIG, CAP1188_MTP_EN, true); //enable multiple touch block
   writeBit(CAP1188_MULTIPLE_TOUCH_CONFIG, CAP1188_MTP_COMP_PTRN, true); //enable the comparison pattern, only pads in CAP1188_MULTIPLE_TOUCH_PATTERN_CONFIG are evaluated
   writeBit(CAP1188_MULTIPLE_TOUCH_CONFIG, CAP1188_MTP_TH0, true); //all pads must be really pressed 100% the threshold of a normal pad to count as 1 for the pattern recognition
   writeBit(CAP1188_MULTIPLE_TOUCH_CONFIG, CAP1188_MTP_TH1, true); 
 
-  for (uint8_t i = 0; i < sizeof(PadsEvaluated); i++)
+  for (uint8_t i = 0; i < PadsEvaluatedCount; i++)
   {
     writeBit(CAP1188_MULTIPLE_TOUCH_PATTERN_CONFIG, PadsEvaluated[i], true); //use teh given pads for the pattern recognition
   }

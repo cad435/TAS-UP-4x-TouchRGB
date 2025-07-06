@@ -61,7 +61,7 @@ public:
 
   void disableAnalogNoiseFilter(bool disable);
 
-  void enableMultipleTouchTapPattern(uint8_t PadsEvaluated[]);
+  void enableMultipleTouchTapPattern(uint8_t PadsEvaluated[], uint8_t PadsEvaluatedCount);
 
   //call peridically to read the touch status
   void evaluate();
@@ -89,7 +89,6 @@ private:
   uint8_t proximityTrehshold = 0;
 
   int8_t getRawDeltaCount(uint8_t channel);
-  int8_t RawDeltaCount[8] = {0, 0, 0, 0, 0, 0, 0, 0};
   bool ChannelTouched[8] = {false, false, false, false, false, false, false, false};
   bool ChannelChangedSinceLastEvaluate[8] = {false, false, false, false, false, false, false, false};
 

@@ -58,8 +58,8 @@ void TDD_Module::setup()
 
     logDebugP("TouchThreshold: %i", touchThreshold); //Print the string to the debug output
 
-    uint8_t MTP[] = TOUCH_TAP_CHANNELS; //Define the multiple touch tap pattern
-    cap->enableMultipleTouchTapPattern(MTP); //Define the multiple touch tap pattern
+    uint8_t MTP[] = CAP1188_MTP_CHANNELS; //Define the multiple touch tap pattern
+    cap->enableMultipleTouchTapPattern(MTP, CAP1188_MTP_CHANNELS_COUNT); //Define the multiple touch tap pattern
 
 
 #pragma endregion CAP1188-Initialisation
