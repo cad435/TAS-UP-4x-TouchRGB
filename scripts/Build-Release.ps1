@@ -27,7 +27,7 @@
 # $settings = scripts/OpenKNX-Build-Settings.ps1
 
 # execute generic pre-build steps
-../lib/OGM-Common/scripts/setup/reusable/Build-Release-Preprocess.ps1 $args[0]
+lib/OGM-Common/scripts/setup/reusable/Build-Release-Preprocess.ps1 $args[0]
 if (!$?) { exit 1 }
 
 # build firmware based on generated headerfile 
@@ -35,10 +35,10 @@ if (!$?) { exit 1 }
 # see comment in Build-Step.ps1 for argument description
 
 # Example call, the following 2 lines might be there multiple times for each firmware which should be built
- ../lib/OGM-Common/scripts/setup/reusable/Build-Step.ps1 release_UP1 firmware uf2 "TAS-UP-4x-TouchRGB" ..\
+ ../OGM-Common/scripts/setup/reusable/Build-Step.ps1 release_UP1 firmware uf2 "TAS-UP-4x-TouchRGB" ..\
  if (!$?) { exit 1 }
 
 
 # execute generic post-build steps
-../lib/OGM-Common/scripts/setup/reusable/Build-Release-Postprocess.ps1 $args[0]
+lib/OGM-Common/scripts/setup/reusable/Build-Release-Postprocess.ps1 $args[0]
 if (!$?) { exit 1 }

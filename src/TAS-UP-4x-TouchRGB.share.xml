@@ -23,7 +23,7 @@
                 <!-- Das KO muss dafür NICHT verknüpft sein! -->
                 <!-- werden dann als "ParamBTN_bInA" & ParamBTN_bInB in der knxprod.h ausgelesen-->
                 <TypeRestriction Base="Value" SizeInBit="16">
-                  <Enumeration Text="Externes KO" Value="0" Id="%ENID%" />
+                  <!-- <Enumeration Text="Externes KO" Value="0" Id="%ENID%" /> -->
                   <!-- <Enumeration Text="Sensoreingang A1 (SCL)" Value="50" Id="%ENID%" /> -->
                   <Enumeration Text="Pad D (GPIO 28)" Value="643" Id="%ENID%" /> <!-- War vorher Sensoreingang A1 (SDA) -->
                   <Enumeration Text="PAD C (GPIO 27)" Value="642" Id="%ENID%" /> <!-- War vorher Sensoreingang B1 (SCL) -->

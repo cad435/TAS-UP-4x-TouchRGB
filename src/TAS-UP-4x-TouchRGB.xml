@@ -15,15 +15,15 @@
     SerialNumber="4R3NFIB"
   />
  
- <op:define prefix="BASE" ModuleType="10" share="../lib/OGM-Common/src/Common.share.xml" >
-  <op:verify File="../lib/OGM-Common/library.json" ModuleVersion="1.2"/>
+  <op:define prefix="BASE" ModuleType="10" share="../lib/OGM-Common/src/Common.share.xml" >
+  <op:verify File="../lib/OGM-Common/library.json" ModuleVersion="1.4"/>
+ </op:define> 
+
+<op:define prefix="UCT" ModuleType="99" share="../lib/OFM-ConfigTransfer/src/ConfigTransfer.share.xml" noConfigTransfer="true">
+  <op:verify File="../lib/OFM-ConfigTransfer/library.json" ModuleVersion="0.4"/>
  </op:define>
 
- <op:define prefix="UCT" ModuleType="99" share="../lib/OFM-ConfigTransfer/src/ConfigTransfer.share.xml" noConfigTransfer="true">
-  <op:verify File="../lib/OFM-ConfigTransfer/library.json" ModuleVersion="0.2"/>
- </op:define>
-
-  <op:define prefix="TTD" ModuleType="43" share="TAS-UP-4x-TouchRGB.share.xml" KoSingleOffset="630"/>
+ <op:define prefix="TTD" ModuleType="43" share="TAS-UP-4x-TouchRGB.share.xml" KoSingleOffset="630"/>
 
  <op:define prefix="THP" ModuleType="20" share="../lib/OFM-THPSensorModule/src/THPSensor.share.xml" template="../lib/OFM-THPSensorModule/src/THPSensor.templ.xml" NumChannels="1" KoOffset="20">
   <op:verify File="../lib/OFM-THPSensorModule/library.json" ModuleVersion="0.3"/>
@@ -32,8 +32,8 @@
   <op:verify File="../lib/OFM-VirtualButton/library.json" ModuleVersion="0.5"/>
  </op:define>
  <op:define prefix="LOG" ModuleType="10" share="../lib/OFM-LogicModule/src/Logikmodul.share.xml" template="../lib/OFM-LogicModule/src/Logikmodul.templ.xml" NumChannels="30" KoOffset="280">
-  <op:verify File="../lib/OFM-LogicModule/library.json" ModuleVersion="3.5"/>
- </op:define>
+  <op:verify File="../lib/OFM-LogicModule/library.json" ModuleVersion="3.7"/>
+ </op:define> 
 
  <generate/>
 </KNX>
