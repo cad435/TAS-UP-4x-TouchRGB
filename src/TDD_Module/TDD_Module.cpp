@@ -17,11 +17,6 @@ void TDD_Module::setup()
     logDebugP("setup(), CPU: %i", get_core_num()); 
     
 
-    /**  Check if LCD Present **/
-    hasLCD = ParamTTD_HasDisplay; //If the LCD is present, set the flag to true   
-
-    logDebugP("Has LCD: %i", hasLCD); //Print the string to the debug output
-
 
 #pragma region CAP1188-Initialisation
 
