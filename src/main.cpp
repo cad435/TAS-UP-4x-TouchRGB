@@ -17,6 +17,9 @@ bool init_done = false;
 void setup()
 {
     delay(5000);
+
+    Serial.println("Starting OpenKNX on TAS-UP-4x-TouchRGB");
+
     const uint8_t firmwareRevision = 1;
     openknx.init(firmwareRevision);
 
@@ -26,6 +29,7 @@ void setup()
     openknx.addModule(9, openknxFileTransferModule);
     openknx.addModule(43, openknxTDD_Module);
     init_done = true;
+
     openknx.setup(); // Call setup() for the modules
     setup_done = true;
 

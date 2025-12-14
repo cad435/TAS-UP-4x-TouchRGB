@@ -6,8 +6,8 @@
 #include "OpenKNX/TimerInterrupt.h"
 #include "../CAP1188/CAP1188.h"
 #include <FastLed.h>
-#include "../SerialLED/LedGroupController.h"
-#include "../SerialLED/LedHelper.h"
+#include "DigitalLed/LEDHelper.h"
+#include "DigitalLed/LedGroupController.h"
 
 class TDD_Module : public OpenKNX::Module
 {
@@ -20,6 +20,10 @@ class TDD_Module : public OpenKNX::Module
   };
 
   public:
+
+    //constructor
+    TDD_Module();
+
     void loop() override;
     void loop1() override;
     void setup() override;
@@ -36,16 +40,15 @@ class TDD_Module : public OpenKNX::Module
   private:
 
     bool setupComplete = false; // Flag to check if setup is complete. Used for core1
-    
-    bool hasLCD = false; // Flag to check if the LCD is connected
 
     CAP1188* cap;
+    LedGroupController* LedController; //Pointer to LedGroupController class
 
     LEDHelper* ledHelper; // Pointer to the LEDHelper class
 
-    LedGroupController* ledGroupController;; // Pointer to the LedGroupController class
 
-    uint8_t PercentToUint8(uint8_t percent){ return ((uint16_t)percent * 255) / 100; }
+
+    uint8_t PercentToUint8(uint8_t percent){ return (uint8_t)round(((uint16_t)percent * (uint16_t)255) / 100.0f); }
 
     //takes a KNX string Parameter and spits out a number
     int32_t StringParam2Num(uint8_t* ParamData);

@@ -2,6 +2,9 @@
 #include "ModuleVersionCheck.h"
 
 
+//empty constructor
+TDD_Module::TDD_Module() { }
+
 const std::string TDD_Module::name()
 {
     return "TDD_Module";
@@ -15,8 +18,6 @@ const std::string TDD_Module::version()
 void TDD_Module::setup()
 {
     logDebugP("setup(), CPU: %i", get_core_num()); 
-    
-
 
 #pragma region CAP1188-Initialisation
 
@@ -24,72 +25,91 @@ void TDD_Module::setup()
     cap = new CAP1188(CAP1188_RST_PIN);
 
     if (cap->begin(CAP1188_I2CADDR, new TwoWire(&CAP1188_I2C_WIRECLASS, CAP1188_I2C_SDA, CAP1188_I2C_SCL)))
-    logDebugP("CAP1188 begin success");
+    {
+        logDebugP("CAP1188 begin success");
+        uint8_t GlobalSen = ParamTTD_CAP_Sensitivity; //Get the sensitivity from the parameter
+        cap->SetGlobalSensitivity(GlobalSen); //Set the sensitivity of the CAP1188
+        logDebugP("SetGlobalSensitivity: %i", GlobalSen); //Print the sensitivity to the debug output
+
+
+        
+        bool disableAnalogFilter = ParamTTD_CAP_EnableAnalogFilter; //Get the analog filter from the parameter
+        cap->disableAnalogNoiseFilter(!disableAnalogFilter); //Enable the analog filter
+        logDebugP("disableAnalogNoiseFilter: !%i", disableAnalogFilter); //Print the analog filter to the debug output
+
+
+        //read the proximity threshold from the parameter and set it to the CAP1188
+        cap->setProximityThreshold(ParamTTD_TTDProximityThreshold); //Set the proximity threshold
+        logDebugP("proximityThreshold: %i", ParamTTD_TTDProximityThreshold); //Print the string to the debug output
+
+
+        uint8_t touchThreshold = ParamTTD_TTDTouchThreshold;
+        for (int i = 0; i < 8; i++)
+            cap->setTouchThreshold(i, touchThreshold); //Set the touch threshold for each pin
+
+        logDebugP("TouchThreshold: %i", touchThreshold); //Print the string to the debug output
+
+        uint8_t MTP[] = CAP1188_MTP_CHANNELS; //Define the multiple touch tap pattern
+        cap->enableMultipleTouchTapPattern(MTP, CAP1188_MTP_CHANNELS_COUNT); //Define the multiple touch tap pattern
+    }
     else
     {
-        logDebugP("CAP1188 begin failed");
-        return;
+        logDebugP("CAP1188 begin failed, init skipped. TTD Module will not work!");
     }
-
-    uint8_t GlobalSen = ParamTTD_CAP_Sensitivity; //Get the sensitivity from the parameter
-    cap->SetGlobalSensitivity(GlobalSen); //Set the sensitivity of the CAP1188
-    logDebugP("SetGlobalSensitivity: %i", GlobalSen); //Print the sensitivity to the debug output
-
-
-    
-    bool disableAnalogFilter = ParamTTD_CAP_EnableAnalogFilter; //Get the analog filter from the parameter
-    cap->disableAnalogNoiseFilter(!disableAnalogFilter); //Enable the analog filter
-    logDebugP("disableAnalogNoiseFilter: !%i", disableAnalogFilter); //Print the analog filter to the debug output
-
-
-    //read the proximity threshold from the parameter and set it to the CAP1188
-    cap->setProximityThreshold(ParamTTD_TTDProximityThreshold); //Set the proximity threshold
-    logDebugP("proximityThreshold: %i", ParamTTD_TTDProximityThreshold); //Print the string to the debug output
-
-
-    uint8_t touchThreshold = ParamTTD_TTDTouchThreshold;
-    for (int i = 0; i < 8; i++)
-        cap->setTouchThreshold(i, touchThreshold); //Set the touch threshold for each pin
-
-    logDebugP("TouchThreshold: %i", touchThreshold); //Print the string to the debug output
-
-    uint8_t MTP[] = CAP1188_MTP_CHANNELS; //Define the multiple touch tap pattern
-    cap->enableMultipleTouchTapPattern(MTP, CAP1188_MTP_CHANNELS_COUNT); //Define the multiple touch tap pattern
 
 
 #pragma endregion CAP1188-Initialisation
 
 #pragma region LED-Initialisation
 
+
     /**  Initialisation of LED's **/
     logDebugP("LED-Initialisation"); //Print the string to the debug output
 
-    ledGroupController = new LedGroupController(TTD_LED_COUNT, TTD_LED_GROUP_COUNT); //Create a new instance of the LedGroupController class
-    ledHelper = new LEDHelper(); //Create a new instance of the LEDHelper class
-    logDebugP("LedGroupController created with %i LED-Groups", TTD_LED_GROUP_COUNT); //Print the string to the debug output
+    uint8_t grpsz[] = TTD_LEDGROUP_SIZE; //buffer the group sizes
 
-    std::vector<std::vector<uint8_t>> LedGroupVector = TTD_LED_GROUPS; //Create a vector to hold the LED indices
+    LedController = new LedGroupController(TTD_LEDGROUP_COUNT, grpsz); //Create a new instance of the LedGroupController class
+    LedGroupFunction ledgrp_fkt[] = TTD_LEDGROUP_FUNCTIONS; //buffer the group functions
 
-    for (uint8_t i = 0; i < TTD_LED_GROUP_COUNT; i++)
+    uint8_t PixelIndex = 0;
+
+    //Initialize each LED-Group
+    for (uint8_t i = 0; i < LedController->getOverallLedGroupCount(); i++)
     {
-        ledGroupController->initGroup(i, LedGroupVector[i].size(), LedGroupVector[i].data()); //Initialize the group with the LED indices
-        logDebugP("LedGroup %i initialized with %i LEDs", i, LedGroupVector[i].size()); //Print the string to the debug output
-    }
-    
+        LedController->AddLedGroup(grpsz[i], ledgrp_fkt[i], ledHelper->rgb565ToCRGB(ParamTTD_LEDColor)); //Initialize the group with the LED indices
+        logDebugP("LedGroup %i initialized with %i LEDs", i, grpsz[i]); //Print the string to the debug output
 
+        PixelIndex += grpsz[i]; //Increment the pixel index
+    }
+
+    //further define each LED-Group initially
+    //get the colors from the KNX Parameters
     CRGB col = ledHelper->rgb565ToCRGB(ParamTTD_LEDColor); //Convert the color from the parameter to CRGB
     uint8_t brightness_ON = PercentToUint8(ParamTTD_LEDBrightness_Active); //Get the brightness from the parameter
     uint8_t brightness_OFF = PercentToUint8(ParamTTD_LEDBrightness_IDLE); //Get the brightness from the parameter
-    logDebugP("LEDColor: %i|%i|%i", col.r, col.g, col.b); //Print the color to the debug output
-    logDebugP("LEDBrightness_Active: %i", brightness_ON); //Print the brightness to the debug output
-    logDebugP("LEDBrightness_IDLE: %i", brightness_OFF); //Print the brightness to the debug output
-    for (uint8_t i = 0; i < TTD_LED_GROUP_COUNT; i++)
+    
+    
+    for (uint8_t i = 0; i < TTD_LEDGROUP_COUNT; i++)
     {
-        ledGroupController->setActiveBrightness(i, brightness_ON); //Get the brightness from the parameter
-        ledGroupController->setIDLEBrightness(i, brightness_OFF); //Get the brightness from the parameter
-        ledGroupController->setGroupColor(i, col); //set the colors and start the LED-Transition
-        ledGroupController->setGroupActive(i, false); //Set the group to IDLE after startup
+        LedGroup* group = LedController->getLedGroup(i);
+
+        //this use of directly accessing the groups parameters should only be used when in a setup scenario as it will completely skip the state-machine of the controller 
+        //
+        //group->maxBrightness = brightness_ON; //Set the maximum brightness
+        group->minBrightness = 128;
+        //group->minBrightness = brightness_OFF; //Set the minimum brightness
     }
+
+    LedGroup* group = LedController->getLedGroup(0);
+
+    //debug output
+    logDebugP("LEDColor: %i|%i|%i", group->color.r, group->color.g, group->color.b); //Print the color to the debug output
+    logDebugP("LEDBrightness_Active: %i", group->maxBrightness); //Print the brightness to the debug output
+    logDebugP("LEDBrightness_IDLE: %i", group->minBrightness); //Print the brightness to the debug output
+    //Set the group color and set it to IDLE
+    //will also start of the state-machine
+    LedController->setColor(col); //Set the color of the LED's to the value from the parameter
+    LedController->setGroupActive(false); //Set the group to IDLE
 
 #pragma endregion LED-Initialisation
 
@@ -112,8 +132,15 @@ void TDD_Module::setup1()
     //this will than proceed to loop1();
 }
 
+
+//handles all the capacitive things and the actual dataflows
 void TDD_Module::loop()
 {
+
+    if(openknx.freeLoopTime())
+    {
+        LedController->evaluate(); //Evaluate the LedGroupController
+    }
 
     //fire here as fast as we can, will be executed when openKNX feels like.    
     if(openknx.freeLoopTime())
@@ -167,13 +194,14 @@ void TDD_Module::loop()
 
 }
 
+//handles all the "shiny" things, eg. LED-Animations and so on
 void TDD_Module::loop1()
 {
     //call as fast as possible, will be only executed every 20ms
-    if(openknx.freeLoopTime())
+    /*if(openknx.freeLoopTime())
     {
-        ledGroupController->evaluate();
-    }
+        LedController->evaluate(); //Evaluate the LedGroupController
+    }*/
 }
 
 void TDD_Module::processInputKo(GroupObject& iKo)
@@ -183,29 +211,33 @@ void TDD_Module::processInputKo(GroupObject& iKo)
     case TTD_KoLEDColor:
     {
         //serialLed->setLEDTargetColor(ledHelper->DPT_Colour_RGB_to_CRGB(KoTTD_LEDColor.value(DPT_Colour_RGB)));
-        for (uint8_t i = 0; i < TTD_LED_GROUP_COUNT; i++)
+        for (uint8_t i = 0; i < LedController->getOverallLedGroupCount(); i++)
         {
-            ledGroupController->setGroupColor(1, ledHelper->DPT_Colour_RGB_to_CRGB(KoTTD_LEDColor.value(DPT_Colour_RGB))); //Set the color of the first group to the value from the parameter
+            LedGroup* g = LedController->getLedGroup(i);
+            g->color = ledHelper->DPT_Colour_RGB_to_CRGB(KoTTD_LEDColor.value(DPT_Colour_RGB)); //Set the color of the LED group to the value from the parameter
         }
         break;
     }
     case TTD_KoLEDBrightness_Active:
     {
         uint8_t briActive = KoTTD_LEDBrightness_Active.value(DPT_Scaling); //Get the brightness from the parameter
-        for (uint8_t i = 0; i < TTD_LED_GROUP_COUNT; i++)
+        for (uint8_t i = 0; i < LedController->getOverallLedGroupCount(); i++)
         {
-            ledGroupController->setActiveBrightness(i, briActive); //Set the brightness of the LED's to the value from the parameter
-            ledGroupController->setGroupActive(i, true);
+            LedGroup* g = LedController->getLedGroup(i);
+            g->maxBrightness = briActive; //Set the brightness of the LED's to the value from the parameter
+            g->isActive = true; //Set the group to ACTIVE after startup
+
         }
         break;
     }
     case TTD_KoLEDBrightness_IDLE:
     {
         uint8_t briIdle = KoTTD_LEDBrightness_IDLE.value(DPT_Scaling); //Get the brightness from the parameter
-        for (uint8_t i = 0; i < TTD_LED_GROUP_COUNT; i++)
+        for (uint8_t i = 0; i < LedController->getOverallLedGroupCount(); i++)
         {
-            ledGroupController->setIDLEBrightness(i, briIdle); //Set the brightness of the LED's to the value from the parameter
-            ledGroupController->setGroupActive(i, false); //Set the group to IDLE after startup
+            LedGroup* g = LedController->getLedGroup(i);
+            g->minBrightness = briIdle; //Set the brightness of the LED's to the value from the parameter
+            g->isActive = false; //Set the group to IDLE after startup
         }
         break;    
     }

@@ -50,19 +50,22 @@
 
     #define TTD_LED_FPS (50) //Frames per second for the LED's.
     #define TTD_LED_TRANSITION_TIME (1000) //Time in ms for the LED's to transition from one color to another.
-    #define TTD_LED_TRANSITION_DELTA (255 / (TTD_LED_TRANSITION_TIME / TTD_LED_FPS)) //Time in ms for the LED's to transition from one color to another.
+    #define TTD_LED_TRANSITION_DELTA (255 / (TTD_LED_TRANSITION_TIME / TTD_LED_FPS)) //Time in ms for the LED's to transition from one color to another. This defines one "step" where inbetween the led's are only changing a little bit
 
 
     //WS2812 RGB LED
     #define TTD_RGB_DIO_PIN (18)
-    #define TTD_LED_COUNT (14)  //Number of LEDs in the strip. 
     #define TTD_LED_TYPE SK6812
     #define TTD_RGB_ORDER GRB //RGB Order for the LED's, can be changed to GRB or BRG if needed.
 
-    #define TTD_LED_GROUP_COUNT (3) //Number of LED-Groups, used for the LED-Controller. This is used to group the LED's together, so that we can control them in groups.
 
-    //LED-Group Indizes, used to group the LED's together, so that we can control them in groups. We need to define as many groups as we have defined in the Group-Count define
-    #define TTD_LED_GROUPS {{0, 1, 2, 3}, {4, 5, 6, 7, 8, 9, 13}, {10, 11, 12}}
+         //!!! LED-Groups MUST be added in the same order as the physical LED chain is built !!!
+
+
+    #define TTD_LEDGROUP_COUNT (3) //Number of LED-Groups, used for the LED-Controller. This is used to group the LED's together, so that we can control them in groups.
+    //LED-Group Sizes of the daisichained LED's. This must reflect the Hardware! This array must be the same size as TTD_LED_GROUP_COUNT.
+    #define TTD_LEDGROUP_SIZE {1, 40, 1}
+    #define TTD_LEDGROUP_FUNCTIONS {LedGroupFunction::FLAT, LedGroupFunction::SINE, LedGroupFunction::FLAT} //Functions for each LED-Group, must be the same size as TTD_LED_GROUP_COUNT
 
     
 
