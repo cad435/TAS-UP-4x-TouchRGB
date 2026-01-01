@@ -6,7 +6,8 @@
 
 enum class LedGroupFunction : uint8_t {
     FLAT = 0,
-    SINE = 1
+    SINE,
+    ZERO
 };
 
 struct LedGroup {

@@ -95,9 +95,8 @@ void TDD_Module::setup()
 
         //this use of directly accessing the groups parameters should only be used when in a setup scenario as it will completely skip the state-machine of the controller 
         //
-        //group->maxBrightness = brightness_ON; //Set the maximum brightness
-        group->minBrightness = 128;
-        //group->minBrightness = brightness_OFF; //Set the minimum brightness
+        group->maxBrightness = brightness_ON; //Set the maximum brightness
+        group->minBrightness = brightness_OFF; //Set the minimum brightness
     }
 
     LedGroup* group = LedController->getLedGroup(0);
@@ -136,12 +135,6 @@ void TDD_Module::setup1()
 //handles all the capacitive things and the actual dataflows
 void TDD_Module::loop()
 {
-
-    if(openknx.freeLoopTime())
-    {
-        LedController->evaluate(); //Evaluate the LedGroupController
-    }
-
     //fire here as fast as we can, will be executed when openKNX feels like.    
     if(openknx.freeLoopTime())
     {
@@ -198,10 +191,10 @@ void TDD_Module::loop()
 void TDD_Module::loop1()
 {
     //call as fast as possible, will be only executed every 20ms
-    /*if(openknx.freeLoopTime())
+    if(openknx.freeLoopTime())
     {
         LedController->evaluate(); //Evaluate the LedGroupController
-    }*/
+    }
 }
 
 void TDD_Module::processInputKo(GroupObject& iKo)

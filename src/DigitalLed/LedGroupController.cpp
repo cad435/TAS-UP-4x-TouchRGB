@@ -48,7 +48,13 @@ void LedGroupController::AddLedGroup(uint8_t _ledCount, LedGroupFunction _functi
             if(ledGroups[InitializedGroups].fkt_preRendered[i] < 0)
                 ledGroups[InitializedGroups].fkt_preRendered[i] = 0; // Clamp to 0
         }
-    } else {
+    } else if(_function == LedGroupFunction::ZERO)
+    {
+        for (uint8_t i = 0; i < _ledCount; i++)
+            ledGroups[InitializedGroups].fkt_preRendered[i] = 0; // ZERO function
+    }
+    else
+    {
         for (uint8_t i = 0; i < _ledCount; i++)
             ledGroups[InitializedGroups].fkt_preRendered[i] = 255; // Flat function
     }

@@ -6,8 +6,8 @@
 #include "OpenKNX/TimerInterrupt.h"
 #include "../CAP1188/CAP1188.h"
 #include <FastLed.h>
-#include "DigitalLed/LEDHelper.h"
-#include "DigitalLed/LedGroupController.h"
+#include "../DigitalLed/LEDHelper.h"
+#include "../DigitalLed/LedGroupController.h"
 
 class TDD_Module : public OpenKNX::Module
 {
