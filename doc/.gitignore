@@ -1,0 +1,7 @@
+# Generated PNG files
+png/
+*.png
+
+# Python cache
+__pycache__/
+*.pyc

@@ -133,6 +133,7 @@ void TDD_Module::setup1()
 
 
 //handles all the capacitive things and the actual dataflows
+//this is essentially the loop which handles the outgoing KNX-Messages
 void TDD_Module::loop()
 {
     //fire here as fast as we can, will be executed when openKNX feels like.    
@@ -197,6 +198,7 @@ void TDD_Module::loop1()
     }
 }
 
+//this is essentially the place where messages (incoming KO's) are handled and processed
 void TDD_Module::processInputKo(GroupObject& iKo)
 {
     switch(iKo.asap())
