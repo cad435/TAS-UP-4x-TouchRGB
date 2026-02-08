@@ -41,7 +41,15 @@
       "Bash(git -C \"e:/_DATEN/Alexander/Projekte/_Projektordner/_HomeAutomation/KNX/OpenKNX/FirmwareEntwicklung/$d\" tag --sort=-v:refname)",
       "Bash(git -C \"e:/_DATEN/Alexander/Projekte/_Projektordner/_HomeAutomation/KNX/OpenKNX/FirmwareEntwicklung/$d\" log origin/v1 --oneline -5)",
       "Bash(powershell -ExecutionPolicy Bypass -Command:*)",
-      "Bash(cmd /C \"dir lib /A\")"
+      "Bash(cmd /C \"dir lib /A\")",
+      "Bash(gh api:*)",
+      "WebFetch(domain:support.knx.org)",
+      "WebFetch(domain:knx-user-forum.de)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(\"$USERPROFILE/.platformio/penv/Scripts/platformio.exe\" run -e develop_TAS_USB -t upload)",
+      "Bash(\"$USERPROFILE/.platformio/penv/Scripts/platformio.exe\" run -e pico -t upload -d \"E:/_DATEN/Alexander/Projekte/Tools/RP2040_FlashDeletionTool\")",
+      "Bash(git -C \"E:/_DATEN/Alexander/Projekte/_Projektordner/_HomeAutomation/KNX/OpenKNX/FirmwareEntwicklung/OGM-Common\" branch --show-current)",
+      "Bash(git -C \"E:/_DATEN/Alexander/Projekte/_Projektordner/_HomeAutomation/KNX/OpenKNX/FirmwareEntwicklung/OGM-Common\" log --oneline -3)"
     ]
   }
 }

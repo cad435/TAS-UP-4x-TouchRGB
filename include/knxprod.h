@@ -16,9 +16,10 @@
 #define ETS_ModuleId_BTN 5
 #define ETS_ModuleId_LOG 6
 #define MAIN_FirmwareName "TAS-UP-4x-TouchRGB(Dev)"
-#define MAIN_OpenKnxId 0xFF
+#define MAIN_OpenKnxId 0xAF
 #define MAIN_ApplicationNumber 34
 #define MAIN_ApplicationVersion 1
+#define MAIN_FirmwareRevision 0
 #define MAIN_ApplicationEncoding iso-8859-15
 #define MAIN_ParameterSize 6631
 #define MAIN_MaxKoNumber 646

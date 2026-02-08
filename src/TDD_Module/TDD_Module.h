@@ -1,6 +1,6 @@
 #pragma once
 
-#include "hardware.h"
+#include "TAS_Hardware.h"
 #include "KnxHelper.h"
 #include "OpenKNX.h"
 #include "OpenKNX/TimerInterrupt.h"
@@ -8,6 +8,12 @@
 #include <FastLed.h>
 #include "../DigitalLed/LEDHelper.h"
 #include "../DigitalLed/LedGroupController.h"
+
+//9ms, because the CAP1188 evaluation takes around 7-8ms, so this should only trigger if something is really wrong 
+// and not just because of the CAP1188 evaluation. 
+//This is only for debugging purposes, to detect if something is causing the loop to take significantly longer than it should. 
+//In production, this should be set to a higher value or disabled entirely.
+
 
 class TDD_Module : public OpenKNX::Module
 {

@@ -1,6 +1,6 @@
 #pragma once
 #include <FastLed.h>
-#include "hardware.h"
+#include "TAS_Hardware.h"
 
 
 class LEDHelper

@@ -1,6 +1,6 @@
 #pragma once
 #include "LedGroup.h"
-#include "hardware.h"
+#include "TAS_Hardware.h"
 #include "OpenKNX.h"
 
 //this is a LEDGroupController which processes all the LEDGroups and manages their states and colors
