@@ -47,6 +47,9 @@
     #define CAP1188_MTP_CHANNELS {CAP1188::Pad_A, CAP1188::Pad_B, CAP1188::Pad_C, CAP1188::Pad_D} //Channels that are used for the Tap-Functionality. The channels are defined in the CAP1188 class.
     #define CAP1188_MTP_CHANNELS_COUNT (4) //Number of channels that are used for the Tap-Functionality. The channels are defined in the CAP1188 class.
 
+    #define CAP1188_PROX_CHANNELS {CAP1188::Pad_A, CAP1188::Pad_B, CAP1188::Pad_C, CAP1188::Pad_D} //Channels that are used for the Proximity-Detection. The channels are defined in the CAP1188 class.
+    #define CAP1188_PROX_CHANNELS_COUNT (4) //Number of channels that are used for the Proximity-Detection. The channels are defined in the CAP1188 class.
+
 
     #define TTD_LED_FPS (50) //Frames per second for the LED's.
     #define TTD_LED_TRANSITION_TIME (1000) //Time in ms for the LED's to transition from one color to another.

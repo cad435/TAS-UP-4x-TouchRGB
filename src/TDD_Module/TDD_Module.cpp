@@ -42,6 +42,11 @@ void TDD_Module::setup()
         cap->setProximityThreshold(ParamTTD_TTDProximityThreshold); //Set the proximity threshold
         logDebugP("proximityThreshold: %i", ParamTTD_TTDProximityThreshold); //Print the string to the debug output
 
+        //enable proximity detection on all 4 touch pads
+        uint8_t proxChannels[] = CAP1188_PROX_CHANNELS;
+        cap->enableProximityDetection(proxChannels, CAP1188_PROX_CHANNELS_COUNT);
+        logDebugP("Proximity detection enabled on %i channels", CAP1188_PROX_CHANNELS_COUNT);
+
 
         uint8_t touchThreshold = ParamTTD_TTDTouchThreshold;
         for (int i = 0; i < 8; i++)
@@ -169,11 +174,10 @@ void TDD_Module::loop()
     }     
     
 
-    if(openknx.freeLoopTime() && cap->ProximitySensed) //If proximity is sensed, change the KO
+    if(openknx.freeLoopTime() && cap->isProximityDetected()) //If proximity is sensed, change the KO
     {
-        //KoTTD_StateProximity.value(cap->ProximitySensed, Dpt(1,1)); //Send the proximity value to the KO
-        //logDebugP("Proximity Value %i to KO %i", cap->ProximitySensed, KoTTD_StateProximity.asap()); //Print the proximity value to the debug output
-        logDebugP("Proximity Sensed, but not implemented yet!"); //Print a debug message that proximity is sensed, but not implemented yet
+        KoTTD_ProximitySensed.value(true, Dpt(1,1)); //Send the proximity value to the KO
+        logDebugP("Proximity detected! KO %i", KoTTD_ProximitySensed.asap()); //Print the proximity value to the debug output
     }
 
     if(openknx.freeLoopTime() && cap->TapHappened) //If a tap happened, change the KO

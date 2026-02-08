@@ -73,9 +73,21 @@ public:
 
 
   void setTouchThreshold(uint8_t channel, uint8_t threshold);
+
+  //Sets the software threshold for proximity detection. The sum of absolute delta counts
+  //from all configured proximity channels must exceed this value for proximity to be reported.
   void setProximityThreshold(uint8_t threshold);
 
-  bool ProximitySensed = false;
+  //Configures which sensor channels participate in proximity detection.
+  //Proximity is detected by summing the absolute delta counts of the given channels.
+  //Pass an array of pad indices, e.g. {Pad_A, Pad_B, Pad_C, Pad_D} and the array size.
+  //Call setProximityThreshold() to set the detection threshold before using this.
+  void enableProximityDetection(uint8_t channels[], uint8_t count);
+
+  //Returns true if the sum of absolute delta counts from the configured proximity channels
+  //exceeds the proximity threshold. Reads delta count registers via I2C on each call.
+  //Must call enableProximityDetection() and setProximityThreshold() first.
+  bool isProximityDetected();
 
   bool TapHappened = false; //"Patschfunktion"
   
@@ -86,7 +98,10 @@ private:
 
   uint32_t lastEvaluated = 0;
 
-  uint8_t proximityTrehshold = 0;
+  uint8_t _proximityThreshold = 0;          //software threshold for proximity detection (sum of abs delta counts)
+  uint8_t _proximityChannels[8] = {};       //channel indices (0-7) that participate in proximity summation
+  uint8_t _proximityChannelCount = 0;       //number of channels configured for proximity
+  bool _proximityEnabled = false;           //gate: proximity detection only active after enableProximityDetection()
 
   int8_t getRawDeltaCount(uint8_t channel);
   bool ChannelTouched[8] = {false, false, false, false, false, false, false, false};

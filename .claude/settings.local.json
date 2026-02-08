@@ -16,7 +16,32 @@
       "Bash(powershell -ExecutionPolicy Bypass -Command \"& \"\"$env:USERPROFILE/bin/OpenKNXproducer.exe\"\" create --Debug -h include/knxprod.h src/TAS-UP-4x-TouchRGB.xml\")",
       "Bash(powershell -ExecutionPolicy Bypass -Command \"& \\(Join-Path $env:USERPROFILE ''bin/OpenKNXproducer.exe''\\) create --Debug -h include/knxprod.h src/TAS-UP-4x-TouchRGB.xml\")",
       "Bash(powershell -ExecutionPolicy Bypass -Command '& \\(Join-Path $env:USERPROFILE \"\"bin/OpenKNXproducer.exe\"\"\\) create --Debug -h include/knxprod.h src/TAS-UP-4x-TouchRGB.xml')",
-      "Bash(\"%USERPROFILE%\\\\.platformio\\\\penv\\\\Scripts\\\\platformio.exe\" run -e develop_TAS_USB -t upload)"
+      "Bash(\"%USERPROFILE%\\\\.platformio\\\\penv\\\\Scripts\\\\platformio.exe\" run -e develop_TAS_USB -t upload)",
+      "Bash(powershell -ExecutionPolicy Bypass -Command '& \\(Join-Path $env:USERPROFILE \"\"bin/OpenKNXproducer.exe\"\"\\) --version')",
+      "Bash(gh release list:*)",
+      "WebFetch(domain:api.github.com)",
+      "WebFetch(domain:ww1.microchip.com)",
+      "WebFetch(domain:cdn-shop.adafruit.com)",
+      "WebFetch(domain:www.digikey.jp)",
+      "WebFetch(domain:www.utmel.com)",
+      "Bash(python3:*)",
+      "Bash(python -c:*)",
+      "Bash(pip install:*)",
+      "Bash(\"$USERPROFILE/.platformio/penv/Scripts/platformio.exe\" run -e develop_TAS_USB)",
+      "Bash(powershell -ExecutionPolicy Bypass -Command '& \\(Join-Path $env:USERPROFILE \"\"bin/OpenKNXproducer.exe.v3.9.0.bak\"\"\\) create --Debug -h include/knxprod.h src/TAS-UP-4x-TouchRGB.xml 2>&1')",
+      "Bash(powershell -ExecutionPolicy Bypass -Command '& \\(Join-Path $env:USERPROFILE \"\"bin/OpenKNXproducer.exe\"\"\\) create --Debug -h include/knxprod.h src/TAS-UP-4x-TouchRGB.xml 2>&1')",
+      "Bash(git submodule foreach:*)",
+      "Bash(for d in OFM-LogicModule OFM-VirtualButton)",
+      "Bash(do echo \"=== $d ===\")",
+      "Bash(git -C \"e:/_DATEN/Alexander/Projekte/_Projektordner/_HomeAutomation/KNX/OpenKNX/FirmwareEntwicklung/$d\" log --oneline -1)",
+      "Bash(git -C \"e:/_DATEN/Alexander/Projekte/_Projektordner/_HomeAutomation/KNX/OpenKNX/FirmwareEntwicklung/$d\" remote -v)",
+      "Bash(done)",
+      "Bash(for d in OFM-LogicModule OFM-VirtualButton OFM-THPSensorModule OGM-Common)",
+      "Bash(git -C \"e:/_DATEN/Alexander/Projekte/_Projektordner/_HomeAutomation/KNX/OpenKNX/FirmwareEntwicklung/$d\" fetch --tags)",
+      "Bash(git -C \"e:/_DATEN/Alexander/Projekte/_Projektordner/_HomeAutomation/KNX/OpenKNX/FirmwareEntwicklung/$d\" tag --sort=-v:refname)",
+      "Bash(git -C \"e:/_DATEN/Alexander/Projekte/_Projektordner/_HomeAutomation/KNX/OpenKNX/FirmwareEntwicklung/$d\" log origin/v1 --oneline -5)",
+      "Bash(powershell -ExecutionPolicy Bypass -Command:*)",
+      "Bash(cmd /C \"dir lib /A\")"
     ]
   }
 }

@@ -121,19 +121,6 @@ void CAP1188::evaluate()
     ChannelTouched[i] = value;
 
   }
-  
-  //sum up all Raw Delta Counts
-  int8_t sum = 0;
-  for (uint8_t i = 0; i < 8; i++)
-  {
-    //sum += abs(getRawDeltaCount(i)); //this somehow breaks the tap-detection....
-  }
-
-  if (sum > proximityTrehshold)
-    ProximitySensed = true;
-  else
-    ProximitySensed = false;
-
 
   if (readBit(CAP1188_GENERAL_STATUS, CAP1188_GENERAL_STATUS_MTP))
     TapHappened = true; //if the MTP bit is set, a tap has happened
@@ -276,14 +263,14 @@ void CAP1188::setTouchThreshold(uint8_t channel, uint8_t threshold)
 }
 
 /*!
- *   @brief  Sets the proximity threshold
- *   @param  threshold
- *           value that will be written at selected register
+ *   @brief  Sets the software threshold for proximity detection.
+ *           isProximityDetected() will return true when the sum of absolute
+ *           delta counts from the configured channels exceeds this value.
+ *   @param  threshold  Sum threshold (0 = proximity detection disabled)
  */
-
 void CAP1188::setProximityThreshold(uint8_t threshold)
 {
-  proximityTrehshold = threshold;
+  _proximityThreshold = threshold;
 }
 
 bool CAP1188::isTouched(uint8_t channel)
@@ -304,12 +291,54 @@ void CAP1188::enableMultipleTouchTapPattern(uint8_t PadsEvaluated[], uint8_t Pad
   writeBit(CAP1188_MULTIPLE_TOUCH_CONFIG, CAP1188_MTP_EN, true); //enable multiple touch block
   writeBit(CAP1188_MULTIPLE_TOUCH_CONFIG, CAP1188_MTP_COMP_PTRN, true); //enable the comparison pattern, only pads in CAP1188_MULTIPLE_TOUCH_PATTERN_CONFIG are evaluated
   writeBit(CAP1188_MULTIPLE_TOUCH_CONFIG, CAP1188_MTP_TH0, true); //all pads must be really pressed 100% the threshold of a normal pad to count as 1 for the pattern recognition
-  writeBit(CAP1188_MULTIPLE_TOUCH_CONFIG, CAP1188_MTP_TH1, true); 
+  writeBit(CAP1188_MULTIPLE_TOUCH_CONFIG, CAP1188_MTP_TH1, true);
 
   for (uint8_t i = 0; i < PadsEvaluatedCount; i++)
   {
     writeBit(CAP1188_MULTIPLE_TOUCH_PATTERN_CONFIG, PadsEvaluated[i], true); //use teh given pads for the pattern recognition
   }
-  
 
+
+}
+
+/*!
+ *   @brief  Configures which sensor channels are used for software proximity detection.
+ *           Proximity works by summing the absolute delta counts of the selected channels.
+ *           A larger number of channels increases detection range but also noise sensitivity.
+ *   @param  channels  Array of pad indices, e.g. {Pad_A, Pad_B, Pad_C, Pad_D}
+ *   @param  count     Number of channels in the array (max 8)
+ */
+void CAP1188::enableProximityDetection(uint8_t channels[], uint8_t count)
+{
+  if (count > 8) count = 8; //clamp to max 8 channels
+  _proximityChannelCount = count;
+  for (uint8_t i = 0; i < count; i++)
+  {
+    _proximityChannels[i] = channels[i]; //store which channels to sum
+  }
+  _proximityEnabled = true;
+}
+
+/*!
+ *   @brief  Checks if an object is in proximity of the configured sensor pads.
+ *           Reads the delta count registers (0x10-0x17) for each configured channel via I2C,
+ *           sums their absolute values, and compares against the proximity threshold.
+ *           This is a software-based approach since the CAP1188 has no dedicated hardware
+ *           proximity bit in Active mode (see datasheet Section 5.5.3).
+ *   @return true if the summed absolute delta counts exceed the proximity threshold
+ */
+bool CAP1188::isProximityDetected()
+{
+  if (!_proximityEnabled || _proximityThreshold == 0)
+    return false; //proximity not configured or threshold is zero
+
+  //sum the absolute delta counts of all configured proximity channels
+  int16_t sum = 0;
+  for (uint8_t i = 0; i < _proximityChannelCount; i++)
+  {
+    sum += abs(getRawDeltaCount(_proximityChannels[i])); //read delta count register for this channel
+  }
+
+  //if the combined delta exceeds the threshold, an object is approaching the sensor pads
+  return sum > _proximityThreshold;
 }

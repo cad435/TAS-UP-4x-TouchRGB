@@ -14,7 +14,7 @@ class TDD_Module : public OpenKNX::Module
 
   enum TDD_LED_STATE
   {
-    STATIC, //LED's are static, no animation
+    FIXED, //LED's are static, no animation
     TODO, //LED's are sheduled for a change, but not yet changed
     RUNNING //lED's are running, animation is running
   };
