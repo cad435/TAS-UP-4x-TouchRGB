@@ -181,7 +181,7 @@
               <!-- ZustäWird benötigt, wenn der SCL Pin als Tastereingang verwendet wird! -->
               <ComObject Id="%AID%_O-%TT%00008" Name="StatePAD_SCL" Text="Zustand SCL Pin"  Number="14" FunctionText="Ausgang" ObjectSize="1 Bit" ReadFlag="Enabled" WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled" UpdateFlag="Disabled" ReadOnInitFlag="Disabled" DatapointType="DPST-1-1" />
               <!-- ZustäWird benötigt, wenn der SDA Pin als Tastereingang verwendet wird! -->
-              <ComObject Id="%AID%_O-%TT%00009" Name="StatePAD_SDA" Text="Zustand SDA Pin"  Number="14" FunctionText="Ausgang" ObjectSize="1 Bit" ReadFlag="Enabled" WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled" UpdateFlag="Disabled" ReadOnInitFlag="Disabled" DatapointType="DPST-1-1" />
+              <ComObject Id="%AID%_O-%TT%00009" Name="StatePAD_SDA" Text="Zustand SDA Pin"  Number="15" FunctionText="Ausgang" ObjectSize="1 Bit" ReadFlag="Enabled" WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled" UpdateFlag="Disabled" ReadOnInitFlag="Disabled" DatapointType="DPST-1-1" />
             
             </ComObjectTable>
 

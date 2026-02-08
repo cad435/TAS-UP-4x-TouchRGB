@@ -188,6 +188,8 @@
 #define TTD_KoStatePAD_B 641
 #define TTD_KoStatePAD_C 642
 #define TTD_KoStatePAD_D 643
+#define TTD_KoStatePAD_SCL 644
+#define TTD_KoStatePAD_SDA 645
 
 // Farbe LED's
 #define KoTTD_LEDColor                            (knx.getGroupObject(TTD_KoLEDColor))
@@ -203,6 +205,10 @@
 #define KoTTD_StatePAD_C                          (knx.getGroupObject(TTD_KoStatePAD_C))
 // Zustand Touchpad D
 #define KoTTD_StatePAD_D                          (knx.getGroupObject(TTD_KoStatePAD_D))
+// Zustand SCL Pin
+#define KoTTD_StatePAD_SCL                        (knx.getGroupObject(TTD_KoStatePAD_SCL))
+// Zustand SDA Pin
+#define KoTTD_StatePAD_SDA                        (knx.getGroupObject(TTD_KoStatePAD_SDA))
 
 #define THP_ChannelCount 1
 

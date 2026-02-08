@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:free-pdk.github.io)",
+      "Bash(pio run:*)",
+      "Bash(cmd.exe /c \"cd /d E:\\\\_DATEN\\\\Alexander\\\\Projekte\\\\_Projektordner\\\\SmartBusinessCard\\\\Firmware_PIO\\\\Firmware && pio run\":*)",
+      "Bash(cmd.exe /c \"cd /d E:\\\\_DATEN\\\\Alexander\\\\Projekte\\\\_Projektordner\\\\SmartBusinessCard\\\\Firmware_PIO\\\\Firmware && python -m platformio run\")",
+      "Bash(powershell -Command \"cd 'E:\\\\_DATEN\\\\Alexander\\\\Projekte\\\\_Projektordner\\\\SmartBusinessCard\\\\Firmware_PIO\\\\Firmware'; pio run\":*)",
+      "Bash(powershell -Command:*)",
+      "Bash(C:UsersAlexander.platformiopenvScriptsplatformio.exe run -d \"E:\\\\_DATEN\\\\Alexander\\\\Projekte\\\\_Projektordner\\\\SmartBusinessCard\\\\Firmware_PIO\\\\Firmware\")",
+      "Bash(\"/c/Users/Alexander/.platformio/penv/Scripts/platformio.exe\" run -d \"E:/_DATEN/Alexander/Projekte/_Projektordner/SmartBusinessCard/Firmware_PIO/Firmware\")",
+      "Bash(git submodule status:*)",
+      "Bash(\"C:\\\\Users\\\\Alexander\\\\.platformio\\\\penv\\\\Scripts\\\\platformio.exe\" run -e develop_TAS_USB -t upload)",
+      "Bash(powershell -ExecutionPolicy Bypass -Command \"& ''./lib/OGM-Common/scripts/setup/reusable/Build-Dependencies.ps1''\")",
+      "Bash(powershell -ExecutionPolicy Bypass -Command \"& \"\"$env:USERPROFILE/bin/OpenKNXproducer.exe\"\" create --Debug -h include/knxprod.h src/TAS-UP-4x-TouchRGB.xml\")",
+      "Bash(powershell -ExecutionPolicy Bypass -Command \"& \\(Join-Path $env:USERPROFILE ''bin/OpenKNXproducer.exe''\\) create --Debug -h include/knxprod.h src/TAS-UP-4x-TouchRGB.xml\")",
+      "Bash(powershell -ExecutionPolicy Bypass -Command '& \\(Join-Path $env:USERPROFILE \"\"bin/OpenKNXproducer.exe\"\"\\) create --Debug -h include/knxprod.h src/TAS-UP-4x-TouchRGB.xml')",
+      "Bash(\"%USERPROFILE%\\\\.platformio\\\\penv\\\\Scripts\\\\platformio.exe\" run -e develop_TAS_USB -t upload)"
+    ]
+  }
+}
