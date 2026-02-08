@@ -122,6 +122,9 @@
 #define CAP1188_LED_STATUS_LED2_DN       1
 #define CAP1188_LED_STATUS_LED1_DN       0
 
+// Standby Configuration Register (0x41)
+#define CAP1188_STBY_CFG_AVG_SUM         7
+
 // Configuration Register (0x20)
 #define CAP1188_CONFIG_TIMEOUT           7
 #define CAP1188_CONFIG_WAKE              6

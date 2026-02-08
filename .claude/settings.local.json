@@ -49,7 +49,14 @@
       "Bash(\"$USERPROFILE/.platformio/penv/Scripts/platformio.exe\" run -e develop_TAS_USB -t upload)",
       "Bash(\"$USERPROFILE/.platformio/penv/Scripts/platformio.exe\" run -e pico -t upload -d \"E:/_DATEN/Alexander/Projekte/Tools/RP2040_FlashDeletionTool\")",
       "Bash(git -C \"E:/_DATEN/Alexander/Projekte/_Projektordner/_HomeAutomation/KNX/OpenKNX/FirmwareEntwicklung/OGM-Common\" branch --show-current)",
-      "Bash(git -C \"E:/_DATEN/Alexander/Projekte/_Projektordner/_HomeAutomation/KNX/OpenKNX/FirmwareEntwicklung/OGM-Common\" log --oneline -3)"
+      "Bash(git -C \"E:/_DATEN/Alexander/Projekte/_Projektordner/_HomeAutomation/KNX/OpenKNX/FirmwareEntwicklung/OGM-Common\" log --oneline -3)",
+      "Bash(ls:*)",
+      "Bash(\"C:\\\\Users\\\\Alexander\\\\.claude\\\\plugins\\\\poppler-25.12.0\\\\Library\\\\bin\\\\pdftotext.exe\" -f 1 -l 5 \"e:\\\\_DATEN\\\\Alexander\\\\Projekte\\\\_Projektordner\\\\_HomeAutomation\\\\KNX\\\\OpenKNX\\\\FirmwareEntwicklung\\\\TAS-UP-4x-TouchRGB\\\\doc\\\\CAP1188 Datasheet.pdf\" -)",
+      "Bash(\"C:\\\\Users\\\\Alexander\\\\.claude\\\\plugins\\\\poppler-25.12.0\\\\Library\\\\bin\\\\pdftotext.exe\" -f 23 -l 30 \"e:\\\\_DATEN\\\\Alexander\\\\Projekte\\\\_Projektordner\\\\_HomeAutomation\\\\KNX\\\\OpenKNX\\\\FirmwareEntwicklung\\\\TAS-UP-4x-TouchRGB\\\\doc\\\\CAP1188 Datasheet.pdf\" -)",
+      "Bash(\"C:\\\\Users\\\\Alexander\\\\.claude\\\\plugins\\\\poppler-25.12.0\\\\Library\\\\bin\\\\pdftotext.exe\" -f 31 -l 45 \"e:\\\\_DATEN\\\\Alexander\\\\Projekte\\\\_Projektordner\\\\_HomeAutomation\\\\KNX\\\\OpenKNX\\\\FirmwareEntwicklung\\\\TAS-UP-4x-TouchRGB\\\\doc\\\\CAP1188 Datasheet.pdf\" -)",
+      "Bash(\"C:\\\\Users\\\\Alexander\\\\.claude\\\\plugins\\\\poppler-25.12.0\\\\Library\\\\bin\\\\pdftotext.exe\" -f 37 -l 42 \"e:\\\\_DATEN\\\\Alexander\\\\Projekte\\\\_Projektordner\\\\_HomeAutomation\\\\KNX\\\\OpenKNX\\\\FirmwareEntwicklung\\\\TAS-UP-4x-TouchRGB\\\\doc\\\\CAP1188 Datasheet.pdf\" -)",
+      "Bash(\"C:\\\\Users\\\\Alexander\\\\.claude\\\\plugins\\\\poppler-25.12.0\\\\Library\\\\bin\\\\pdftotext.exe\" \"e:\\\\_DATEN\\\\Alexander\\\\Projekte\\\\_Projektordner\\\\_HomeAutomation\\\\KNX\\\\OpenKNX\\\\FirmwareEntwicklung\\\\TAS-UP-4x-TouchRGB\\\\doc\\\\CAP1188 Datasheet.pdf\" -)",
+      "Bash(\"C:\\\\Users\\\\Alexander\\\\.claude\\\\plugins\\\\poppler-25.12.0\\\\Library\\\\bin\\\\pdftotext.exe\" -layout \"e:\\\\_DATEN\\\\Alexander\\\\Projekte\\\\_Projektordner\\\\_HomeAutomation\\\\KNX\\\\OpenKNX\\\\FirmwareEntwicklung\\\\TAS-UP-4x-TouchRGB\\\\doc\\\\CAP1188 Datasheet.pdf\" -)"
     ]
   }
 }

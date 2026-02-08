@@ -1,34 +1,12 @@
 /*!
  *  @file CAP1188.cpp
  *
- *  @mainpage Adafruit CAP1188 I2C/SPI 8-chan Capacitive Sensor
  *
- *  @section intro_sec Introduction
  *
- * 	This is a library for the Adafruit CAP1188 I2C/SPI 8-chan Capacitive
- * Sensor http://www.adafruit.com/products/1602
- *
- *  These sensors use I2C/SPI to communicate, 2+ pins are required to
- *  interface
- *
- * 	Adafruit invests time and resources providing this open source code,
- *  please support Adafruit and open-source hardware by purchasing products from
- * 	Adafruit!
- *
- *  @section author Author
- *
- *  Limor Fried/Ladyada (Adafruit Industries).
- *  cad435 (heavily modified for OpenKNX)
- *
- * 	@section license License
- *
- * 	BSD (see license.txt)
- *
- * 	@section  HISTORY
- *
- *     v1.0 - First release
- *     v1.1 - heavily modified for OpenKNX
+ *  This library is originally based on the Adafruit CAP1188 library.
  * 
+ * 	it is heavily modified for OpenKNX to add functionality by cad435
+ *
  *  
  * 
  */
@@ -69,6 +47,7 @@ boolean CAP1188::begin(uint8_t i2caddr, TwoWire *theWire) {
   _wire->setSDA(CAP1188_I2C_SDA);
 
   _wire->begin();
+  _wire->setClock(400000); // I2C fast mode (400kHz), max supported by CAP1188
 
   if (_resetpin != -1) {
     pinMode(_resetpin, OUTPUT);
@@ -98,29 +77,60 @@ boolean CAP1188::begin(uint8_t i2caddr, TwoWire *theWire) {
   return true;
 }
 
+
 void CAP1188::evaluate()
 {
+
+
+    //get the current time
+    uint32_t currentTime = millis();
+    //check if it's time for the next frame
+    if (currentTime - _LastEvalTime >= Evaluate_TimeDelay_ms)        
+      _LastEvalTime = currentTime; 
+      //continue with the evaluation of the touch status
+    else      
+      return;//if it's not time for the next frame, return early and do nothing
+
+
+
   uint8_t reg = ReadTouched();
   //get the bits for the channel out of the register and write it to the array
-  bool lastTouch = false;
   for (uint8_t i = 0; i < 8; i++)
   {
     //extract a single boolean bit from the register
     uint8_t mask = (1 << i);
-    bool value = (reg & mask) >> i;
+    bool CurrentlyTouched = (reg & mask) >> i;
 
-    //fetch the last state of one channel
-    lastTouch = ChannelTouched[i];
     //if the last state is different from the current state, set the changed flag to true
-    if(lastTouch != value)
+    if(ChannelTouched[i] != CurrentlyTouched)
       ChannelChangedSinceLastEvaluate[i] = true;
     else
       ChannelChangedSinceLastEvaluate[i] = false;
     
     // save the current state to the array
-    ChannelTouched[i] = value;
-
+    ChannelTouched[i] = CurrentlyTouched;
   }
+
+  //read raw delta counts for pads A-D
+  for (uint8_t i = 0; i < 4; i++)
+    RawDeltaCount[i] = getRawDeltaCount(i);
+
+  //software proximity detection: sum absolute delta counts of pads A-D
+  uint16_t deltaSum = 0;
+  for (uint8_t i = 0; i < 4; i++)
+    deltaSum += abs(RawDeltaCount[i]);
+
+  //evaluate proximity state based on the sum of absolute delta counts
+  bool proximityNow = (_proximityThreshold > 0) && (deltaSum >= _proximityThreshold);
+
+  //if the last state is different from the current state, set the changed flag to true
+  if(proximityNow != _proximitySensed)
+    _proximityChangedSinceLastEvaluate = true;
+  else
+    _proximityChangedSinceLastEvaluate = false;
+
+  // save the current state
+  _proximitySensed = proximityNow;
 
   if (readBit(CAP1188_GENERAL_STATUS, CAP1188_GENERAL_STATUS_MTP))
     TapHappened = true; //if the MTP bit is set, a tap has happened
@@ -132,7 +142,6 @@ void CAP1188::evaluate()
 }
 
 
-
 /*!
  *   @brief  Reads the touched status (CAP1188_SENINPUTSTATUS)
  *   @return Returns read from CAP1188_SENINPUTSTATUS where 1 is touched, 0 not
@@ -140,20 +149,14 @@ void CAP1188::evaluate()
  */
 uint8_t CAP1188::ReadTouched() {
   uint8_t t = readRegister(CAP1188_SENSOR_INPUT_STATUS);
+
+  //print register in binary for debugging
+  //Serial.println("Touched Register: " + String(t, BIN));
+
   if (t) {
     writeRegister(CAP1188_MAIN_CONTROL, readRegister(CAP1188_MAIN_CONTROL) & ~CAP1188_MAIN_INTERRUPT); // clear interrupt
   }
   return t;
-}
-
-/*!
- *   @brief  Controls the output polarity of LEDs.
- *   @param  inverted
- *           0 (default) - The LED8 output is inverted.
- *           1 - The LED8 output is non-inverted.
- */
-void CAP1188::LEDpolarity(uint8_t Channel, bool isInverted) {
-  writeBit(CAP1188_LED_POLARITY, Channel, isInverted);
 }
 
 /*!
@@ -278,13 +281,45 @@ bool CAP1188::isTouched(uint8_t channel)
   if (channel > 7) {
     return false;
   }
+  
   return ChannelTouched[channel];
 }
 
-void CAP1188::LEDOutputPushPull(uint8_t Channel, bool isPushPull)
-{
-  writeBit(CAP1188_LED_OUTPUT_TYPE, Channel, isPushPull);
+bool CAP1188::hasChanged(uint8_t channel) {
+
+  if (channel > 7) {
+    return false;
+  }
+
+  //will be reset once evaluated with "true"
+  //that means once called you have to immediately process the information, otherwise its lost!
+
+  if(ChannelChangedSinceLastEvaluate[channel])
+  {
+    ChannelChangedSinceLastEvaluate[channel] = false; //reset the changed flag, so it will only return true once per change
+    return true;
+  }
+
+  return false;
+
 }
+
+
+bool CAP1188::isProximityChanged() {
+
+  //will be reset once evaluated with "true"
+  //that means once called you have to immediately process the information, otherwise its lost!
+
+  if(_proximityChangedSinceLastEvaluate)
+  {
+    _proximityChangedSinceLastEvaluate = false; //reset the changed flag, so it will only return true once per change
+    return true;
+  }
+
+  return false;
+
+}
+
 
 void CAP1188::enableMultipleTouchTapPattern(uint8_t PadsEvaluated[], uint8_t PadsEvaluatedCount)
 {
@@ -295,50 +330,8 @@ void CAP1188::enableMultipleTouchTapPattern(uint8_t PadsEvaluated[], uint8_t Pad
 
   for (uint8_t i = 0; i < PadsEvaluatedCount; i++)
   {
-    writeBit(CAP1188_MULTIPLE_TOUCH_PATTERN_CONFIG, PadsEvaluated[i], true); //use teh given pads for the pattern recognition
+    writeBit(CAP1188_MULTIPLE_TOUCH_PATTERN_CONFIG, PadsEvaluated[i], true); //use the given pads for the pattern recognition
   }
 
 
-}
-
-/*!
- *   @brief  Configures which sensor channels are used for software proximity detection.
- *           Proximity works by summing the absolute delta counts of the selected channels.
- *           A larger number of channels increases detection range but also noise sensitivity.
- *   @param  channels  Array of pad indices, e.g. {Pad_A, Pad_B, Pad_C, Pad_D}
- *   @param  count     Number of channels in the array (max 8)
- */
-void CAP1188::enableProximityDetection(uint8_t channels[], uint8_t count)
-{
-  if (count > 8) count = 8; //clamp to max 8 channels
-  _proximityChannelCount = count;
-  for (uint8_t i = 0; i < count; i++)
-  {
-    _proximityChannels[i] = channels[i]; //store which channels to sum
-  }
-  _proximityEnabled = true;
-}
-
-/*!
- *   @brief  Checks if an object is in proximity of the configured sensor pads.
- *           Reads the delta count registers (0x10-0x17) for each configured channel via I2C,
- *           sums their absolute values, and compares against the proximity threshold.
- *           This is a software-based approach since the CAP1188 has no dedicated hardware
- *           proximity bit in Active mode (see datasheet Section 5.5.3).
- *   @return true if the summed absolute delta counts exceed the proximity threshold
- */
-bool CAP1188::isProximityDetected()
-{
-  if (!_proximityEnabled || _proximityThreshold == 0)
-    return false; //proximity not configured or threshold is zero
-
-  //sum the absolute delta counts of all configured proximity channels
-  int16_t sum = 0;
-  for (uint8_t i = 0; i < _proximityChannelCount; i++)
-  {
-    sum += abs(getRawDeltaCount(_proximityChannels[i])); //read delta count register for this channel
-  }
-
-  //if the combined delta exceeds the threshold, an object is approaching the sensor pads
-  return sum > _proximityThreshold;
 }

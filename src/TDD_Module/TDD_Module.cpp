@@ -42,11 +42,6 @@ void TDD_Module::setup()
         cap->setProximityThreshold(ParamTTD_TTDProximityThreshold); //Set the proximity threshold
         logDebugP("proximityThreshold: %i", ParamTTD_TTDProximityThreshold); //Print the string to the debug output
 
-        //enable proximity detection on all 4 touch pads
-        uint8_t proxChannels[] = CAP1188_PROX_CHANNELS;
-        cap->enableProximityDetection(proxChannels, CAP1188_PROX_CHANNELS_COUNT);
-        logDebugP("Proximity detection enabled on %i channels", CAP1188_PROX_CHANNELS_COUNT);
-
 
         uint8_t touchThreshold = ParamTTD_TTDTouchThreshold;
         for (int i = 0; i < 8; i++)
@@ -141,12 +136,22 @@ void TDD_Module::setup1()
 //this is essentially the loop which handles the outgoing KNX-Messages
 void TDD_Module::loop()
 {
+
+    //logDebugP("Delta: %4d %4d %4d %4d %4d %4d %4d %4d", cap->getRawDeltaCount(0), cap->getRawDeltaCount(1), cap->getRawDeltaCount(2), cap->getRawDeltaCount(3), cap->getRawDeltaCount(4), cap->getRawDeltaCount(5), cap->getRawDeltaCount(6), cap->getRawDeltaCount(7));
+
     //fire here as fast as we can, will be executed when openKNX feels like.    
     if(openknx.freeLoopTime())
     {
         cap->evaluate(); //Evaluate the CAP1188
     }
+
+    //Debugprint hasChanged for each pad in one line
+    //logDebugP("hasChanged: %i %i %i %i %i %i %i %i", cap->hasChanged(CAP1188::Pad_A), cap->hasChanged(CAP1188::Pad_B), cap->hasChanged(CAP1188::Pad_C), cap->hasChanged(CAP1188::Pad_D), cap->hasChanged(CAP1188::Pad_E), cap->hasChanged(CAP1188::Pad_F), cap->hasChanged(CAP1188::Pad_G), cap->hasChanged(CAP1188::Pad_H));
     
+    //debugprint free loop time
+    //logDebugP("freeLoopTime: %i", openknx.freeLoopTime());
+    
+
     if(openknx.freeLoopTime() && cap->hasChanged(CAP1188::Pad_A)) //If the pad A has Changed, change the KO
     {
         KoTTD_StatePAD_A.value(cap->isTouched(CAP1188::Pad_A), Dpt(1,1)); //Send the touch value to the KO
@@ -174,10 +179,10 @@ void TDD_Module::loop()
     }     
     
 
-    if(openknx.freeLoopTime() && cap->isProximityDetected()) //If proximity is sensed, change the KO
+    if(openknx.freeLoopTime() && cap->isProximityChanged()) //If proximity state changed since last evaluate, update the KO
     {
-        KoTTD_ProximitySensed.value(true, Dpt(1,1)); //Send the proximity value to the KO
-        logDebugP("Proximity detected! KO %i", KoTTD_ProximitySensed.asap()); //Print the proximity value to the debug output
+        KoTTD_ProximitySensed.value(cap->isProximityDetected(), Dpt(1,1)); //Send the current proximity value to the KO
+        logDebugP("Proximity changed to %i, KO %i", cap->isProximityDetected(), KoTTD_ProximitySensed.asap()); //Print the proximity value to the debug output
     }
 
     if(openknx.freeLoopTime() && cap->TapHappened) //If a tap happened, change the KO

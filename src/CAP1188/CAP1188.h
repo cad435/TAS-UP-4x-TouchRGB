@@ -1,23 +1,14 @@
 /*!
- *  @file Adafruit_CAP1188.h
+ *  @file CAP1188.cpp
  *
- *  This is a library for the CAP1188 8-Channel Capacitive Sensor
  *
- *  Designed specifically to work with the CAP1188 I2C/SPI 8-chan Capacitive
- *  Sensor from Adafruit
  *
- *  Pick one up today in the adafruit shop!
- *  ------> https://www.adafruit.com/product/1602
+ *  This library is originally based on the Adafruit CAP1188 library.
+ * 
+ * 	it is heavily modified for OpenKNX to add functionality by cad435
  *
- *  These sensors use I2C/SPI to communicate, 2+ pins are required to interface
- *
- *  Adafruit invests time and resources providing this open source code,
- *  please support Adafruit andopen-source hardware by purchasing products
- *  from Adafruit!
- *
- *  Limor Fried/Ladyada (Adafruit Industries).
- *
- *  BSD license, all text above must be included in any redistribution
+ *  
+ * 
  */
 
 #include <Arduino.h>
@@ -53,10 +44,6 @@ public:
 
   boolean begin(uint8_t i2caddr = CAP1188_I2CADDR, TwoWire *theWire = &Wire);
 
-  void LEDpolarity(uint8_t Channel, bool isInverted);
-
-  void LEDOutputPushPull(uint8_t Channel, bool isPushPull);
-
   void SetGlobalSensitivity(uint8_t sens);
 
   void disableAnalogNoiseFilter(bool disable);
@@ -69,7 +56,7 @@ public:
   //returns true if a channel is touched
   bool isTouched(uint8_t channel);
   //returns if a channel has changed since the last evaluate
-  bool hasChanged(uint8_t channel) {return ChannelChangedSinceLastEvaluate[channel];}
+  bool hasChanged(uint8_t channel);
 
 
   void setTouchThreshold(uint8_t channel, uint8_t threshold);
@@ -78,34 +65,33 @@ public:
   //from all configured proximity channels must exceed this value for proximity to be reported.
   void setProximityThreshold(uint8_t threshold);
 
-  //Configures which sensor channels participate in proximity detection.
-  //Proximity is detected by summing the absolute delta counts of the given channels.
-  //Pass an array of pad indices, e.g. {Pad_A, Pad_B, Pad_C, Pad_D} and the array size.
-  //Call setProximityThreshold() to set the detection threshold before using this.
-  void enableProximityDetection(uint8_t channels[], uint8_t count);
+  bool isProximityDetected() { return _proximitySensed; }
+  bool isProximityChanged();
 
-  //Returns true if the sum of absolute delta counts from the configured proximity channels
-  //exceeds the proximity threshold. Reads delta count registers via I2C on each call.
-  //Must call enableProximityDetection() and setProximityThreshold() first.
-  bool isProximityDetected();
 
   bool TapHappened = false; //"Patschfunktion"
   
 
-  uint16_t EvaluateFrequency = 1; //in Hz. Change this if the need for faster evaluation is there
+  uint16_t EvaluateFrequency = CAP1188_EVALUATE_FREQUENCY; //in Hz. Change this if the need for faster evaluation is there
 
 private:
 
-  uint32_t lastEvaluated = 0;
+  //for keeping the fixed FPS timing
+  uint32_t _LastEvalTime = 0; //Time of the last frame update
 
   uint8_t _proximityThreshold = 0;          //software threshold for proximity detection (sum of abs delta counts)
-  uint8_t _proximityChannels[8] = {};       //channel indices (0-7) that participate in proximity summation
-  uint8_t _proximityChannelCount = 0;       //number of channels configured for proximity
-  bool _proximityEnabled = false;           //gate: proximity detection only active after enableProximityDetection()
 
-  int8_t getRawDeltaCount(uint8_t channel);
+
+  int8_t getRawDeltaCount(uint8_t channel); //returns the raw delta count read from the hardware register for a given channel (0-7). Useful for debugging and tuning proximity detection, but not needed for normal touch sensing.
+
+
+  int8_t RawDeltaCount[4] = {};  //cached raw delta counts for pads A-D, updated every evaluate()
+
   bool ChannelTouched[8] = {false, false, false, false, false, false, false, false};
   bool ChannelChangedSinceLastEvaluate[8] = {false, false, false, false, false, false, false, false};
+
+  bool _proximitySensed = false;                             //last evaluated proximity state
+  bool _proximityChangedSinceLastEvaluate = false;           //true if proximity state changed since last evaluate
 
   uint8_t readRegister(uint8_t reg);
   bool readBit(uint8_t reg, uint8_t bit);
@@ -119,7 +105,4 @@ private:
   uint8_t ReadTouched();
 
   uint8_t _addr;
-
-  bool write_then_read(const uint8_t *write_buffer, size_t write_len, uint8_t *read_buffer, size_t read_len, bool stop = false);
-  bool write(const uint8_t *buffer, size_t len, bool stop, const uint8_t *prefix_buffer, size_t prefix_len);
 };
