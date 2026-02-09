@@ -79,6 +79,11 @@
               <ParameterType Id="%AID%_PT-LEDMaxBrightness" Name="LEDMaxBrightness">
                 <TypeRestriction Base="Value" SizeInBit="8">
                   <Enumeration Text="Aus" Value="0" Id="%ENID%" />
+                  <Enumeration Text="1%" Value="1" Id="%ENID%" />
+                  <Enumeration Text="2%" Value="2" Id="%ENID%" />
+                  <Enumeration Text="3%" Value="3" Id="%ENID%" />
+                  <Enumeration Text="4%" Value="4" Id="%ENID%" />
+                  <Enumeration Text="5%" Value="5" Id="%ENID%" />
                   <Enumeration Text="10%" Value="10" Id="%ENID%" />
                   <Enumeration Text="20%" Value="20" Id="%ENID%" />
                   <Enumeration Text="30%" Value="30" Id="%ENID%" />
@@ -146,11 +151,11 @@
                 <Memory CodeSegment="%MID%" Offset="12" BitOffset="0" />
               </Parameter>
               <!-- Parameter für Proximity Threshold, wird als Text eingestellt und in der FW zu einer Zahl gewandelt-->
-              <Parameter Id="%AID%_P-%TT%00007" Name="TTDProximityThreshold" ParameterType="%AID%_PT-TTDProximityThreshold" Text="Proximity Threshold: " Value="64">
+              <Parameter Id="%AID%_P-%TT%00007" Name="TTDProximityThreshold" ParameterType="%AID%_PT-TTDProximityThreshold" Text="Proximity Threshold: " Value="20">
                 <Memory CodeSegment="%MID%" Offset="6" BitOffset="0" /> <!-- 2Byte Nutzdaten: 6+2=8 -->
               </Parameter>
               <!-- Parameter für Touch Threshold, wird als Text eingestellt und in der FW zu einer Zahl gewandelt-->
-              <Parameter Id="%AID%_P-%TT%00008" Name="TTDTouchThreshold" ParameterType="%AID%_PT-TTDTouchThreshold" Text="Touch Threshold: " Value="64">
+              <Parameter Id="%AID%_P-%TT%00008" Name="TTDTouchThreshold" ParameterType="%AID%_PT-TTDTouchThreshold" Text="Touch Threshold: " Value="100">
                 <Memory CodeSegment="%MID%" Offset="8" BitOffset="0" /> <!-- 3Byte Nutzdaten + 1Byte Nullterminierung: 8+3+1=12 -->
               </Parameter>
               <!-- Display-only Parameter für Delta Count Ergebnis (kein Memory, nur ETS-seitig) -->

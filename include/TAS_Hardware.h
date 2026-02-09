@@ -74,7 +74,7 @@
     #define TTD_LEDGROUP_FUNCTIONS {LedGroupFunction::FLAT, LedGroupFunction::SINE, LedGroupFunction::FLAT} //Functions for each LED-Group, must be the same size as TTD_LED_GROUP_COUNT
     #define TTD_LEDGROUP_COLORORDER {RGB, GRB, RGB} //Color order for each LED-Group, must be the same size as TTD_LED_GROUP_COUNT. This is used to set the color order for each group, in case they are different. The color order is defined in the FastLED library, e.g. RGB, GRB, BRG, etc.
 
-    
+    #define TTD_LEDGROUP_PROXIMITY_LOST_DELAY_MS (5000) //Time in ms after which the LED group will change to IDLE after being active. This is used to keep the LED's active for a short time after the proximity is lost, so that they don't turn off immediately.
 
 
 #endif

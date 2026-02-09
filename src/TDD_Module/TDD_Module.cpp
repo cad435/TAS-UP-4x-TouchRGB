@@ -105,7 +105,7 @@ void TDD_Module::setup()
     logDebugP("LEDBrightness Inner Active: %i, IDLE: %i", brightness_ON_Inner, brightness_OFF_Inner);
     logDebugP("LEDBrightness Outer Active: %i, IDLE: %i", brightness_ON_Outer, brightness_OFF_Outer);
     //Set the group to IDLE, will also start the state-machine
-    LedController->setGroupActive(false); //Set the group to IDLE
+    LedController->setAllGroupsActive(false); //Set the group to IDLE
 
 #pragma endregion LED-Initialisation
 
@@ -217,6 +217,9 @@ void TDD_Module::loop()
     {
         KoTTD_ProximitySensed.value(cap->isProximityDetected(), Dpt(1,1)); //Send the current proximity value to the KO
         logDebugP("Proximity changed to %i, KO %i", cap->isProximityDetected(), KoTTD_ProximitySensed.asap()); //Print the proximity value to the debug output
+
+        LedController->setAllGroupsActive(cap->isProximityDetected()); //Set all LED groups active if proximity is detected
+
     }
 
     if(openknx.freeLoopTime() && cap->TapHappened) //If a tap happened, change the KO
@@ -264,32 +267,32 @@ void TDD_Module::processInputKo(GroupObject& iKo)
     {
         uint8_t briActive = KoTTD_LEDBrightness_Active.value(DPT_Scaling);
         LedController->getLedGroup(1)->maxBrightness = briActive;
-        LedController->getLedGroup(1)->isActive = true;
+        LedController->getLedGroup(1)->luminosityState = LuminosityState::BRIGHT;
         break;
     }
     case TTD_KoLEDBrightness_IDLE: //Helligkeit Innenleiste dunkel (group 1)
     {
         uint8_t briIdle = KoTTD_LEDBrightness_IDLE.value(DPT_Scaling);
         LedController->getLedGroup(1)->minBrightness = briIdle;
-        LedController->getLedGroup(1)->isActive = false;
+        LedController->getLedGroup(1)->luminosityState = LuminosityState::DIM;
         break;
     }
     case TTD_KoLEDBrightness_Active_Outer: //Helligkeit Außen hell (groups 0 and 2)
     {
         uint8_t briActive = KoTTD_LEDBrightness_Active_Outer.value(DPT_Scaling);
         LedController->getLedGroup(0)->maxBrightness = briActive;
-        LedController->getLedGroup(0)->isActive = true;
+        LedController->getLedGroup(0)->luminosityState = LuminosityState::BRIGHT;
         LedController->getLedGroup(2)->maxBrightness = briActive;
-        LedController->getLedGroup(2)->isActive = true;
+        LedController->getLedGroup(2)->luminosityState = LuminosityState::BRIGHT;
         break;
     }
     case TTD_KoLEDBrightness_IDLE_Outer: //Helligkeit Außen dunkel (groups 0 and 2)
     {
         uint8_t briIdle = KoTTD_LEDBrightness_IDLE_Outer.value(DPT_Scaling);
         LedController->getLedGroup(0)->minBrightness = briIdle;
-        LedController->getLedGroup(0)->isActive = false;
+        LedController->getLedGroup(0)->luminosityState = LuminosityState::DIM;
         LedController->getLedGroup(2)->minBrightness = briIdle;
-        LedController->getLedGroup(2)->isActive = false;
+        LedController->getLedGroup(2)->luminosityState = LuminosityState::DIM;
         break;
     }
     default:

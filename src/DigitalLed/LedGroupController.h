@@ -20,7 +20,7 @@ public:
      //The color order can be specified if it is different from the default, which is set in TAS_Hardware.h. The color order is defined in the FastLED library, e.g. RGB, GRB, BRG, etc.
     void AddLedGroup(uint8_t _ledCount, LedGroupFunction _function, CRGB color, EOrder colorOrder);
 
-    void setGroupActive(bool isActive);
+    void setAllGroupsActive(bool isActive);
     void setColor(LedGroup* grp, CRGB color);
 
     CRGB* getFastLedMemoryPointer() { return FastLedPhysicalMemory; } //returns the pointer to the FastLed memory
@@ -64,7 +64,14 @@ private:
     //for keeping the fixed FPS timing
     uint32_t LastFrameTime = 0; //Time of the last frame update
 
-    EOrder BaseColorOrder = GRB; //Base color order for the controller, this is used for the groups which do not have a specific color order set.
+    //Base color order for the controller, this is used for the groups which do not have a specific color order set.
+    EOrder BaseColorOrder = GRB; 
+
+    //for delayed dimming after proximity is lost
+    //Time when the proximity was lost, used for delayed dimming
+    //must be calculated from FrameTime_ms and TTD_LEDGROUP_PROXIMITY_LOST_DELAY_MS to get the correct delay in frames
+    uint32_t ProximityLostDelayTimestamp = 0;
+
 
 
 };

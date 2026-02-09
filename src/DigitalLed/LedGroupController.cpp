@@ -67,11 +67,25 @@ void LedGroupController::AddLedGroup(uint8_t _ledCount, LedGroupFunction _functi
 }
 
 
-void LedGroupController::setGroupActive(bool isActive) {
-    for (uint8_t i = 0; i < OverallLedGroupCount; i++) {
-        ledGroups[i].isActive = isActive;
+void LedGroupController::setAllGroupsActive(bool isActive) {
+
+    if(isActive)
+    {
+        for (uint8_t i = 0; i < OverallLedGroupCount; i++) {
+            ledGroups[i].luminosityState = LuminosityState::BRIGHT; //if we want to set all groups active, set their luminosity state to bright
+        }
+        state = ControllerState::CHANGE_SHEDULED; //immediately shedule a change when going from inactive to active, so the LED's will update to the new brightness without delay
     }
-    state = ControllerState::CHANGE_SHEDULED;
+    else
+    {
+        //if we want to set all groups inactive, set their luminosity state to dim. 
+        //Rest of the logic for delayed dimming will be handled in the Process function, which will start the delay when it sees a group with DELAY_START and then set the group to DIM after the delay time has passed
+        for (uint8_t i = 0; i < OverallLedGroupCount; i++) {
+            ledGroups[i].luminosityState = LuminosityState::DELAY_START; 
+        }
+    }
+
+
 }
 
 void LedGroupController::setColor(LedGroup* grp, CRGB color) {
@@ -124,11 +138,11 @@ void LedGroupController::Process() {
 
     uint8_t StartIdx = 0;
 
+    //main state machine for handling the LED updates and transitions
     switch (state)
     {
     case IDLE:
         // Do nothing
-        return;
         break;
     case CHANGE_SHEDULED:
         //Serial.println("CHANGE_SHEDULED");
@@ -148,21 +162,6 @@ void LedGroupController::Process() {
             memcpy(&(TargetPixelArray[StartIdx]), ledGroups[i].PixelStorage, ledGroups[i].length*sizeof(CRGB));
             StartIdx += ledGroups[i].length;
         }
-        /*
-        Serial.println("BLOCK STARTED");
-        for (uint8_t i = 0; i < OverallLedCount; i++)
-        {
-            Serial.print(TargetPixelArray[i].r);
-            Serial.print("|");
-            Serial.print(TargetPixelArray[i].g);
-            Serial.print("|");
-            Serial.print(TargetPixelArray[i].b);
-
-            Serial.print("#");
-        }
-        Serial.println();
-        Serial.println("BLOCK FINISHED");
-        */
         //reset the fading amount variable
         fadingAmount = 0;
         //change to the changing event
@@ -183,26 +182,45 @@ void LedGroupController::Process() {
     case CHANGE_FINISHED:
         memcpy(FastLedPhysicalMemory, TargetPixelArray, OverallLedCount*sizeof(CRGB)); //Copy the target LED's to the current LED's
 
-        /*Serial.println("BLOCK STARTED");
-        for (uint8_t i = 0; i < OverallLedCount; i++)
-        {
-            Serial.print(FastLedPhysicalMemory[i].r);
-            Serial.print("|");
-            Serial.print(FastLedPhysicalMemory[i].g);
-            Serial.print("|");
-            Serial.print(FastLedPhysicalMemory[i].b);
-
-            Serial.print("#");
-        }
-        Serial.println();
-        Serial.println("BLOCK FINISHED");*/
-
         FastLED.show(); //make a last call to display the LED's
         //Serial.println("CHANGE_FINISHED");
         state = ControllerState::IDLE;
         break;
     default:
         break;
+    }
+
+
+    //only use the Luminosity State of the first group for evaluation, otherwise it'll get to complex for no real benefit
+    switch(ledGroups[0].luminosityState)
+    {
+        case LuminosityState::BRIGHT:
+            //do nothing, the group is already bright
+            break;
+        case LuminosityState::DELAY_START:
+            //Serial.printf("Starting proximity lost delay, all groups will dim in %i ms if proximity is not regained!\n", TTD_LEDGROUP_PROXIMITY_LOST_DELAY_MS); //Print the string to the debug output
+            //if we just entered the delay start, we need to set the delay ticks
+            ProximityLostDelayTimestamp = millis();
+
+            for(uint8_t i = 0; i < OverallLedGroupCount; i++) //Set all other groups to delay as well, so they stay bright during the delay time
+                ledGroups[i].luminosityState = LuminosityState::DELAY;
+            break;
+        case LuminosityState::DELAY:
+            //if we are in delay, we need to check if the delay time has passed and if so, set the group to dim
+            if (millis() - ProximityLostDelayTimestamp > TTD_LEDGROUP_PROXIMITY_LOST_DELAY_MS) //delay expired
+            {
+                for (uint8_t i = 0; i < OverallLedGroupCount; i++)
+                    ledGroups[i].luminosityState = LuminosityState::DIM; //set all groups to dim
+                state = ControllerState::CHANGE_SHEDULED; //schedule a change to update the LED's
+                //Serial.println("Proximity lost delay expired, all groups dimmed!"); //Print the string to the debug output
+            }
+            
+            break;
+        case LuminosityState::DIM:
+            //do nothing, the group is already dim
+            break;
+        default:
+            break;
     }
 }
 
@@ -212,12 +230,15 @@ void LedGroupController::CalculatePixelWithFunction() {
     for (uint8_t groupIndex = 0; groupIndex < OverallLedGroupCount; groupIndex++) {
         LedGroup& group = ledGroups[groupIndex];
 
-        uint8_t brightness = group.isActive ? group.maxBrightness : group.minBrightness; //if group active use max brightness else min brightness
-         
-        //uint8_t brightness = group.minBrightness;
 
-        //Serial.print("GRP BEGIN, Bri: ");
-        //Serial.println(brightness);
+        uint8_t brightness = 0;
+        if(group.luminosityState == LuminosityState::BRIGHT || group.luminosityState == LuminosityState::DELAY)
+            brightness = group.maxBrightness; //if the group is currently bright or in delay, use max brightness
+        else
+            brightness = group.minBrightness; //if the group is currently dim, use min brightness
+           
+         
+
 
         for (uint8_t pixel = 0; pixel < group.length; pixel++) {
 
