@@ -67,24 +67,24 @@ void TDD_Module::setup()
     logDebugP("LED-Initialisation"); //Print the string to the debug output
 
     uint8_t grpsz[] = TTD_LEDGROUP_SIZE; //buffer the group sizes
+    EOrder grpcolorOrder[] = TTD_LEDGROUP_COLORORDER; //buffer the color orders
 
     LedController = new LedGroupController(TTD_LEDGROUP_COUNT, grpsz); //Create a new instance of the LedGroupController class
     LedGroupFunction ledgrp_fkt[] = TTD_LEDGROUP_FUNCTIONS; //buffer the group functions
 
     uint8_t PixelIndex = 0;
 
-    //Initialize each LED-Group
+    //Initialize each LED-Group with inner/outer color
+    //Get the color from the parameter, this is used for all groups, but the inner group will be brighter than the outer groups
+    CRGB col[] = {ledHelper->rgb565ToCRGB(ParamTTD_LEDColorOuter), ledHelper->rgb565ToCRGB(ParamTTD_LEDColor), ledHelper->rgb565ToCRGB(ParamTTD_LEDColorOuter)}; 
     for (uint8_t i = 0; i < LedController->getOverallLedGroupCount(); i++)
     {
-        LedController->AddLedGroup(grpsz[i], ledgrp_fkt[i], ledHelper->rgb565ToCRGB(ParamTTD_LEDColor)); //Initialize the group with the LED indices
+        CRGB groupColor = col[i]; //Group 1 = inner (Innenleiste), Groups 0 & 2 = outer (Außen)
+        LedController->AddLedGroup(grpsz[i], ledgrp_fkt[i], groupColor, grpcolorOrder[i]); //Initialize the group with the LED indices
         logDebugP("LedGroup %i initialized with %i LEDs", i, grpsz[i]); //Print the string to the debug output
 
         PixelIndex += grpsz[i]; //Increment the pixel index
     }
-
-    //further define each LED-Group initially
-    //get the colors from the KNX Parameters
-    CRGB col = ledHelper->rgb565ToCRGB(ParamTTD_LEDColor); //Convert the color from the parameter to CRGB
     uint8_t brightness_ON = PercentToUint8(ParamTTD_LEDBrightness_Active); //Get the brightness from the parameter
     uint8_t brightness_OFF = PercentToUint8(ParamTTD_LEDBrightness_IDLE); //Get the brightness from the parameter
     
@@ -102,12 +102,11 @@ void TDD_Module::setup()
     LedGroup* group = LedController->getLedGroup(0);
 
     //debug output
-    logDebugP("LEDColor: %i|%i|%i", group->color.r, group->color.g, group->color.b); //Print the color to the debug output
+    logDebugP("LEDColor Outer: %i|%i|%i", col[0].r, col[0].g, col[0].b); //Print the outer color to the debug output
+    logDebugP("LEDColor Inner: %i|%i|%i", col[1].r, col[1].g, col[1].b); //Print the inner color to the debug output
     logDebugP("LEDBrightness_Active: %i", group->maxBrightness); //Print the brightness to the debug output
     logDebugP("LEDBrightness_IDLE: %i", group->minBrightness); //Print the brightness to the debug output
-    //Set the group color and set it to IDLE
-    //will also start of the state-machine
-    LedController->setColor(col); //Set the color of the LED's to the value from the parameter
+    //Set the group to IDLE, will also start the state-machine
     LedController->setGroupActive(false); //Set the group to IDLE
 
 #pragma endregion LED-Initialisation
@@ -212,25 +211,29 @@ void TDD_Module::processInputKo(GroupObject& iKo)
 {
     switch(iKo.asap())
     {
-    case TTD_KoLEDColor:
+    case TTD_KoLEDColor: //Farbe LED Innenleiste (group 1)
     {
-        //serialLed->setLEDTargetColor(ledHelper->DPT_Colour_RGB_to_CRGB(KoTTD_LEDColor.value(DPT_Colour_RGB)));
-        for (uint8_t i = 0; i < LedController->getOverallLedGroupCount(); i++)
-        {
-            LedGroup* g = LedController->getLedGroup(i);
-            g->color = ledHelper->DPT_Colour_RGB_to_CRGB(KoTTD_LEDColor.value(DPT_Colour_RGB)); //Set the color of the LED group to the value from the parameter
-        }
+        CRGB colInner = ledHelper->DPT_Colour_RGB_to_CRGB(KoTTD_LEDColor.value(DPT_Colour_RGB));
+        logDebugP("LEDColor Inner changed to %i|%i|%i", colInner.r, colInner.g, colInner.b); //Print the inner color to the debug output
+        LedController->setColor(LedController->getLedGroup(1), colInner); //Inner group = group 1
+        break;
+    }
+    case TTD_KoLEDColorOuter: //Farbe LED Außen (groups 0 and 2)
+    {
+        CRGB colOuter = ledHelper->DPT_Colour_RGB_to_CRGB(KoTTD_LEDColorOuter.value(DPT_Colour_RGB));
+        LedController->setColor(LedController->getLedGroup(0), colOuter); //Outer group 0
+        LedController->setColor(LedController->getLedGroup(2), colOuter); //Outer group 2
         break;
     }
     case TTD_KoLEDBrightness_Active:
     {
         uint8_t briActive = KoTTD_LEDBrightness_Active.value(DPT_Scaling); //Get the brightness from the parameter
+
         for (uint8_t i = 0; i < LedController->getOverallLedGroupCount(); i++)
         {
             LedGroup* g = LedController->getLedGroup(i);
             g->maxBrightness = briActive; //Set the brightness of the LED's to the value from the parameter
             g->isActive = true; //Set the group to ACTIVE after startup
-
         }
         break;
     }

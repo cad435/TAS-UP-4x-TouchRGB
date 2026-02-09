@@ -18,23 +18,26 @@ LedGroupController::LedGroupController(uint8_t _numLedGroups, uint8_t* _ledGroup
     PreviousPixelArray = new CRGB[OverallLedCount];
     TargetPixelArray = new CRGB[OverallLedCount];
 
-    FastLED.addLeds<TTD_LED_TYPE, TTD_RGB_DIO_PIN, TTD_RGB_ORDER>(FastLedPhysicalMemory, OverallLedCount);
+    FastLED.addLeds<TTD_LED_TYPE, TTD_RGB_DIO_PIN, TTD_BASE_COLORORDER>(FastLedPhysicalMemory, OverallLedCount);
+
+    BaseColorOrder = TTD_BASE_COLORORDER; //Set the base color order for the controller, this is used for the groups which do not have a specific color order set.
 
 }
 
-void LedGroupController::AddLedGroup(uint8_t _ledCount, LedGroupFunction _function, CRGB color) {
+void LedGroupController::AddLedGroup(uint8_t _ledCount, LedGroupFunction _function, CRGB color, EOrder colorOrder) {
     // Create a new LedGroug
 
-    if (InitializedGroups >= OverallLedCount)
+    if (InitializedGroups >= OverallLedGroupCount)
     {
         //logDebugP("Cannot intialize ned LED group with idx %i as there is a maximum number of %i Groups specified!", InitializedGroups, OverallLedCount); //Print the string to the debug output
         return;
     }
     
 
-    ledGroups[InitializedGroups].lenght = _ledCount;
+    ledGroups[InitializedGroups].length = _ledCount;
     ledGroups[InitializedGroups].function = _function;
-    ledGroups[InitializedGroups].color = color;
+    ledGroups[InitializedGroups].colorOrder = colorOrder; //set color order before setColor, as setColor reads it
+    setColor(&ledGroups[InitializedGroups], color); //set the color with color order remapping
     ledGroups[InitializedGroups].PixelStorage = new CRGB[_ledCount];
 
     // Allocate memory for function divisor based on function type
@@ -71,10 +74,34 @@ void LedGroupController::setGroupActive(bool isActive) {
     state = ControllerState::CHANGE_SHEDULED;
 }
 
-void LedGroupController::setColor(CRGB color) {
-    for (uint8_t i = 0; i < OverallLedGroupCount; i++) {
-        ledGroups[i].color = color;
+void LedGroupController::setColor(LedGroup* grp, CRGB color) {
+
+    if (grp->colorOrder == BaseColorOrder) {
+        //no remapping needed, just set the color directly
+        grp->color = color;
+    } else {
+        //the group has a different color order than the base, we need to remap the channels
+        //
+        //EOrder encodes channel positions as 3 octal digits: (RedPos)(GreenPos)(BluePos)
+        //e.g. GRB = 0102 octal → Red at wire[1], Green at wire[0], Blue at wire[2]
+        //
+        //Strategy: build the desired wire byte layout for the group's hardware,
+        //then read back what CRGB values FastLED needs (with base order) to produce those wire bytes.
+
+        //build desired wire bytes: place R,G,B where the group hardware expects them
+        uint8_t wire[3];
+        wire[(grp->colorOrder >> 6) & 0x07] = color.r; //Red position
+        wire[(grp->colorOrder >> 3) & 0x07] = color.g; //Green position
+        wire[ grp->colorOrder       & 0x07] = color.b; //Blue position
+
+        //read back what CRGB must contain so FastLED (with base order) produces the correct wire layout
+        grp->color = CRGB(
+            wire[(BaseColorOrder >> 6) & 0x07], //what FastLED reads as R
+            wire[(BaseColorOrder >> 3) & 0x07], //what FastLED reads as G
+            wire[ BaseColorOrder       & 0x07]  //what FastLED reads as B
+        );
     }
+
     state = ControllerState::CHANGE_SHEDULED;
 }
 
@@ -118,8 +145,8 @@ void LedGroupController::Process() {
         {
             //memcopy each array onto the LED-TargetArray
             //                              <------
-            memcpy(&(TargetPixelArray[StartIdx]), ledGroups[i].PixelStorage, ledGroups[i].lenght*sizeof(CRGB));
-            StartIdx += ledGroups[i].lenght;
+            memcpy(&(TargetPixelArray[StartIdx]), ledGroups[i].PixelStorage, ledGroups[i].length*sizeof(CRGB));
+            StartIdx += ledGroups[i].length;
         }
         /*
         Serial.println("BLOCK STARTED");
@@ -192,7 +219,7 @@ void LedGroupController::CalculatePixelWithFunction() {
         //Serial.print("GRP BEGIN, Bri: ");
         //Serial.println(brightness);
 
-        for (uint8_t pixel = 0; pixel < group.lenght; pixel++) {
+        for (uint8_t pixel = 0; pixel < group.length; pixel++) {
 
             uint8_t divisor = group.fkt_preRendered[pixel]; // Get the pre-rendered function value for each pixel
             // Calculate final brightness

@@ -12,11 +12,12 @@ enum class LedGroupFunction : uint8_t {
 
 struct LedGroup {
     CRGB* PixelStorage; // Pointer to the LED memory from the Controlling FastLed instance
-    uint8_t lenght; // Number of LEDs in this group
+    uint8_t length; // Number of LEDs in this group
 
     LedGroupFunction function; // Function to apply to this group (e.g., FLAT, COSINE)
 
     CRGB color; // Color of the LED group
+    EOrder colorOrder = GRB; // Color order for this group (e.g., GRB for SK6812, RGB for WS2811)
 
     int16_t* fkt_preRendered; // Function pre calculated at startup for performance Is the same length as the number of LEDs in the group. Ranges from 0 to 255
 

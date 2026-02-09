@@ -106,9 +106,13 @@
                   ist ein parameter weniger bit als 8, dann inkrementieren wir der einfachheit halber um 1Byte (also 8Bit)
                    -->
             <Parameters>
-              <!-- Parameter für die LED-Farbe -->
-              <Parameter Id="%AID%_P-%TT%00001" Name="LEDColor" ParameterType="%AID%_PT-LEDColors" Text="Led Farbe: " Value="65535">
+              <!-- Parameter für die LED-Farbe Innenleiste -->
+              <Parameter Id="%AID%_P-%TT%00001" Name="LEDColor" ParameterType="%AID%_PT-LEDColors" Text="Led Farbe Innenleiste: " Value="65535">
                 <Memory CodeSegment="%MID%" Offset="0" BitOffset="0" />
+              </Parameter>
+              <!-- Parameter für die LED-Farbe Außen -->
+              <Parameter Id="%AID%_P-%TT%00009" Name="LEDColorOuter" ParameterType="%AID%_PT-LEDColors" Text="Led Farbe Außen: " Value="65535">
+                <Memory CodeSegment="%MID%" Offset="9" BitOffset="0" />
               </Parameter>
               <!-- CAP1188 Analogen Tiefpassfilter aktivieren -->
               <Parameter Id="%AID%_P-%TT%00002" Name="CAP_EnableAnalogFilter" ParameterType="%AID%_PT-TTDCheckBox" Text="Analogen Lowpass-Filter Aktivieren: " Value="0">
@@ -157,6 +161,8 @@
               <ParameterRef Id="%AID%_P-%TT%00007_R-%TT%0000700" RefId="%AID%_P-%TT%00007"/> <!-- Proximity Threshold -->
               <ParameterRef Id="%AID%_P-%TT%00008_R-%TT%0000800" RefId="%AID%_P-%TT%00008"/> <!-- Touch Threshold -->
 
+              <ParameterRef Id="%AID%_P-%TT%00009_R-%TT%0000900" RefId="%AID%_P-%TT%00009"/> <!-- Farbe LED's Außen -->
+
             </ParameterRefs>
             <!-- Hier wird die Art der KO's definiert -->
             <!-- ReadFlag/WriteFlag bestimmt Eingang und/oder Ausgang des KO's -->
@@ -167,12 +173,14 @@
             <!-- DatapointType: Datentyp des KO's, siehe ETS DPT-Standard: 'DPST-X-Y', X ist die zahl vor dem punkt, y ist die zahl nach dem punkt, ohne führende nullen -->
 
             <ComObjectTable>
-              <!-- KO Farbe LED's -->
-              <ComObject Id="%AID%_O-%TT%00001" Name="LEDColor"                  Text="Farbe LED's"                              Number="3"  FunctionText="Eingang" ObjectSize="3 Bytes"  ReadFlag="Enabled" WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Disabled" UpdateFlag="Enabled" ReadOnInitFlag="Disabled" DatapointType="DPST-232-600" />
+              <!-- KO Farbe LED's Innenleiste -->
+              <ComObject Id="%AID%_O-%TT%00001" Name="LEDColor"                  Text="Farbe LED Innenleiste"                    Number="3"  FunctionText="Eingang" ObjectSize="3 Bytes"  ReadFlag="Enabled" WriteFlag="Enabled" CommunicationFlag="Enabled" TransmitFlag="Disabled" UpdateFlag="Enabled" ReadOnInitFlag="Disabled" DatapointType="DPST-232-600" />
+              <!-- KO Farbe LED's Außen -->
+              <ComObject Id="%AID%_O-%TT%00011" Name="LEDColorOuter"              Text="Farbe LED Außen"                          Number="17" FunctionText="Eingang" ObjectSize="3 Bytes"  ReadFlag="Enabled" WriteFlag="Enabled" CommunicationFlag="Enabled" TransmitFlag="Disabled" UpdateFlag="Enabled" ReadOnInitFlag="Disabled" DatapointType="DPST-232-600" />
               <!-- KO LED-Helligkeit ON -->
-              <ComObject Id="%AID%_O-%TT%00002" Name="LEDBrightness_IDLE"          Text="Helligkeit der LED's dunkel"              Number="4"  FunctionText="Eingang" ObjectSize="1 Byte"   ReadFlag="Enabled" WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Disabled" UpdateFlag="Enabled" ReadOnInitFlag="Disabled" DatapointType="DPST-5-1" />
+              <ComObject Id="%AID%_O-%TT%00002" Name="LEDBrightness_IDLE"          Text="Helligkeit der LED's dunkel"              Number="4"  FunctionText="Eingang" ObjectSize="1 Byte"   ReadFlag="Enabled" WriteFlag="Enabled" CommunicationFlag="Enabled" TransmitFlag="Disabled" UpdateFlag="Enabled" ReadOnInitFlag="Disabled" DatapointType="DPST-5-1" />
               <!-- KO LED-Helligkeit OFF -->
-              <ComObject Id="%AID%_O-%TT%00003" Name="LEDBrightness_Active"         Text="Helligkeit der LED's hell"                Number="9"  FunctionText="Eingang" ObjectSize="1 Byte"   ReadFlag="Enabled" WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Disabled" UpdateFlag="Enabled" ReadOnInitFlag="Disabled" DatapointType="DPST-5-1" />
+              <ComObject Id="%AID%_O-%TT%00003" Name="LEDBrightness_Active"         Text="Helligkeit der LED's hell"                Number="9"  FunctionText="Eingang" ObjectSize="1 Byte"   ReadFlag="Enabled" WriteFlag="Enabled" CommunicationFlag="Enabled" TransmitFlag="Disabled" UpdateFlag="Enabled" ReadOnInitFlag="Disabled" DatapointType="DPST-5-1" />
               <!-- Zustände der Taster -->
               <ComObject Id="%AID%_O-%TT%00004" Name="StatePAD_A" Text="Zustand Touchpad A" Number="10" FunctionText="Ausgang" ObjectSize="1 Bit" ReadFlag="Enabled" WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled" UpdateFlag="Disabled" ReadOnInitFlag="Disabled" DatapointType="DPST-1-1" />
               <ComObject Id="%AID%_O-%TT%00005" Name="StatePAD_B" Text="Zustand Touchpad B" Number="11" FunctionText="Ausgang" ObjectSize="1 Bit" ReadFlag="Enabled" WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled" UpdateFlag="Disabled" ReadOnInitFlag="Disabled" DatapointType="DPST-1-1" />
@@ -193,8 +201,10 @@
               -->
 
             <ComObjectRefs>
-              <!-- KO Farbe LED's -->
+              <!-- KO Farbe LED's Innenleiste -->
               <ComObjectRef Id="%AID%_O-%TT%00001_R-%TT%0000100" RefId="%AID%_O-%TT%00001" />
+              <!-- KO Farbe LED's Außen -->
+              <ComObjectRef Id="%AID%_O-%TT%00011_R-%TT%0001100" RefId="%AID%_O-%TT%00011" />
               <!-- KO LED-Helligkeit ON -->
               <ComObjectRef Id="%AID%_O-%TT%00002_R-%TT%0000200" RefId="%AID%_O-%TT%00002" />
               <!-- KO LED-Helligkeit OFF -->
@@ -267,13 +277,15 @@
                 <ParameterSeparator Id="%AID%_PS-nnn" Text="" UIHint="HorizontalRuler" />
 
                 <!-- LED Parametrierung -->
-                <ParameterRefRef RefId="%AID%_P-%TT%00001_R-%TT%0000100" IndentLevel="0"/>  <!-- Farbe LED's -->
+                <ParameterRefRef RefId="%AID%_P-%TT%00001_R-%TT%0000100" IndentLevel="0"/>  <!-- Farbe LED's Innenleiste -->
+                <ParameterRefRef RefId="%AID%_P-%TT%00009_R-%TT%0000900" IndentLevel="0"/>  <!-- Farbe LED's Außen -->
                 <ParameterRefRef RefId="%AID%_P-%TT%00005_R-%TT%0000500" IndentLevel="0"/>  <!-- Max LED-Helligkeit ON -->
                 <ParameterRefRef RefId="%AID%_P-%TT%00006_R-%TT%0000600" IndentLevel="0"/>  <!-- Max LED-Helligkeit OFF -->
 
                 <!-- Mit dem Auflisten werden die Com-Objecte in der GUI sichtbar -->
 
-                <ComObjectRefRef RefId="%AID%_O-%TT%00001_R-%TT%0000100" /> <!-- KO Farbe LED's -->
+                <ComObjectRefRef RefId="%AID%_O-%TT%00001_R-%TT%0000100" /> <!-- KO Farbe LED Innenleiste -->
+                <ComObjectRefRef RefId="%AID%_O-%TT%00011_R-%TT%0001100" /> <!-- KO Farbe LED Außen -->
                 <ComObjectRefRef RefId="%AID%_O-%TT%00002_R-%TT%0000200" /> <!-- KO LED-Helligkeit ON -->
                 <ComObjectRefRef RefId="%AID%_O-%TT%00003_R-%TT%0000300" /> <!-- KO LED-Helligkeit OFF -->
 
