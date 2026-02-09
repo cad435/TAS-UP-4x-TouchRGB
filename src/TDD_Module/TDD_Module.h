@@ -36,6 +36,7 @@ class TDD_Module : public OpenKNX::Module
     void setup1() override;
     void processAfterStartupDelay() override;
     void processInputKo(GroupObject& ko) override;
+    bool processFunctionProperty(uint8_t objectIndex, uint8_t propertyId, uint8_t length, uint8_t *data, uint8_t *resultData, uint8_t &resultLength) override;
 
     const std::string name() override;
     const std::string version() override;

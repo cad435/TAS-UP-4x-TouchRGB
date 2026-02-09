@@ -97,6 +97,11 @@
               <ParameterType Id="%AID%_PT-TTDTouchThreshold" Name="TTDTouchThreshold">
                 <TypeNumber SizeInBit="7" Type="unsignedInt" minInclusive="0" maxInclusive="127"/> <!-- 7Bit: Range 0 to 128 -> muss in der memory map 1 Byte frei bleiben -->
               </ParameterType>
+              <!-- 40-Byte Textfeld für die Anzeige der Delta Count Ergebnisse in der ETS.
+                   Wird nur ETS-seitig verwendet (kein Memory-Offset im Gerät). -->
+              <ParameterType Id="%AID%_PT-Text40Byte" Name="Text40Byte">
+                <TypeText SizeInBit="320" />
+              </ParameterType>
             </ParameterTypes>
 
 
@@ -148,6 +153,8 @@
               <Parameter Id="%AID%_P-%TT%00008" Name="TTDTouchThreshold" ParameterType="%AID%_PT-TTDTouchThreshold" Text="Touch Threshold: " Value="64">
                 <Memory CodeSegment="%MID%" Offset="8" BitOffset="0" /> <!-- 3Byte Nutzdaten + 1Byte Nullterminierung: 8+3+1=12 -->
               </Parameter>
+              <!-- Display-only Parameter für Delta Count Ergebnis (kein Memory, nur ETS-seitig) -->
+              <Parameter Id="%AID%_P-%TT%00012" Name="DeltaCountResult" ParameterType="%AID%_PT-Text40Byte" Text="Delta Count Ergebnis" Value="" Access="None" />
             </Parameters>
 
 
@@ -173,6 +180,8 @@
               <ParameterRef Id="%AID%_P-%TT%00008_R-%TT%0000800" RefId="%AID%_P-%TT%00008"/> <!-- Touch Threshold -->
 
               <ParameterRef Id="%AID%_P-%TT%00009_R-%TT%0000900" RefId="%AID%_P-%TT%00009"/> <!-- Farbe LED's Außen -->
+
+              <ParameterRef Id="%AID%_P-%TT%00012_R-%TT%0001200" RefId="%AID%_P-%TT%00012"/> <!-- Delta Count Result (display-only) -->
 
             </ParameterRefs>
             <!-- Hier wird die Art der KO's definiert -->
@@ -239,6 +248,12 @@
               <!-- Proximity Detection -->
               <ComObjectRef Id="%AID%_O-%TT%00010_R-%TT%0001000" RefId="%AID%_O-%TT%00010" />
             </ComObjectRefs>
+            <!-- ETS JavaScript einbinden: Enthält die Funktion TTD_readDeltaCounts(),
+                 die vom "Delta Counts auslesen" Button aufgerufen wird.
+                 Kommuniziert über FunctionProperty (objectIndex=161, propertyId=1) mit dem Gerät. -->
+            <Script>
+              <op:include href="TAS-UP-4x-TouchRGB.script.js" type="script" />
+            </Script>
           </Static>
           <Dynamic>
           <Channel Id="%AID%_CH-%PREFIX%" Number="%PREFIX%" Name="TDD-General" Text="Taster-Config" Icon="touch-text-outline">
@@ -288,6 +303,24 @@
                 <ParameterSeparator Id="%AID%_PS-nnn" Text="" UIHint="HorizontalRuler" />
                 <ParameterSeparator Id="%AID%_PS-nnn" Text="Höhere Werte bedeuten, dass der Taster weniger sensitiv wird. Wertebereich von 0 bis 127."/>
                 <ParameterRefRef RefId="%AID%_P-%TT%00008_R-%TT%0000800" IndentLevel="0"/> <!-- Touch Threshold -->
+
+                <!-- ===== Diagnose-Bereich: CAP1188 Delta Counts live vom Gerät auslesen ===== -->
+                <!-- Ermöglicht es dem Integrator, die aktuellen Rohwerte des Touch-Sensors direkt
+                     in der ETS auszulesen. Nützlich zur Feinjustierung der Touch- und Proximity-Schwellwerte.
+                     Der Button stellt eine Verbindung zum Gerät her (ConnectionOriented/Tunneling),
+                     liest die Delta Counts über FunctionProperty aus und zeigt sie als Text an. -->
+                <ParameterSeparator Id="%AID%_PS-nnn" Text="" UIHint="HorizontalRuler" />
+                <ParameterSeparator Id="%AID%_PS-nnn" Text="Diagnose" UIHint="Headline" />
+                <!-- Dynamische Textanzeige: {{0}} wird durch den Wert des DeltaCountResult Parameters ersetzt.
+                     Solange noch keine Abfrage erfolgt ist, wird ein Platzhaltertext angezeigt. -->
+                <ParameterSeparator Id="%AID%_PS-nnn" Text="Delta Counts: {{0:-- noch nicht ausgelesen --}}" TextParameterRefId="%AID%_P-%TT%00012_R-%TT%0001200" />
+                <!-- Versteckter ParameterRefRef: Wird benötigt damit der Parameter im ETS-Kontext existiert
+                     und vom Script über device.getParameterByName() beschrieben werden kann. -->
+                <ParameterRefRef RefId="%AID%_P-%TT%00012_R-%TT%0001200" />
+                <!-- Button ruft die JavaScript-Funktion TTD_readDeltaCounts() auf.
+                     ConnectionOriented = erfordert eine direkte Tunneling-Verbindung zum Gerät. -->
+                <Button Id="%AID%_B-%TT%00001" Text="Delta Counts auslesen" EventHandler="TTD_readDeltaCounts" EventHandlerOnline="ConnectionOriented" />
+
               </ParameterBlock>
 
               <!-- Parameter-Block Einstellungen LED's -->

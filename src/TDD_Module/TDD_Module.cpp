@@ -120,6 +120,43 @@ void TDD_Module::processAfterStartupDelay()
     delay(1000); //Wait for 1 second
 }
 
+// Handles FunctionProperty requests from ETS scripts via KNX bus.
+// This is the firmware-side counterpart to the ETS JavaScript function TTD_readDeltaCounts().
+//
+// Protocol:
+//   objectIndex = 161 (TDD_Module — next free after 158=Common, 159=FileTransfer, 160=Logic)
+//   propertyId  = 1
+//   Command 0:  Read raw CAP1188 delta counts for all 4 touch pads (A-D)
+//
+// Request format:  data[0] = 0 (command byte: read delta counts)
+// Response format: [0, deltaA, deltaB, deltaC, deltaD]
+//   - Byte 0: Status (0 = success)
+//   - Bytes 1-4: Raw delta counts as uint8_t (int8_t cast to uint8_t, preserving bit pattern)
+//     The ETS script converts these back to signed values for display.
+//
+// Thread safety: Both this function and cap->evaluate() run on Core 0, so no concurrency issue.
+bool TDD_Module::processFunctionProperty(uint8_t objectIndex, uint8_t propertyId, uint8_t length, uint8_t *data, uint8_t *resultData, uint8_t &resultLength)
+{
+    // Only handle requests addressed to TDD_Module (objectIndex 161, propertyId 1)
+    if (objectIndex != 161 || propertyId != 1)
+        return false;
+
+    if (data[0] == 0) // Command 0: read raw delta counts from CAP1188
+    {
+        resultData[0] = 0; // Status byte: 0 = success
+        resultData[1] = (uint8_t)cap->getRawDeltaCount(0); // Pad A — cast int8_t to uint8_t for transmission
+        resultData[2] = (uint8_t)cap->getRawDeltaCount(1); // Pad B
+        resultData[3] = (uint8_t)cap->getRawDeltaCount(2); // Pad C
+        resultData[4] = (uint8_t)cap->getRawDeltaCount(3); // Pad D
+        resultLength = 5;
+        logDebugP("FunctionProperty: Delta Counts A:%d B:%d C:%d D:%d",
+            cap->getRawDeltaCount(0), cap->getRawDeltaCount(1),
+            cap->getRawDeltaCount(2), cap->getRawDeltaCount(3));
+        return true;
+    }
+    return false; // Unknown command
+}
+
 void TDD_Module::setup1()
 {
     logDebugP("setup1(), CPU: %i", get_core_num()); 

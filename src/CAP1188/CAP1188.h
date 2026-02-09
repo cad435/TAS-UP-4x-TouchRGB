@@ -68,6 +68,7 @@ public:
   bool isProximityDetected() { return _proximitySensed; }
   bool isProximityChanged();
 
+  int8_t getRawDeltaCount(uint8_t channel); //returns the raw delta count read from the hardware register for a given channel (0-7). Useful for debugging and tuning proximity detection, but not needed for normal touch sensing.
 
   bool TapHappened = false; //"Patschfunktion"
   
@@ -80,10 +81,6 @@ private:
   uint32_t _LastEvalTime = 0; //Time of the last frame update
 
   uint8_t _proximityThreshold = 0;          //software threshold for proximity detection (sum of abs delta counts)
-
-
-  int8_t getRawDeltaCount(uint8_t channel); //returns the raw delta count read from the hardware register for a given channel (0-7). Useful for debugging and tuning proximity detection, but not needed for normal touch sensing.
-
 
   int8_t RawDeltaCount[4] = {};  //cached raw delta counts for pads A-D, updated every evaluate()
 
