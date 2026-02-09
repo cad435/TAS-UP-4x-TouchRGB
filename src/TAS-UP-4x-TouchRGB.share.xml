@@ -124,13 +124,21 @@
               </Parameter>
               <!-- Übersichtsbild LED -->
               <Parameter Id="%AID%_P-%TT%00004" Name="TTDMarkingLED" ParameterType="%AID%_PT-TTDMarkingLED" Text="" Access="Read" Value="" />
-              <!-- Parameter für die LED-Helligkeit wenn die LED's Hochgedimmt sind -->
-              <Parameter Id="%AID%_P-%TT%00005" Name="LEDBrightness_Active" ParameterType="%AID%_PT-LEDMaxBrightness" Text="Helligkeit der LED's hell: " Value="100">
+              <!-- Parameter für die LED-Helligkeit Innenleiste wenn die LED's Hochgedimmt sind -->
+              <Parameter Id="%AID%_P-%TT%00005" Name="LEDBrightness_Active" ParameterType="%AID%_PT-LEDMaxBrightness" Text="Helligkeit Innenleiste hell: " Value="100">
                 <Memory CodeSegment="%MID%" Offset="4" BitOffset="0" />
               </Parameter>
-              <!-- Parameter für die LED-Helligkeit wenn die LED's Runtergedimmt sind -->
-              <Parameter Id="%AID%_P-%TT%00006" Name="LEDBrightness_IDLE" ParameterType="%AID%_PT-LEDMaxBrightness" Text="Helligkeit der LED's dunkel: " Value="10">
+              <!-- Parameter für die LED-Helligkeit Innenleiste wenn die LED's Runtergedimmt sind -->
+              <Parameter Id="%AID%_P-%TT%00006" Name="LEDBrightness_IDLE" ParameterType="%AID%_PT-LEDMaxBrightness" Text="Helligkeit Innenleiste dunkel: " Value="10">
                 <Memory CodeSegment="%MID%" Offset="5" BitOffset="0" />
+              </Parameter>
+              <!-- Parameter für die LED-Helligkeit Außen wenn die LED's Hochgedimmt sind -->
+              <Parameter Id="%AID%_P-%TT%00010" Name="LEDBrightness_Active_Outer" ParameterType="%AID%_PT-LEDMaxBrightness" Text="Helligkeit Außen hell: " Value="100">
+                <Memory CodeSegment="%MID%" Offset="11" BitOffset="0" />
+              </Parameter>
+              <!-- Parameter für die LED-Helligkeit Außen wenn die LED's Runtergedimmt sind -->
+              <Parameter Id="%AID%_P-%TT%00011" Name="LEDBrightness_IDLE_Outer" ParameterType="%AID%_PT-LEDMaxBrightness" Text="Helligkeit Außen dunkel: " Value="10">
+                <Memory CodeSegment="%MID%" Offset="12" BitOffset="0" />
               </Parameter>
               <!-- Parameter für Proximity Threshold, wird als Text eingestellt und in der FW zu einer Zahl gewandelt-->
               <Parameter Id="%AID%_P-%TT%00007" Name="TTDProximityThreshold" ParameterType="%AID%_PT-TTDProximityThreshold" Text="Proximity Threshold: " Value="64">
@@ -155,8 +163,11 @@
 
               <ParameterRef Id="%AID%_P-%TT%00004_R-%TT%0000400" RefId="%AID%_P-%TT%00004"/> <!-- Übersichtsbild LED -->
 
-              <ParameterRef Id="%AID%_P-%TT%00005_R-%TT%0000500" RefId="%AID%_P-%TT%00005"/> <!-- Max LED-Helligkeit ON -->
-              <ParameterRef Id="%AID%_P-%TT%00006_R-%TT%0000600" RefId="%AID%_P-%TT%00006"/> <!-- Max LED-Helligkeit OFF -->
+              <ParameterRef Id="%AID%_P-%TT%00005_R-%TT%0000500" RefId="%AID%_P-%TT%00005"/> <!-- Max LED-Helligkeit Innenleiste ON -->
+              <ParameterRef Id="%AID%_P-%TT%00006_R-%TT%0000600" RefId="%AID%_P-%TT%00006"/> <!-- Max LED-Helligkeit Innenleiste OFF -->
+
+              <ParameterRef Id="%AID%_P-%TT%00010_R-%TT%0001000" RefId="%AID%_P-%TT%00010"/> <!-- Max LED-Helligkeit Außen ON -->
+              <ParameterRef Id="%AID%_P-%TT%00011_R-%TT%0001100" RefId="%AID%_P-%TT%00011"/> <!-- Max LED-Helligkeit Außen OFF -->
 
               <ParameterRef Id="%AID%_P-%TT%00007_R-%TT%0000700" RefId="%AID%_P-%TT%00007"/> <!-- Proximity Threshold -->
               <ParameterRef Id="%AID%_P-%TT%00008_R-%TT%0000800" RefId="%AID%_P-%TT%00008"/> <!-- Touch Threshold -->
@@ -177,10 +188,14 @@
               <ComObject Id="%AID%_O-%TT%00001" Name="LEDColor"                  Text="Farbe LED Innenleiste"                    Number="3"  FunctionText="Eingang" ObjectSize="3 Bytes"  ReadFlag="Enabled" WriteFlag="Enabled" CommunicationFlag="Enabled" TransmitFlag="Disabled" UpdateFlag="Enabled" ReadOnInitFlag="Disabled" DatapointType="DPST-232-600" />
               <!-- KO Farbe LED's Außen -->
               <ComObject Id="%AID%_O-%TT%00011" Name="LEDColorOuter"              Text="Farbe LED Außen"                          Number="17" FunctionText="Eingang" ObjectSize="3 Bytes"  ReadFlag="Enabled" WriteFlag="Enabled" CommunicationFlag="Enabled" TransmitFlag="Disabled" UpdateFlag="Enabled" ReadOnInitFlag="Disabled" DatapointType="DPST-232-600" />
-              <!-- KO LED-Helligkeit ON -->
-              <ComObject Id="%AID%_O-%TT%00002" Name="LEDBrightness_IDLE"          Text="Helligkeit der LED's dunkel"              Number="4"  FunctionText="Eingang" ObjectSize="1 Byte"   ReadFlag="Enabled" WriteFlag="Enabled" CommunicationFlag="Enabled" TransmitFlag="Disabled" UpdateFlag="Enabled" ReadOnInitFlag="Disabled" DatapointType="DPST-5-1" />
-              <!-- KO LED-Helligkeit OFF -->
-              <ComObject Id="%AID%_O-%TT%00003" Name="LEDBrightness_Active"         Text="Helligkeit der LED's hell"                Number="9"  FunctionText="Eingang" ObjectSize="1 Byte"   ReadFlag="Enabled" WriteFlag="Enabled" CommunicationFlag="Enabled" TransmitFlag="Disabled" UpdateFlag="Enabled" ReadOnInitFlag="Disabled" DatapointType="DPST-5-1" />
+              <!-- KO LED-Helligkeit Innenleiste dunkel -->
+              <ComObject Id="%AID%_O-%TT%00002" Name="LEDBrightness_IDLE"          Text="Helligkeit Innenleiste dunkel"            Number="4"  FunctionText="Eingang" ObjectSize="1 Byte"   ReadFlag="Enabled" WriteFlag="Enabled" CommunicationFlag="Enabled" TransmitFlag="Disabled" UpdateFlag="Enabled" ReadOnInitFlag="Disabled" DatapointType="DPST-5-1" />
+              <!-- KO LED-Helligkeit Innenleiste hell -->
+              <ComObject Id="%AID%_O-%TT%00003" Name="LEDBrightness_Active"         Text="Helligkeit Innenleiste hell"              Number="9"  FunctionText="Eingang" ObjectSize="1 Byte"   ReadFlag="Enabled" WriteFlag="Enabled" CommunicationFlag="Enabled" TransmitFlag="Disabled" UpdateFlag="Enabled" ReadOnInitFlag="Disabled" DatapointType="DPST-5-1" />
+              <!-- KO LED-Helligkeit Außen hell -->
+              <ComObject Id="%AID%_O-%TT%00012" Name="LEDBrightness_Active_Outer"   Text="Helligkeit Außen hell"                    Number="18" FunctionText="Eingang" ObjectSize="1 Byte"   ReadFlag="Enabled" WriteFlag="Enabled" CommunicationFlag="Enabled" TransmitFlag="Disabled" UpdateFlag="Enabled" ReadOnInitFlag="Disabled" DatapointType="DPST-5-1" />
+              <!-- KO LED-Helligkeit Außen dunkel -->
+              <ComObject Id="%AID%_O-%TT%00013" Name="LEDBrightness_IDLE_Outer"     Text="Helligkeit Außen dunkel"                  Number="19" FunctionText="Eingang" ObjectSize="1 Byte"   ReadFlag="Enabled" WriteFlag="Enabled" CommunicationFlag="Enabled" TransmitFlag="Disabled" UpdateFlag="Enabled" ReadOnInitFlag="Disabled" DatapointType="DPST-5-1" />
               <!-- Zustände der Taster -->
               <ComObject Id="%AID%_O-%TT%00004" Name="StatePAD_A" Text="Zustand Touchpad A" Number="10" FunctionText="Ausgang" ObjectSize="1 Bit" ReadFlag="Enabled" WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled" UpdateFlag="Disabled" ReadOnInitFlag="Disabled" DatapointType="DPST-1-1" />
               <ComObject Id="%AID%_O-%TT%00005" Name="StatePAD_B" Text="Zustand Touchpad B" Number="11" FunctionText="Ausgang" ObjectSize="1 Bit" ReadFlag="Enabled" WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled" UpdateFlag="Disabled" ReadOnInitFlag="Disabled" DatapointType="DPST-1-1" />
@@ -205,10 +220,14 @@
               <ComObjectRef Id="%AID%_O-%TT%00001_R-%TT%0000100" RefId="%AID%_O-%TT%00001" />
               <!-- KO Farbe LED's Außen -->
               <ComObjectRef Id="%AID%_O-%TT%00011_R-%TT%0001100" RefId="%AID%_O-%TT%00011" />
-              <!-- KO LED-Helligkeit ON -->
+              <!-- KO LED-Helligkeit Innenleiste dunkel -->
               <ComObjectRef Id="%AID%_O-%TT%00002_R-%TT%0000200" RefId="%AID%_O-%TT%00002" />
-              <!-- KO LED-Helligkeit OFF -->
+              <!-- KO LED-Helligkeit Innenleiste hell -->
               <ComObjectRef Id="%AID%_O-%TT%00003_R-%TT%0000300" RefId="%AID%_O-%TT%00003" />
+              <!-- KO LED-Helligkeit Außen hell -->
+              <ComObjectRef Id="%AID%_O-%TT%00012_R-%TT%0001200" RefId="%AID%_O-%TT%00012" />
+              <!-- KO LED-Helligkeit Außen dunkel -->
+              <ComObjectRef Id="%AID%_O-%TT%00013_R-%TT%0001300" RefId="%AID%_O-%TT%00013" />
               <!-- Zustände der Taster -->
               <ComObjectRef Id="%AID%_O-%TT%00004_R-%TT%0000400" RefId="%AID%_O-%TT%00004" />
               <ComObjectRef Id="%AID%_O-%TT%00005_R-%TT%0000500" RefId="%AID%_O-%TT%00005" />
@@ -276,18 +295,26 @@
                 <ParameterSeparator Id="%AID%_PS-nnn" Text="LED Einstellungen" UIHint="Headline" />  
                 <ParameterSeparator Id="%AID%_PS-nnn" Text="" UIHint="HorizontalRuler" />
 
-                <!-- LED Parametrierung -->
+                <!-- LED Parametrierung Innenleiste -->
                 <ParameterRefRef RefId="%AID%_P-%TT%00001_R-%TT%0000100" IndentLevel="0"/>  <!-- Farbe LED's Innenleiste -->
+                <ParameterRefRef RefId="%AID%_P-%TT%00005_R-%TT%0000500" IndentLevel="0"/>  <!-- Helligkeit Innenleiste hell -->
+                <ParameterRefRef RefId="%AID%_P-%TT%00006_R-%TT%0000600" IndentLevel="0"/>  <!-- Helligkeit Innenleiste dunkel -->
+
+                <ParameterSeparator Id="%AID%_PS-nnn" Text="" UIHint="HorizontalRuler" />
+
+                <!-- LED Parametrierung Außen -->
                 <ParameterRefRef RefId="%AID%_P-%TT%00009_R-%TT%0000900" IndentLevel="0"/>  <!-- Farbe LED's Außen -->
-                <ParameterRefRef RefId="%AID%_P-%TT%00005_R-%TT%0000500" IndentLevel="0"/>  <!-- Max LED-Helligkeit ON -->
-                <ParameterRefRef RefId="%AID%_P-%TT%00006_R-%TT%0000600" IndentLevel="0"/>  <!-- Max LED-Helligkeit OFF -->
+                <ParameterRefRef RefId="%AID%_P-%TT%00010_R-%TT%0001000" IndentLevel="0"/>  <!-- Helligkeit Außen hell -->
+                <ParameterRefRef RefId="%AID%_P-%TT%00011_R-%TT%0001100" IndentLevel="0"/>  <!-- Helligkeit Außen dunkel -->
 
                 <!-- Mit dem Auflisten werden die Com-Objecte in der GUI sichtbar -->
 
                 <ComObjectRefRef RefId="%AID%_O-%TT%00001_R-%TT%0000100" /> <!-- KO Farbe LED Innenleiste -->
+                <ComObjectRefRef RefId="%AID%_O-%TT%00002_R-%TT%0000200" /> <!-- KO Helligkeit Innenleiste dunkel -->
+                <ComObjectRefRef RefId="%AID%_O-%TT%00003_R-%TT%0000300" /> <!-- KO Helligkeit Innenleiste hell -->
                 <ComObjectRefRef RefId="%AID%_O-%TT%00011_R-%TT%0001100" /> <!-- KO Farbe LED Außen -->
-                <ComObjectRefRef RefId="%AID%_O-%TT%00002_R-%TT%0000200" /> <!-- KO LED-Helligkeit ON -->
-                <ComObjectRefRef RefId="%AID%_O-%TT%00003_R-%TT%0000300" /> <!-- KO LED-Helligkeit OFF -->
+                <ComObjectRefRef RefId="%AID%_O-%TT%00012_R-%TT%0001200" /> <!-- KO Helligkeit Außen hell -->
+                <ComObjectRefRef RefId="%AID%_O-%TT%00013_R-%TT%0001300" /> <!-- KO Helligkeit Außen dunkel -->
 
               </ParameterBlock>
             </Channel>

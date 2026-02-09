@@ -9,9 +9,6 @@
 const uint8_t THPSensorGpioPins[THP_ChannelCount*2] = {SENSOR_SCL_PIN, SENSOR_SDA_PIN};
 THPSensorModule  thpsensormodule = THPSensorModule(THPSensorGpioPins);
 
-bool setup_done = false;
-bool init_done = false;
-
 void setup()
 {
    
@@ -24,7 +21,6 @@ void setup()
     openknx.addModule(43, openknxTDD_Module);
    
     openknx.setup();
-    init_done = true;
 }
 
 void loop()
@@ -35,17 +31,13 @@ void loop()
 #ifdef OPENKNX_DUALCORE
 void setup1()
 {
-    //while(!init_done)
-    //    delay(100);
     openknx.setup1(); // Call setup1() for the modules
-    //setup_done = true;
+
 }
 
 void loop1()
 {
-    openknx.loop1();// Call loop1() for the modules <-- if we're doing this, somehow the CAP1188 is not behaving exactly the same as when running in singlecore-mode
-    //thpsensormodule.loop1();
-    //openknxTDD_Module.loop1(); // Call loop1() for the TDD_Module
+    openknx.loop1(); // Call loop1() for the modules
 }
 #endif
 

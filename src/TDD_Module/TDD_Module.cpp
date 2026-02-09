@@ -85,27 +85,25 @@ void TDD_Module::setup()
 
         PixelIndex += grpsz[i]; //Increment the pixel index
     }
-    uint8_t brightness_ON = PercentToUint8(ParamTTD_LEDBrightness_Active); //Get the brightness from the parameter
-    uint8_t brightness_OFF = PercentToUint8(ParamTTD_LEDBrightness_IDLE); //Get the brightness from the parameter
-    
-    
-    for (uint8_t i = 0; i < TTD_LEDGROUP_COUNT; i++)
-    {
-        LedGroup* group = LedController->getLedGroup(i);
+    uint8_t brightness_ON_Inner = PercentToUint8(ParamTTD_LEDBrightness_Active); //Get inner brightness from the parameter
+    uint8_t brightness_OFF_Inner = PercentToUint8(ParamTTD_LEDBrightness_IDLE); //Get inner brightness from the parameter
+    uint8_t brightness_ON_Outer = PercentToUint8(ParamTTD_LEDBrightness_Active_Outer); //Get outer brightness from the parameter
+    uint8_t brightness_OFF_Outer = PercentToUint8(ParamTTD_LEDBrightness_IDLE_Outer); //Get outer brightness from the parameter
 
-        //this use of directly accessing the groups parameters should only be used when in a setup scenario as it will completely skip the state-machine of the controller 
-        //
-        group->maxBrightness = brightness_ON; //Set the maximum brightness
-        group->minBrightness = brightness_OFF; //Set the minimum brightness
-    }
-
-    LedGroup* group = LedController->getLedGroup(0);
+    //this use of directly accessing the groups parameters should only be used when in a setup scenario as it will completely skip the state-machine of the controller
+    // Group 0 = outer, Group 1 = inner, Group 2 = outer
+    LedController->getLedGroup(0)->maxBrightness = brightness_ON_Outer;
+    LedController->getLedGroup(0)->minBrightness = brightness_OFF_Outer;
+    LedController->getLedGroup(1)->maxBrightness = brightness_ON_Inner;
+    LedController->getLedGroup(1)->minBrightness = brightness_OFF_Inner;
+    LedController->getLedGroup(2)->maxBrightness = brightness_ON_Outer;
+    LedController->getLedGroup(2)->minBrightness = brightness_OFF_Outer;
 
     //debug output
     logDebugP("LEDColor Outer: %i|%i|%i", col[0].r, col[0].g, col[0].b); //Print the outer color to the debug output
     logDebugP("LEDColor Inner: %i|%i|%i", col[1].r, col[1].g, col[1].b); //Print the inner color to the debug output
-    logDebugP("LEDBrightness_Active: %i", group->maxBrightness); //Print the brightness to the debug output
-    logDebugP("LEDBrightness_IDLE: %i", group->minBrightness); //Print the brightness to the debug output
+    logDebugP("LEDBrightness Inner Active: %i, IDLE: %i", brightness_ON_Inner, brightness_OFF_Inner);
+    logDebugP("LEDBrightness Outer Active: %i, IDLE: %i", brightness_ON_Outer, brightness_OFF_Outer);
     //Set the group to IDLE, will also start the state-machine
     LedController->setGroupActive(false); //Set the group to IDLE
 
@@ -225,28 +223,37 @@ void TDD_Module::processInputKo(GroupObject& iKo)
         LedController->setColor(LedController->getLedGroup(2), colOuter); //Outer group 2
         break;
     }
-    case TTD_KoLEDBrightness_Active:
+    case TTD_KoLEDBrightness_Active: //Helligkeit Innenleiste hell (group 1)
     {
-        uint8_t briActive = KoTTD_LEDBrightness_Active.value(DPT_Scaling); //Get the brightness from the parameter
-
-        for (uint8_t i = 0; i < LedController->getOverallLedGroupCount(); i++)
-        {
-            LedGroup* g = LedController->getLedGroup(i);
-            g->maxBrightness = briActive; //Set the brightness of the LED's to the value from the parameter
-            g->isActive = true; //Set the group to ACTIVE after startup
-        }
+        uint8_t briActive = KoTTD_LEDBrightness_Active.value(DPT_Scaling);
+        LedController->getLedGroup(1)->maxBrightness = briActive;
+        LedController->getLedGroup(1)->isActive = true;
         break;
     }
-    case TTD_KoLEDBrightness_IDLE:
+    case TTD_KoLEDBrightness_IDLE: //Helligkeit Innenleiste dunkel (group 1)
     {
-        uint8_t briIdle = KoTTD_LEDBrightness_IDLE.value(DPT_Scaling); //Get the brightness from the parameter
-        for (uint8_t i = 0; i < LedController->getOverallLedGroupCount(); i++)
-        {
-            LedGroup* g = LedController->getLedGroup(i);
-            g->minBrightness = briIdle; //Set the brightness of the LED's to the value from the parameter
-            g->isActive = false; //Set the group to IDLE after startup
-        }
-        break;    
+        uint8_t briIdle = KoTTD_LEDBrightness_IDLE.value(DPT_Scaling);
+        LedController->getLedGroup(1)->minBrightness = briIdle;
+        LedController->getLedGroup(1)->isActive = false;
+        break;
+    }
+    case TTD_KoLEDBrightness_Active_Outer: //Helligkeit Außen hell (groups 0 and 2)
+    {
+        uint8_t briActive = KoTTD_LEDBrightness_Active_Outer.value(DPT_Scaling);
+        LedController->getLedGroup(0)->maxBrightness = briActive;
+        LedController->getLedGroup(0)->isActive = true;
+        LedController->getLedGroup(2)->maxBrightness = briActive;
+        LedController->getLedGroup(2)->isActive = true;
+        break;
+    }
+    case TTD_KoLEDBrightness_IDLE_Outer: //Helligkeit Außen dunkel (groups 0 and 2)
+    {
+        uint8_t briIdle = KoTTD_LEDBrightness_IDLE_Outer.value(DPT_Scaling);
+        LedController->getLedGroup(0)->minBrightness = briIdle;
+        LedController->getLedGroup(0)->isActive = false;
+        LedController->getLedGroup(2)->minBrightness = briIdle;
+        LedController->getLedGroup(2)->isActive = false;
+        break;
     }
     default:
         break;
