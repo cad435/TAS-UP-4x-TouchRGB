@@ -198,7 +198,7 @@ void LedGroupController::Process() {
             //do nothing, the group is already bright
             break;
         case LuminosityState::DELAY_START:
-            //Serial.printf("Starting proximity lost delay, all groups will dim in %i ms if proximity is not regained!\n", TTD_LEDGROUP_PROXIMITY_LOST_DELAY_MS); //Print the string to the debug output
+            //Serial.printf("Starting proximity lost delay, all groups will dim in %i ms if proximity is not regained!\n", ProximityLostDelay_ms); //Print the string to the debug output
             //if we just entered the delay start, we need to set the delay ticks
             ProximityLostDelayTimestamp = millis();
 
@@ -207,7 +207,7 @@ void LedGroupController::Process() {
             break;
         case LuminosityState::DELAY:
             //if we are in delay, we need to check if the delay time has passed and if so, set the group to dim
-            if (millis() - ProximityLostDelayTimestamp > TTD_LEDGROUP_PROXIMITY_LOST_DELAY_MS) //delay expired
+            if (millis() - ProximityLostDelayTimestamp > ProximityLostDelay_ms) //delay expired
             {
                 for (uint8_t i = 0; i < OverallLedGroupCount; i++)
                     ledGroups[i].luminosityState = LuminosityState::DIM; //set all groups to dim

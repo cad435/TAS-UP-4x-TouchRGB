@@ -31,6 +31,13 @@ public:
 
     void evaluate(); //evaluates all LED groups and updates their states accordingly
 
+    void ForceUpdate() { state = ControllerState::CHANGE_SHEDULED; } //force an update of the LED's by setting the state to CHANGE_SCHEDULED, so the next time evaluate is called, the LED's will be updated immediately
+
+    //how long the delay should be after proximity is lost before the LED's will dim.
+    //this is used in the state-machine of the controller to determine when to dim the LED's after proximity is lost.
+    //This is configurable via an ETS parameter and can be set in the setup of the TDD_Module.
+    uint16_t ProximityLostDelay_ms = 5000;
+
 private:
 
     CRGB* FastLedPhysicalMemory = nullptr; // FastLed Memory Pointer
@@ -69,7 +76,6 @@ private:
 
     //for delayed dimming after proximity is lost
     //Time when the proximity was lost, used for delayed dimming
-    //must be calculated from FrameTime_ms and TTD_LEDGROUP_PROXIMITY_LOST_DELAY_MS to get the correct delay in frames
     uint32_t ProximityLostDelayTimestamp = 0;
 
 

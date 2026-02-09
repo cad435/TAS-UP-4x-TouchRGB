@@ -98,12 +98,16 @@ void TDD_Module::setup()
     LedController->getLedGroup(1)->minBrightness = brightness_OFF_Inner;
     LedController->getLedGroup(2)->maxBrightness = brightness_ON_Outer;
     LedController->getLedGroup(2)->minBrightness = brightness_OFF_Outer;
+    
+    //Set the proximity lost delay from the parameter
+    LedController->ProximityLostDelay_ms = (uint16_t)ParamTTD_ProximityLostDelay;
 
     //debug output
     logDebugP("LEDColor Outer: %i|%i|%i", col[0].r, col[0].g, col[0].b); //Print the outer color to the debug output
     logDebugP("LEDColor Inner: %i|%i|%i", col[1].r, col[1].g, col[1].b); //Print the inner color to the debug output
     logDebugP("LEDBrightness Inner Active: %i, IDLE: %i", brightness_ON_Inner, brightness_OFF_Inner);
     logDebugP("LEDBrightness Outer Active: %i, IDLE: %i", brightness_ON_Outer, brightness_OFF_Outer);
+    logDebugP("Proximity Lost Delay: %i ms", LedController->ProximityLostDelay_ms);
     //Set the group to IDLE, will also start the state-machine
     LedController->setAllGroupsActive(false); //Set the group to IDLE
 
@@ -268,6 +272,7 @@ void TDD_Module::processInputKo(GroupObject& iKo)
         uint8_t briActive = KoTTD_LEDBrightness_Active.value(DPT_Scaling);
         LedController->getLedGroup(1)->maxBrightness = briActive;
         LedController->getLedGroup(1)->luminosityState = LuminosityState::BRIGHT;
+        LedController->ForceUpdate(); //Force an update of the LED's by setting the state to CHANGE_SCHEDULED, so the next time evaluate is called, the LED's will be updated immediately
         break;
     }
     case TTD_KoLEDBrightness_IDLE: //Helligkeit Innenleiste dunkel (group 1)
@@ -275,6 +280,7 @@ void TDD_Module::processInputKo(GroupObject& iKo)
         uint8_t briIdle = KoTTD_LEDBrightness_IDLE.value(DPT_Scaling);
         LedController->getLedGroup(1)->minBrightness = briIdle;
         LedController->getLedGroup(1)->luminosityState = LuminosityState::DIM;
+        LedController->ForceUpdate(); //Force an update of the LED's by setting the state to CHANGE_SCHEDULED, so the next time evaluate is called, the LED's will be updated immediately
         break;
     }
     case TTD_KoLEDBrightness_Active_Outer: //Helligkeit Außen hell (groups 0 and 2)
@@ -284,6 +290,7 @@ void TDD_Module::processInputKo(GroupObject& iKo)
         LedController->getLedGroup(0)->luminosityState = LuminosityState::BRIGHT;
         LedController->getLedGroup(2)->maxBrightness = briActive;
         LedController->getLedGroup(2)->luminosityState = LuminosityState::BRIGHT;
+        LedController->ForceUpdate(); //Force an update of the LED's by setting the state to CHANGE_SCHEDULED, so the next time evaluate is called, the LED's will be updated immediately
         break;
     }
     case TTD_KoLEDBrightness_IDLE_Outer: //Helligkeit Außen dunkel (groups 0 and 2)
@@ -293,6 +300,7 @@ void TDD_Module::processInputKo(GroupObject& iKo)
         LedController->getLedGroup(0)->luminosityState = LuminosityState::DIM;
         LedController->getLedGroup(2)->minBrightness = briIdle;
         LedController->getLedGroup(2)->luminosityState = LuminosityState::DIM;
+        LedController->ForceUpdate(); //Force an update of the LED's by setting the state to CHANGE_SCHEDULED, so the next time evaluate is called, the LED's will be updated immediately
         break;
     }
     default:

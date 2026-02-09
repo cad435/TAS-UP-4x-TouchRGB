@@ -22,10 +22,10 @@
                 <TypeRestriction Base="Value" SizeInBit="16">
                   <!-- <Enumeration Text="Externes KO" Value="0" Id="%ENID%" /> -->
                   <!-- <Enumeration Text="Sensoreingang A1 (SCL)" Value="50" Id="%ENID%" /> -->
-                  <Enumeration Text="Pad D (GPIO 28)" Value="643" Id="%ENID%" /> <!-- War vorher Sensoreingang A1 (SDA) -->
-                  <Enumeration Text="PAD C (GPIO 27)" Value="642" Id="%ENID%" /> <!-- War vorher Sensoreingang B1 (SCL) -->
-                  <Enumeration Text="PAD B (GPIO 26)" Value="641" Id="%ENID%" /> <!-- War vorher Sensoreingang B2 (SDA) -->
-                  <Enumeration Text="PAD A (GPIO 25)" Value="640" Id="%ENID%" /> <!-- War vorher Sensoreingang C1 (SCL) -->
+                  <Enumeration Text="Pad D" Value="643" Id="%ENID%" /> <!-- War vorher Sensoreingang A1 (SDA) -->
+                  <Enumeration Text="PAD C" Value="642" Id="%ENID%" /> <!-- War vorher Sensoreingang B1 (SCL) -->
+                  <Enumeration Text="PAD B" Value="641" Id="%ENID%" /> <!-- War vorher Sensoreingang B2 (SDA) -->
+                  <Enumeration Text="PAD A" Value="640" Id="%ENID%" /> <!-- War vorher Sensoreingang C1 (SCL) -->
                   <!-- <Enumeration Text="Sensoreingang C2 (SDA)" Value="115" Id="%ENID%" />  -->
                   <!-- <Enumeration Text="Sensoreingang D1 (SCL)" Value="146" Id="%ENID%" />  -->
                   <!-- <Enumeration Text="Sensoreingang D2 (SDA)" Value="147" Id="%ENID%" />  -->
@@ -102,6 +102,10 @@
               <ParameterType Id="%AID%_PT-TTDTouchThreshold" Name="TTDTouchThreshold">
                 <TypeNumber SizeInBit="7" Type="unsignedInt" minInclusive="0" maxInclusive="127"/> <!-- 7Bit: Range 0 to 128 -> muss in der memory map 1 Byte frei bleiben -->
               </ParameterType>
+              <!-- Proximity Lost Delay: Verzögerung in ms, bevor die LED's nach Verlust der Proximity abgedimmt werden -->
+              <ParameterType Id="%AID%_PT-TTDProximityLostDelay" Name="TTDProximityLostDelay">
+                <TypeNumber SizeInBit="16" Type="unsignedInt" minInclusive="0" maxInclusive="60000"/> <!-- 16Bit: Range 0 to 60000ms -->
+              </ParameterType>
               <!-- 40-Byte Textfeld für die Anzeige der Delta Count Ergebnisse in der ETS.
                    Wird nur ETS-seitig verwendet (kein Memory-Offset im Gerät). -->
               <ParameterType Id="%AID%_PT-Text40Byte" Name="Text40Byte">
@@ -158,6 +162,10 @@
               <Parameter Id="%AID%_P-%TT%00008" Name="TTDTouchThreshold" ParameterType="%AID%_PT-TTDTouchThreshold" Text="Touch Threshold: " Value="100">
                 <Memory CodeSegment="%MID%" Offset="8" BitOffset="0" /> <!-- 3Byte Nutzdaten + 1Byte Nullterminierung: 8+3+1=12 -->
               </Parameter>
+              <!-- Verzögerung in ms, bevor die LED's nach Verlust der Proximity abgedimmt werden -->
+              <Parameter Id="%AID%_P-%TT%00013" Name="ProximityLostDelay" ParameterType="%AID%_PT-TTDProximityLostDelay" Text="Proximity Lost Delay (ms): " Value="5000">
+                <Memory CodeSegment="%MID%" Offset="13" BitOffset="0" /> <!-- 2Byte: 13+2=15 -->
+              </Parameter>
               <!-- Display-only Parameter für Delta Count Ergebnis (kein Memory, nur ETS-seitig) -->
               <Parameter Id="%AID%_P-%TT%00012" Name="DeltaCountResult" ParameterType="%AID%_PT-Text40Byte" Text="Delta Count Ergebnis" Value="" Access="None" />
             </Parameters>
@@ -185,6 +193,8 @@
               <ParameterRef Id="%AID%_P-%TT%00008_R-%TT%0000800" RefId="%AID%_P-%TT%00008"/> <!-- Touch Threshold -->
 
               <ParameterRef Id="%AID%_P-%TT%00009_R-%TT%0000900" RefId="%AID%_P-%TT%00009"/> <!-- Farbe LED's Außen -->
+
+              <ParameterRef Id="%AID%_P-%TT%00013_R-%TT%0001300" RefId="%AID%_P-%TT%00013"/> <!-- Proximity Lost Delay -->
 
               <ParameterRef Id="%AID%_P-%TT%00012_R-%TT%0001200" RefId="%AID%_P-%TT%00012"/> <!-- Delta Count Result (display-only) -->
 
@@ -344,6 +354,10 @@
                 <ParameterRefRef RefId="%AID%_P-%TT%00009_R-%TT%0000900" IndentLevel="0"/>  <!-- Farbe LED's Außen -->
                 <ParameterRefRef RefId="%AID%_P-%TT%00010_R-%TT%0001000" IndentLevel="0"/>  <!-- Helligkeit Außen hell -->
                 <ParameterRefRef RefId="%AID%_P-%TT%00011_R-%TT%0001100" IndentLevel="0"/>  <!-- Helligkeit Außen dunkel -->
+
+                <ParameterSeparator Id="%AID%_PS-nnn" Text="" UIHint="HorizontalRuler" />
+                <ParameterSeparator Id="%AID%_PS-nnn" Text="Verzögerung in Millisekunden, bevor die LED's nach Verlust der Proximity abgedimmt werden. 0 = sofort abdimmen."/>
+                <ParameterRefRef RefId="%AID%_P-%TT%00013_R-%TT%0001300" IndentLevel="0"/> <!-- Proximity Lost Delay -->
 
                 <!-- Mit dem Auflisten werden die Com-Objecte in der GUI sichtbar -->
 

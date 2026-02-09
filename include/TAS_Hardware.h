@@ -36,14 +36,6 @@
     #define CAP1188_I2C_SCL ((pin_size_t)17)
     #define CAP1188_I2C_WIRECLASS i2c0_inst
 
-    #define CAP1188_TOUCH_THRESHOLD (100) //Touch Threshold, reported values from chip range from -127 to 127. The input value from chip wil be evaluated as abs()
-
-    //Touch-Pins e.g. "LED"-Pins from CAP1188 to RP2040 (Not used, everything is handled via I2C)
-    #define TOUCH_PIN_TOP_LEFT (27) //Top Left
-    #define TOUCH_PIN_TOP_RIGHT (26) //Top Right
-    #define TOUCH_PIN_BOTTOM_LEFT (28) //Bottom Left
-    #define TOUCH_PIN_BOTTOM_RIGHT (25) //Bottom Right
-
 
     #define CAP1188_MTP_CHANNELS {CAP1188::Pad_A, CAP1188::Pad_B, CAP1188::Pad_C, CAP1188::Pad_D} //Channels that are used for the Tap-Functionality. The channels are defined in the CAP1188 class.
     #define CAP1188_MTP_CHANNELS_COUNT (4) //Number of channels that are used for the Tap-Functionality. The channels are defined in the CAP1188 class.
@@ -73,8 +65,6 @@
     #define TTD_LEDGROUP_SIZE {1, 40, 1}
     #define TTD_LEDGROUP_FUNCTIONS {LedGroupFunction::FLAT, LedGroupFunction::SINE, LedGroupFunction::FLAT} //Functions for each LED-Group, must be the same size as TTD_LED_GROUP_COUNT
     #define TTD_LEDGROUP_COLORORDER {RGB, GRB, RGB} //Color order for each LED-Group, must be the same size as TTD_LED_GROUP_COUNT. This is used to set the color order for each group, in case they are different. The color order is defined in the FastLED library, e.g. RGB, GRB, BRG, etc.
-
-    #define TTD_LEDGROUP_PROXIMITY_LOST_DELAY_MS (5000) //Time in ms after which the LED group will change to IDLE after being active. This is used to keep the LED's active for a short time after the proximity is lost, so that they don't turn off immediately.
 
 
 #endif
