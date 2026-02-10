@@ -22,7 +22,7 @@
 #define MAIN_FirmwareRevision 0
 #define MAIN_ApplicationEncoding iso-8859-15
 #define MAIN_ParameterSize 6637
-#define MAIN_MaxKoNumber 649
+#define MAIN_MaxKoNumber 650
 #define MAIN_OrderNumber "TAS-UP-4x-TouchRGB"
 #define BASE_ModuleVersion 22
 #define UCT_ModuleVersion 4
@@ -253,6 +253,7 @@
 #define TTD_KoStatePAD_SCL 644
 #define TTD_KoStatePAD_SDA 645
 #define TTD_KoProximitySensed 646
+#define TTD_KoStateTap 650
 
 // Farbe LED Innenleiste
 #define KoTTD_LEDColor                            (knx.getGroupObject(TTD_KoLEDColor))
@@ -280,6 +281,8 @@
 #define KoTTD_StatePAD_SDA                        (knx.getGroupObject(TTD_KoStatePAD_SDA))
 // Zustand Proximity
 #define KoTTD_ProximitySensed                     (knx.getGroupObject(TTD_KoProximitySensed))
+// Zustand Patchfunktion (MTP)
+#define KoTTD_StateTap                            (knx.getGroupObject(TTD_KoStateTap))
 
 #define THP_ChannelCount 1
 

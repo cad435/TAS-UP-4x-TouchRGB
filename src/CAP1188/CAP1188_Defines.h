@@ -3,14 +3,14 @@
 #define CAP1188_I2CADDR 0x28 ///< The default I2C address
 
 
-#define CAP1188_DELTA_SENSITITVITY_128  0 //0b000 ///< 128x sensitivity
-#define CAP1188_DELTA_SENSITITVITY_64   1 //0b001 ///< 64x sensitivity
-#define CAP1188_DELTA_SENSITITVITY_32   2 //0b010 ///< 32x sensitivity
-#define CAP1188_DELTA_SENSITITVITY_16   3 //0b011 ///< 16x sensitivity
-#define CAP1188_DELTA_SENSITITVITY_8    4 //0b100 ///< 8x sensitivity
-#define CAP1188_DELTA_SENSITITVITY_4    5 //0b101 ///< 4x sensitivity
-#define CAP1188_DELTA_SENSITITVITY_2    6 //0b110 ///< 2x sensitivity
-#define CAP1188_DELTA_SENSITITVITY_1    7 //0b111 ///< 1x sensitivity
+#define CAP1188_DELTA_SENSITIVITY_128  0 //0b000 ///< 128x sensitivity
+#define CAP1188_DELTA_SENSITIVITY_64   1 //0b001 ///< 64x sensitivity
+#define CAP1188_DELTA_SENSITIVITY_32   2 //0b010 ///< 32x sensitivity
+#define CAP1188_DELTA_SENSITIVITY_16   3 //0b011 ///< 16x sensitivity
+#define CAP1188_DELTA_SENSITIVITY_8    4 //0b100 ///< 8x sensitivity
+#define CAP1188_DELTA_SENSITIVITY_4    5 //0b101 ///< 4x sensitivity
+#define CAP1188_DELTA_SENSITIVITY_2    6 //0b110 ///< 2x sensitivity
+#define CAP1188_DELTA_SENSITIVITY_1    7 //0b111 ///< 1x sensitivity
 
 #define CAP1188_LONG_PRESS_TIME_35MS   0b0000 ///< 35ms
 #define CAP1188_LONG_PRESS_TIME_70MS   0b0001 ///< 70ms

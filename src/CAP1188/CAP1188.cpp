@@ -132,10 +132,13 @@ void CAP1188::evaluate()
   // save the current state
   _proximitySensed = proximityNow;
 
-  if (readBit(CAP1188_GENERAL_STATUS, CAP1188_GENERAL_STATUS_MTP))
-    TapHappened = true; //if the MTP bit is set, a tap has happened
+  bool tapNow = readBit(CAP1188_GENERAL_STATUS, CAP1188_GENERAL_STATUS_MTP);
+
+  if (tapNow != TapHappened)
+    _tapChangedSinceLastEvaluate = true;
   else
-    TapHappened = false; //if the MTP bit is not set, no tap has happened
+    _tapChangedSinceLastEvaluate = false;
+  TapHappened = tapNow;
 
 
 
@@ -150,12 +153,12 @@ void CAP1188::evaluate()
 uint8_t CAP1188::ReadTouched() {
   uint8_t t = readRegister(CAP1188_SENSOR_INPUT_STATUS);
 
-  //print register in binary for debugging
-  //Serial.println("Touched Register: " + String(t, BIN));
+  // Always clear the INT bit in Main Control register (0x00).
+  // The chip latches all status registers (Sensor Input Status, General Status incl. MTP bit)
+  // until INT is cleared. Without this, the MTP bit stays stuck at 1 after releasing all pads
+  // because the chip never gets the signal to update its status registers.
+  writeRegister(CAP1188_MAIN_CONTROL, readRegister(CAP1188_MAIN_CONTROL) & ~CAP1188_MAIN_INTERRUPT);
 
-  if (t) {
-    writeRegister(CAP1188_MAIN_CONTROL, readRegister(CAP1188_MAIN_CONTROL) & ~CAP1188_MAIN_INTERRUPT); // clear interrupt
-  }
   return t;
 }
 
@@ -320,18 +323,49 @@ bool CAP1188::isProximityChanged() {
 
 }
 
+bool CAP1188::isTapChanged() {
 
-void CAP1188::enableMultipleTouchTapPattern(uint8_t PadsEvaluated[], uint8_t PadsEvaluatedCount)
-{
-  writeBit(CAP1188_MULTIPLE_TOUCH_CONFIG, CAP1188_MTP_EN, true); //enable multiple touch block
-  writeBit(CAP1188_MULTIPLE_TOUCH_CONFIG, CAP1188_MTP_COMP_PTRN, true); //enable the comparison pattern, only pads in CAP1188_MULTIPLE_TOUCH_PATTERN_CONFIG are evaluated
-  writeBit(CAP1188_MULTIPLE_TOUCH_CONFIG, CAP1188_MTP_TH0, true); //all pads must be really pressed 100% the threshold of a normal pad to count as 1 for the pattern recognition
-  writeBit(CAP1188_MULTIPLE_TOUCH_CONFIG, CAP1188_MTP_TH1, true);
-
-  for (uint8_t i = 0; i < PadsEvaluatedCount; i++)
+  if(_tapChangedSinceLastEvaluate)
   {
-    writeBit(CAP1188_MULTIPLE_TOUCH_PATTERN_CONFIG, PadsEvaluated[i], true); //use the given pads for the pattern recognition
+    _tapChangedSinceLastEvaluate = false;
+    return true;
   }
 
+  return false;
 
+}
+
+
+/**
+ * @brief  Enables Multi-Touch Pattern (MTP) detection on the CAP1188.
+ *         MTP triggers when ALL specified pads are pressed simultaneously.
+ *         The result is readable via the MTP bit (bit 1) in the General Status register (0x02).
+ *
+ *         CAP1188 uses three separate registers for multi-touch functionality:
+ *           0x2A — Multiple Touch Configuration:   controls touch BLOCKING (not MTP!)
+ *           0x2B — Multiple Touch Pattern Config:  enables/configures MTP detection
+ *           0x2D — Multiple Touch Pattern:         selects which pads participate in the pattern
+ *
+ * @param  PadsEvaluated       Array of pad indices (0-7) to include in the pattern
+ * @param  PadsEvaluatedCount  Number of pads in the array
+ */
+void CAP1188::enableMultipleTouchTapPattern(uint8_t PadsEvaluated[], uint8_t PadsEvaluatedCount)
+{
+  // --- Step 1: Configure MTP detection in register 0x2B (Multiple Touch Pattern Config) ---
+  // Note: Do NOT write these bits to 0x2A — that register controls touch blocking,
+  // and accidentally setting bit 7 there enables MULT_BLK_EN which blocks simultaneous touches!
+
+  writeBit(CAP1188_MULTIPLE_TOUCH_PATTERN_CONFIG, CAP1188_MTP_EN, true);        // Bit 7: Enable MTP detection circuitry
+  writeBit(CAP1188_MULTIPLE_TOUCH_PATTERN_CONFIG, CAP1188_MTP_COMP_PTRN, true); // Bit 1: Match specific pad pattern (not just touch count)
+  writeBit(CAP1188_MULTIPLE_TOUCH_PATTERN_CONFIG, CAP1188_MTP_TH0, true);       // Bit 2: MTP threshold bits [1:0] = 11b → 100% of touch threshold
+  writeBit(CAP1188_MULTIPLE_TOUCH_PATTERN_CONFIG, CAP1188_MTP_TH1, true);       // Bit 3: (all pads must fully exceed their individual thresholds)
+  writeBit(CAP1188_MULTIPLE_TOUCH_PATTERN_CONFIG, CAP1188_MTP_ALERT, true);     // Bit 0: Enable MTP alert → sets MTP bit in General Status (0x02)
+
+  // --- Step 2: Select which pads participate in the pattern via register 0x2D ---
+  // Default is 0xFF (all 8 pads), so we clear first and then set only the desired pads.
+  writeRegister(CAP1188_MULTIPLE_TOUCH_PATTERN_REG, 0x00);
+  for (uint8_t i = 0; i < PadsEvaluatedCount; i++)
+  {
+    writeBit(CAP1188_MULTIPLE_TOUCH_PATTERN_REG, PadsEvaluated[i], true); // Set bit for each pad in the pattern
+  }
 }

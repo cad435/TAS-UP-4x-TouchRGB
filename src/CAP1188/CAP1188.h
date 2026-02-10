@@ -34,9 +34,7 @@ public:
     Pad_E = 4,
     Pad_F = 5,
     Pad_G = 6,
-    Pad_H = 7,
-    PROXIMITY = 100,
-    MULTIPLE_TOUCH = 101	
+    Pad_H = 7
   };
 
   // Hardware I2C
@@ -68,6 +66,8 @@ public:
   bool isProximityDetected() { return _proximitySensed; }
   bool isProximityChanged();
 
+  bool isTapChanged();  // returns true once when TapHappened changes state
+
   int8_t getRawDeltaCount(uint8_t channel); //returns the raw delta count read from the hardware register for a given channel (0-7). Useful for debugging and tuning proximity detection, but not needed for normal touch sensing.
 
   bool TapHappened = false; //"Patschfunktion"
@@ -89,6 +89,7 @@ private:
 
   bool _proximitySensed = false;                             //last evaluated proximity state
   bool _proximityChangedSinceLastEvaluate = false;           //true if proximity state changed since last evaluate
+  bool _tapChangedSinceLastEvaluate = false;                 //true if tap state changed since last evaluate
 
   uint8_t readRegister(uint8_t reg);
   bool readBit(uint8_t reg, uint8_t bit);

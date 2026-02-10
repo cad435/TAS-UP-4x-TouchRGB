@@ -19,6 +19,9 @@ void TDD_Module::setup()
 {
     logDebugP("setup(), CPU: %i", get_core_num()); 
 
+
+    ledHelper = new LEDHelper(); //Create a new instance of the LEDHelper class, this is used for color conversions between CRGB and RGB565
+
 #pragma region CAP1188-Initialisation
 
     /**  Initialisation of CAP1188 **/
@@ -188,36 +191,40 @@ void TDD_Module::loop()
     
     //debugprint free loop time
     //logDebugP("freeLoopTime: %i", openknx.freeLoopTime());
+
+
+    if(!openknx.freeLoopTime()) 
+        return; //If we don't have free loop time, skip the rest of the loop to not block other modules
     
 
-    if(openknx.freeLoopTime() && cap->hasChanged(CAP1188::Pad_A)) //If the pad A has Changed, change the KO
+    if(cap->hasChanged(CAP1188::Pad_A)) //If the pad A has Changed, change the KO
     {
         KoTTD_StatePAD_A.value(cap->isTouched(CAP1188::Pad_A), Dpt(1,1)); //Send the touch value to the KO
         logDebugP("PAD_A Value %i to KO %i", cap->isTouched(CAP1188::Pad_A), KoTTD_StatePAD_A.asap()); //Print the touch value to the debug output
     }
             
     
-    if(openknx.freeLoopTime() && cap->hasChanged(CAP1188::Pad_B)) //If the pad B has Changed, change the KO
+    if(cap->hasChanged(CAP1188::Pad_B)) //If the pad B has Changed, change the KO
     {
         KoTTD_StatePAD_B.value(cap->isTouched(CAP1188::Pad_B), Dpt(1,1)); //Send the touch value to the KO
         logDebugP("PAD_B Value %i to KO %i", cap->isTouched(CAP1188::Pad_B), KoTTD_StatePAD_B.asap()); //Print the touch value to the debug output
     }
             
 
-    if(openknx.freeLoopTime() && cap->hasChanged(CAP1188::Pad_C)) //If the pad C has Changed, change the KO
+    if(cap->hasChanged(CAP1188::Pad_C)) //If the pad C has Changed, change the KO
     {
         KoTTD_StatePAD_C.value(cap->isTouched(CAP1188::Pad_C), Dpt(1,1)); //Send the touch value to the KO
         logDebugP("PAD_C Value %i to KO %i", cap->isTouched(CAP1188::Pad_C), KoTTD_StatePAD_C.asap()); //Print the touch value to the debug output
     }
                          
-    if(openknx.freeLoopTime() && cap->hasChanged(CAP1188::Pad_D)) //If the pad D has Changed, change the KO
+    if(cap->hasChanged(CAP1188::Pad_D)) //If the pad D has Changed, change the KO
     {
         KoTTD_StatePAD_D.value(cap->isTouched(CAP1188::Pad_D), Dpt(1,1)); //Send the touch value to the KO
         logDebugP("PAD_D Value %i to KO %i", cap->isTouched(CAP1188::Pad_D), KoTTD_StatePAD_D.asap()); //Print the touch value to the debug output
     }     
     
 
-    if(openknx.freeLoopTime() && cap->isProximityChanged()) //If proximity state changed since last evaluate, update the KO
+    if(cap->isProximityChanged()) //If proximity state changed since last evaluate, update the KO
     {
         KoTTD_ProximitySensed.value(cap->isProximityDetected(), Dpt(1,1)); //Send the current proximity value to the KO
         logDebugP("Proximity changed to %i, KO %i", cap->isProximityDetected(), KoTTD_ProximitySensed.asap()); //Print the proximity value to the debug output
@@ -226,11 +233,10 @@ void TDD_Module::loop()
 
     }
 
-    if(openknx.freeLoopTime() && cap->TapHappened) //If a tap happened, change the KO
+    if(cap->isTapChanged()) //If MTP state changed, update the KO
     {
-        //KoTTD_StateTap.value(cap->TapHappened, Dpt(1,1)); //Send the tap value to the KO
-        //logDebugP("Tap Value %i to KO %i", cap->TapHappened, KoTTD_StateTap.asap()); //Print the tap value to the debug output
-        logDebugP("Tap happened, but not implemented yet!"); //Print a debug message that tap happened, but not implemented yet
+        KoTTD_StateTap.value(cap->TapHappened, Dpt(1,1)); //Send the tap value to the KO
+        logDebugP("Tap Value %i to KO %i", cap->TapHappened, KoTTD_StateTap.asap()); //Print the tap value to the debug output
     }
 
 
