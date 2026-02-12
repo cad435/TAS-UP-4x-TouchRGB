@@ -44,13 +44,19 @@
                 <TypeRestriction Base="Value" SizeInBit="16">
                 <!-- Encoded in RGB565, https://rgbcolorpicker.com/565 -->
                   <Enumeration Text="Weiß" Value="65535" Id="%ENID%" />
+                  <Enumeration Text="Warmweiß" Value="64908" Id="%ENID%" />
                   <Enumeration Text="Rot" Value="63488" Id="%ENID%" />
-                  <Enumeration Text="Grün" Value="2016" Id="%ENID%" />
-                  <Enumeration Text="Blau" Value="31" Id="%ENID%" />
+                  <Enumeration Text="Orange" Value="64512" Id="%ENID%" />
                   <Enumeration Text="Gelb" Value="65504" Id="%ENID%" />
-                  <Enumeration Text="Lila" Value="63519" Id="%ENID%" />
+                  <Enumeration Text="Gelbgrün" Value="34784" Id="%ENID%" />
+                  <Enumeration Text="Grün" Value="2016" Id="%ENID%" />
+                  <Enumeration Text="Mintgrün" Value="2032" Id="%ENID%" />
                   <Enumeration Text="Türkis" Value="2047" Id="%ENID%" />
-                  <Enumeration Text="Orange" Value="64480" Id="%ENID%" />
+                  <Enumeration Text="Hellblau" Value="1023" Id="%ENID%" />
+                  <Enumeration Text="Blau" Value="31" Id="%ENID%" />
+                  <Enumeration Text="Violett" Value="32799" Id="%ENID%" />
+                  <Enumeration Text="Magenta" Value="63519" Id="%ENID%" />
+                  <Enumeration Text="Rosa" Value="63504" Id="%ENID%" />
                 </TypeRestriction>
               </ParameterType>
               <ParameterType Id="%AID%_PT-TTDCheckBox" Name="TTDCheckBox">
