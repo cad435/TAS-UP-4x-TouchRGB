@@ -7,6 +7,7 @@
 enum class LedGroupFunction : uint8_t {
     FLAT = 0,
     SINE,
+    GAUSSIAN,
     ZERO
 };
 

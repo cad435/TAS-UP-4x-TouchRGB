@@ -63,7 +63,7 @@
     #define TTD_LEDGROUP_COUNT (3) //Number of LED-Groups, used for the LED-Controller. This is used to group the LED's together, so that we can control them in groups.
     //LED-Group Sizes of the daisichained LED's. This must reflect the Hardware! This array must be the same size as TTD_LED_GROUP_COUNT.
     #define TTD_LEDGROUP_SIZE {1, 40, 1}
-    #define TTD_LEDGROUP_FUNCTIONS {LedGroupFunction::FLAT, LedGroupFunction::SINE, LedGroupFunction::FLAT} //Functions for each LED-Group, must be the same size as TTD_LED_GROUP_COUNT
+    #define TTD_LEDGROUP_FUNCTIONS {LedGroupFunction::FLAT, LedGroupFunction::GAUSSIAN, LedGroupFunction::FLAT} //Functions for each LED-Group, must be the same size as TTD_LED_GROUP_COUNT
     #define TTD_LEDGROUP_COLORORDER {RGB, GRB, RGB} //Color order for each LED-Group, must be the same size as TTD_LED_GROUP_COUNT. This is used to set the color order for each group, in case they are different. The color order is defined in the FastLED library, e.g. RGB, GRB, BRG, etc.
 
 

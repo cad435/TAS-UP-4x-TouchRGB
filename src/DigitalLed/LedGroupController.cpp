@@ -56,6 +56,15 @@ void LedGroupController::AddLedGroup(uint8_t _ledCount, LedGroupFunction _functi
         for (uint8_t i = 0; i < _ledCount; i++)
             ledGroups[InitializedGroups].fkt_preRendered[i] = 0; // ZERO function
     }
+    else if(_function == LedGroupFunction::GAUSSIAN)
+    {
+        for (uint8_t i = 0; i < _ledCount; i++) {
+            //gaussian function centered in the middle of the group, with a standard deviation of 1/6 of the group length, so that it covers most of the group
+            float x = static_cast<float>(i) - static_cast<float>(_ledCount) / 2.0f;
+            float sigma = static_cast<float>(_ledCount) / 6.0f;
+            ledGroups[InitializedGroups].fkt_preRendered[i] = static_cast<uint8_t>(std::exp(-(x * x) / (2 * sigma * sigma)) * 255); // Gaussian function
+        }
+    }
     else
     {
         for (uint8_t i = 0; i < _ledCount; i++)
