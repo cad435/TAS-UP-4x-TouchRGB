@@ -18,6 +18,14 @@ LedGroupController::LedGroupController(uint8_t _numLedGroups, uint8_t* _ledGroup
     PreviousPixelArray = new CRGB[OverallLedCount];
     TargetPixelArray = new CRGB[OverallLedCount];
 
+    //set FastledPhysicalMemory to black/off
+    for (uint8_t i = 0; i < OverallLedCount; i++)
+    {
+        FastLedPhysicalMemory[i] = CRGB(0,0,0);
+        PreviousPixelArray[i] = CRGB(0,0,0);
+        TargetPixelArray[i] = CRGB(0,0,0);
+    }
+
     FastLED.addLeds<TTD_LED_TYPE, TTD_RGB_DIO_PIN, TTD_BASE_COLORORDER>(FastLedPhysicalMemory, OverallLedCount);
 
     BaseColorOrder = TTD_BASE_COLORORDER; //Set the base color order for the controller, this is used for the groups which do not have a specific color order set.
